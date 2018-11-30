@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{a38324ab-bae5-4da8-b0c2-c20c884feead}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Classifier">
+      <UniqueIdentifier>{e1ccf051-f147-4ca3-b36c-cbeadcac15db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers de ressources\Utils">
+      <UniqueIdentifier>{8386f4c2-4271-4ac4-951e-21e11978251b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\tests\test_RiemannUtilsMean.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_RiemannClassif.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_RiemannUtilsBasics.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_RiemannUtilsCovariance.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_RiemannUtilsDistance.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_RiemannUtilsFeaturization.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_RiemannUtilsGeodesics.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_Misc.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\classifier\CFeatureClassifierLDA.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\classifier\IFeatureClassifier.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\classifier\IMatrixClassifier.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Basics.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Covariance.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Distance.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Featurization.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Geodesic.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Mean.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Metrics.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\tests\test_main.cpp" />
+    <ClCompile Include="..\src\classifier\CFeatureClassifierLDA.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\classifier\IFeatureClassifier.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\classifier\IMatrixClassifier.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Basics.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Covariance.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Distance.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Featurization.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Geodesic.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Mean.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\googletest\googletest\src\gtest-all.cc">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dependencies\googletest\googlemock\src\gmock-all.cc">
+      <Filter>Tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

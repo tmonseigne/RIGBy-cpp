@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="36" failures="5" disabled="0" errors="0" timestamp="2018-11-30T17:12:44" time="0.064" name="AllTests">
+  <testsuite name="Basics_Tests" tests="4" failures="0" disabled="0" errors="0" time="0.001">
+    <testcase name="VectorCenter" status="run" time="0" classname="Basics_Tests" />
+    <testcase name="MatrixCenter" status="run" time="0" classname="Basics_Tests" />
+    <testcase name="GetElements" status="run" time="0.001" classname="Basics_Tests" />
+    <testcase name="ARange" status="run" time="0" classname="Basics_Tests" />
+  </testsuite>
+  <testsuite name="Covariances_Tests" tests="8" failures="3" disabled="0" errors="0" time="0.002">
+    <testcase name="Variance_V1" status="run" time="0" classname="Covariances_Tests" />
+    <testcase name="Covariance" status="run" time="0" classname="Covariances_Tests" />
+    <testcase name="Covariance_Matrix_COV" status="run" time="0" classname="Covariances_Tests" />
+    <testcase name="Covariance_Matrix_SCM" status="run" time="0.001" classname="Covariances_Tests">
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:58&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Covariance Matrix SCM M1 : &#x0A;********** Ref **********&#x0A; 8.25 -8.25&#x0A;-8.25  8.25&#x0A;********** Calc **********&#x0A; 0.5 -0.5&#x0A;-0.5  0.5&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:58
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Covariance Matrix SCM M1 : 
+********** Ref **********
+ 8.25 -8.25
+-8.25  8.25
+********** Calc **********
+ 0.5 -0.5
+-0.5  0.5
+====================
+]]></failure>
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:62&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Covariance Matrix SCM M2 : &#x0A;********** Ref **********&#x0A;8.25 8.25&#x0A;8.25 8.25&#x0A;********** Calc **********&#x0A;0.5 0.5&#x0A;0.5 0.5&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:62
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Covariance Matrix SCM M2 : 
+********** Ref **********
+8.25 8.25
+8.25 8.25
+********** Calc **********
+0.5 0.5
+0.5 0.5
+====================
+]]></failure>
+    </testcase>
+    <testcase name="Covariance_Matrix_LWF" status="run" time="0" classname="Covariances_Tests" />
+    <testcase name="Covariance_Matrix_OAS" status="run" time="0" classname="Covariances_Tests">
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:87&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Covariance Matrix OAS M1 : &#x0A;********** Ref **********&#x0A; 8.25 -5.25&#x0A;-5.25  8.25&#x0A;********** Calc **********&#x0A; 8.25 -8.25&#x0A;-8.25  8.25&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:87
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Covariance Matrix OAS M1 : 
+********** Ref **********
+ 8.25 -5.25
+-5.25  8.25
+********** Calc **********
+ 8.25 -8.25
+-8.25  8.25
+====================
+]]></failure>
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:91&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Covariance Matrix OAS M2 : &#x0A;********** Ref **********&#x0A;8.25 5.25&#x0A;5.25 8.25&#x0A;********** Calc **********&#x0A;8.25 6.75&#x0A;6.75 8.25&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:91
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Covariance Matrix OAS M2 : 
+********** Ref **********
+8.25 5.25
+5.25 8.25
+********** Calc **********
+8.25 6.75
+6.75 8.25
+====================
+]]></failure>
+    </testcase>
+    <testcase name="Covariance_Matrix_MCD" status="run" time="0.001" classname="Covariances_Tests">
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:101&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Covariance Matrix MCD M1 : &#x0A;********** Ref **********&#x0A; 4 -4&#x0A;-4  4&#x0A;********** Calc **********&#x0A;1 0&#x0A;0 1&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:101
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Covariance Matrix MCD M1 : 
+********** Ref **********
+ 4 -4
+-4  4
+********** Calc **********
+1 0
+0 1
+====================
+]]></failure>
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:105&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Covariance Matrix MCD M2 : &#x0A;********** Ref **********&#x0A;4 4&#x0A;4 4&#x0A;********** Calc **********&#x0A;1 0&#x0A;0 1&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilscovariance.hpp:105
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Covariance Matrix MCD M2 : 
+********** Ref **********
+4 4
+4 4
+********** Calc **********
+1 0
+0 1
+====================
+]]></failure>
+    </testcase>
+    <testcase name="Covariance_Matrix_COR" status="run" time="0" classname="Covariances_Tests" />
+  </testsuite>
+  <testsuite name="Distances_Tests" tests="6" failures="0" disabled="0" errors="0" time="0.001">
+    <testcase name="Euclidian" status="run" time="0" classname="Distances_Tests" />
+    <testcase name="LogEuclidian" status="run" time="0" classname="Distances_Tests" />
+    <testcase name="Riemann" status="run" time="0" classname="Distances_Tests" />
+    <testcase name="LogDet" status="run" time="0" classname="Distances_Tests" />
+    <testcase name="Kullback" status="run" time="0" classname="Distances_Tests" />
+    <testcase name="Wasserstein" status="run" time="0.001" classname="Distances_Tests" />
+  </testsuite>
+  <testsuite name="Featurization_Tests" tests="6" failures="0" disabled="0" errors="0" time="0.001">
+    <testcase name="GetUpperTriangle_Row" status="run" time="0" classname="Featurization_Tests" />
+    <testcase name="GetUpperTriangle_Diagonal" status="run" time="0" classname="Featurization_Tests" />
+    <testcase name="Vector2UpperTriangle_Row" status="run" time="0" classname="Featurization_Tests" />
+    <testcase name="Vector2UpperTriangle_Diagonal" status="run" time="0" classname="Featurization_Tests" />
+    <testcase name="TangentSpace" status="run" time="0" classname="Featurization_Tests" />
+    <testcase name="UnTangentSpace" status="run" time="0.001" classname="Featurization_Tests" />
+  </testsuite>
+  <testsuite name="Geodesics_Tests" tests="3" failures="0" disabled="0" errors="0" time="0.017">
+    <testcase name="Riemann" status="run" time="0" classname="Geodesics_Tests" />
+    <testcase name="Euclidian" status="run" time="0" classname="Geodesics_Tests" />
+    <testcase name="LogEuclidian" status="run" time="0" classname="Geodesics_Tests" />
+  </testsuite>
+  <testsuite name="Means_Tests" tests="9" failures="2" disabled="0" errors="0" time="0.042">
+    <testcase name="Euclidian" status="run" time="0" classname="Means_Tests" />
+    <testcase name="LogEuclidian" status="run" time="0" classname="Means_Tests" />
+    <testcase name="Riemann" status="run" time="0" classname="Means_Tests" />
+    <testcase name="LogDet" status="run" time="0" classname="Means_Tests" />
+    <testcase name="Kullback" status="run" time="0.001" classname="Means_Tests" />
+    <testcase name="Wasserstein" status="run" time="0" classname="Means_Tests">
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilsmean.hpp:69&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Mean Wasserstein : &#x0A;********** Ref **********&#x0A;6.33517       0&#x0A;      0 6.33517&#x0A;********** Calc **********&#x0A;6.3321      0&#x0A;     0 6.3321&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilsmean.hpp:69
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Mean Wasserstein : 
+********** Ref **********
+6.33517       0
+      0 6.33517
+********** Calc **********
+6.3321      0
+     0 6.3321
+====================
+]]></failure>
+    </testcase>
+    <testcase name="ALE" status="run" time="0" classname="Means_Tests">
+      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilsmean.hpp:79&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Mean_ALE : &#x0A;********** Ref **********&#x0A;4.4138      0&#x0A;     0 4.4138&#x0A;********** Calc **********&#x0A;1 0&#x0A;0 1&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_riemannutilsmean.hpp:79
+Value of: isAlmostEqual(ref, calc)
+  Actual: false
+Expected: true
+
+====================
+Mean_ALE : 
+********** Ref **********
+4.4138      0
+     0 4.4138
+********** Calc **********
+1 0
+0 1
+====================
+]]></failure>
+    </testcase>
+    <testcase name="Harmonic" status="run" time="0" classname="Means_Tests" />
+    <testcase name="Identity" status="run" time="0" classname="Means_Tests" />
+  </testsuite>
+</testsuites>
