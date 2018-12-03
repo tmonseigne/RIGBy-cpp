@@ -117,7 +117,8 @@ double DistanceKullback(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b);
 ///
 /// <summary>	Compute the Symetric Kullback Leibler Divergence between two covariance matrices A and B.
 /// 			
-/// \f[ d_{\text{sK}}(A,B) = d_\text{K}(A, B) + d_\text{K}(B, A) \f] </summary>
+/// \f[ d_{\text{sK}}(A,B) = d_\text{K}(A, B) + d_\text{K}(B, A) \f]
+/// </summary>
 ///
 /// <param name="a">	The First Covariance matrix. </param>
 /// <param name="b">	The Second Covariance matrix. </param>

@@ -9,7 +9,6 @@ using namespace std;
 #define M_SQRT2 1.4142135623730950488016887242097
 #endif
 
-
 bool Featurization(const MatrixXd& matrix, RowVectorXd& rowVector, const bool tangent, const MatrixXd& ref)
 {
 	if (tangent) { return TangentSpace(matrix, rowVector, ref); }

@@ -5,7 +5,6 @@
 using namespace Eigen;
 using namespace std;
 
-
 double Distance(const MatrixXd& a, const MatrixXd& b, const EMetrics metric)
 {
 	if (!haveSameSize(a, b)) { return 0; }

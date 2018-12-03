@@ -46,6 +46,21 @@ enum EEstimator
 	/// <summary>The Identity Matrix.</summary>
 	Estimator_IDE
 };
+
+inline std::string EstimatorToString(const EEstimator estimator)
+{
+	switch (estimator)
+	{
+		case Estimator_COV: return "Covariance";
+		case Estimator_SCM: return "Sample Covariance Matrix (SCM)";
+		case Estimator_LWF: return "Ledoit and Wolf";
+		case Estimator_OAS: return "Oracle Approximating Shrinkage (OAS)";
+		case Estimator_MCD: return "Minimum Covariance Determinant (MCD)";
+		case Estimator_COR: return "Pearson Correlation";
+		case Estimator_IDE: return "Identity";
+		default: return "Invalid";
+	}
+}
 //***************************************************
 //***************************************************
 //***************************************************

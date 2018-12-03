@@ -1,12 +1,9 @@
 #include "Metrics.hpp"
-
 #include "Basics.hpp"
 #include "Geodesic.hpp"
 #include "Distance.hpp"
 #include "Mean.hpp"
 #include <unsupported/Eigen/MatrixFunctions>
-#include <iostream>
-
 
 using namespace Eigen;
 using namespace std;
@@ -42,7 +39,8 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 
 bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double epsilon, const int maxIter)
 {
-	(void)epsilon;	(void)maxIter;
+	(void)epsilon;
+	(void)maxIter;
 	MeanIdentity(covs, ajd);
 	return false;
 }
@@ -220,7 +218,7 @@ bool MeanHarmonic(const vector<MatrixXd>& covs, MatrixXd& mean)
 	{
 		mean += cov.inverse();
 	}
-	mean = (mean / k).inverse();							// Normalization and inverse
+	mean = (mean / double(k)).inverse();					// Normalization and inverse
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

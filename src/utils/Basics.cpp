@@ -9,10 +9,7 @@ using namespace std;
 bool VectorCenter(RowVectorXd& v)
 {
 	const double mu = v.mean();
-	for (size_t i = 0, s = v.size(); i < s; ++i)
-	{
-		v(i) -= mu;
-	}
+	for (size_t i = 0, s = v.size(); i < s; ++i) { v(i) -= mu; }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
@@ -21,10 +18,7 @@ bool VectorCenter(const RowVectorXd& in, RowVectorXd& out)
 {
 	const double mu = in.mean();
 	out = in;
-	for (size_t i = 0, s = out.size(); i < s; ++i)
-	{
-		out(i) -= mu;
-	}
+	for (size_t i = 0, s = out.size(); i < s; ++i) { out(i) -= mu; }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
@@ -34,10 +28,7 @@ bool MatrixCenter(MatrixXd& m)
 	for (size_t i = 0, r = m.rows(), c = m.cols(); i < r; ++i)
 	{
 		const double mu = m.row(i).mean();
-		for (size_t j = 0; j < c; ++j)
-		{
-			m(i, j) -= mu;
-		}
+		for (size_t j = 0; j < c; ++j) { m(i, j) -= mu; }
 	}
 	return true;
 }
@@ -49,10 +40,7 @@ bool MatrixCenter(const MatrixXd& in, MatrixXd& out)
 	for (size_t i = 0, r = out.rows(), c = out.cols(); i < r; ++i)
 	{
 		const double mu = out.row(i).mean();
-		for (size_t j = 0; j < c; ++j)
-		{
-			out(i, j) -= mu;
-		}
+		for (size_t j = 0; j < c; ++j) { out(i, j) -= mu; }
 	}
 	return true;
 }

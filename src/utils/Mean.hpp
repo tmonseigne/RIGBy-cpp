@@ -39,7 +39,6 @@
 ///-------------------------------------------------------------------------------------------------
 bool Mean(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean, EMetrics metric = Metric_Riemann);
 
-
 ///-------------------------------------------------------------------------------------------------
 ///
 /// <summary>	Approximate Joint Diagonalization based on pham's algorithm. 

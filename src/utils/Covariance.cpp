@@ -1,8 +1,6 @@
 # include "Covariance.hpp"
-#include <algorithm>    // std::max
-
 #include "Basics.hpp"
-
+#include <algorithm>    // std::max
 
 using namespace Eigen;
 using namespace std;
@@ -122,7 +120,7 @@ bool CovarianceMatrixLWF(const MatrixXd& samples, MatrixXd& cov)
 	for (size_t i = 0; i < n; ++i) { mDelta(i, i) -= mu; }
 
 	const double delta = (mDelta * mDelta).sum() / n,
-				 beta = 1. / (n * S) * (x2 * x2.transpose() / S - cov2).sum(),
+				 beta = 1. / double(n * S) * (x2 * x2.transpose() / double(S) - cov2).sum(),
 				 shrinkage = min(beta, delta) / delta;		// Assure shrinkage <= 1
 
 	return ShrunkCovariance(cov, shrinkage);				// Shrinkage of the matrix

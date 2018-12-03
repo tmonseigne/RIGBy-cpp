@@ -56,6 +56,6 @@ inline std::string MetricToString(const EMetrics metric)
 		case Metric_Harmonic: return "Harmonic";
 		case Metric_Wasserstein: return "Wasserstein";
 		case Metric_Identity: return "Identity";
-		default: return "Invalid metric";
+		default: return "Invalid";
 	}
 }
