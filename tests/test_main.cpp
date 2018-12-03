@@ -7,7 +7,7 @@
 #include "test_RiemannUtilsFeaturization.hpp"
 #include "test_RiemannUtilsGeodesics.hpp"
 #include "test_RiemannUtilsMean.hpp"
-//#include "test_RiemannClassif.hpp"
+#include "test_RiemannClassif.hpp"
 // ReSharper restore CppUnusedIncludeDirective
 
 int main(int argc, char** argv)

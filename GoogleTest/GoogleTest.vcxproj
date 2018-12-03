@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;C:\Libs\Eigen;$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -99,11 +99,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,7 +117,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src;C:\Libs\Eigen;$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -127,13 +127,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="..\dependencies\googletest\googlemock\src\gmock-all.cc" />
     <ClCompile Include="..\dependencies\googletest\googletest\src\gtest-all.cc" />
+    <ClCompile Include="..\src\3rd-party\tinyxml2.cpp" />
     <ClCompile Include="..\src\classifier\CFeatureClassifierLDA.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="..\tests\test_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\3rd-party\tinyxml2.h" />
     <ClInclude Include="..\src\classifier\CFeatureClassifierLDA.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp" />

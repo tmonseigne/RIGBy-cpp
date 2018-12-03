@@ -14,6 +14,9 @@
     <Filter Include="Fichiers de ressources\Utils">
       <UniqueIdentifier>{8386f4c2-4271-4ac4-951e-21e11978251b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers de ressources\3rd Party">
+      <UniqueIdentifier>{95f17f71-a6b4-4ad2-bcd2-71efbaed0eaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\test_RiemannUtilsMean.hpp">
@@ -76,6 +79,9 @@
     <ClInclude Include="..\src\utils\Metrics.hpp">
       <Filter>Fichiers de ressources\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\3rd-party\tinyxml2.h">
+      <Filter>Fichiers de ressources\3rd Party</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\test_main.cpp" />
@@ -117,6 +123,9 @@
     </ClCompile>
     <ClCompile Include="..\dependencies\googletest\googlemock\src\gmock-all.cc">
       <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\3rd-party\tinyxml2.cpp">
+      <Filter>Fichiers de ressources\3rd Party</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

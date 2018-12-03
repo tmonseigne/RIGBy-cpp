@@ -59,3 +59,16 @@ inline std::string MetricToString(const EMetrics metric)
 		default: return "Invalid";
 	}
 }
+
+inline EMetrics StringToMetric(const std::string metric)
+{
+	if (metric == "Riemann") { return Metric_Riemann; }
+	if (metric == "Euclidian") { return Metric_Euclidian; }
+	if (metric == "Log Euclidian") { return Metric_LogEuclidian; }
+	if (metric == "Log Determinant") { return Metric_LogDet; }
+	if (metric == "Kullback") { return Metric_Kullback; }
+	if (metric == "AJD-based log-Euclidean") { return Metric_ALE; }
+	if (metric == "Harmonic") { return Metric_Harmonic; }
+	if (metric == "Wasserstein") { return Metric_Wasserstein; }
+	return Metric_Identity;
+}

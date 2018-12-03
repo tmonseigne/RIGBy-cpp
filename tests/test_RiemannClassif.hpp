@@ -54,6 +54,7 @@ TEST_F(Classifier_Tests, TrainMDM)
 	Init();
 	CMatrixClassifierMDM calc;
 	EXPECT_TRUE(calc.train(DataSet)) << "Error during Training : " << endl << calc << endl;
+	EXPECT_TRUE(calc.saveXML("test.xml"));
 	//cout << "Classifier : " << endl << calc << endl;
 }
 
@@ -75,4 +76,15 @@ TEST_F(Classifier_Tests, ClassififyMDM)
 		}
 	}
 	cout << "Result : " << endl << result << endl;
+}
+
+TEST_F(Classifier_Tests, XMLMDM)
+{
+	Init();
+	CMatrixClassifierMDM calc, ref;
+	EXPECT_TRUE(ref.train(DataSet)) << "Error during Training : " << endl << ref << endl;
+	EXPECT_TRUE(ref.saveXML("test.xml"));
+	EXPECT_TRUE(calc.loadXML("test.xml"));
+	EXPECT_TRUE(calc.saveXML("test2.xml"));
+	EXPECT_TRUE(ref == calc);
 }

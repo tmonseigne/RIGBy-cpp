@@ -2,10 +2,12 @@
 #include "utils/Mean.hpp"
 #include "utils/Distance.hpp"
 #include "utils/Basics.hpp"
+#include "3rd-party/tinyxml2.h"
 #include <iostream>
 
 using namespace std;
 using namespace Eigen;
+using namespace tinyxml2;
 
 CMatrixClassifierMDM::CMatrixClassifierMDM()
 {
@@ -79,15 +81,81 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, uint32_t& classid, v
 	return true;
 }
 
+bool CMatrixClassifierMDM::saveXML(const std::string& filename)
+{
+	XMLDocument xmlDoc;
+	XMLNode* root = xmlDoc.NewElement("Classifier");					// Create root node
+	xmlDoc.InsertFirstChild(root);										// Add root to XML
+
+	XMLElement* data = xmlDoc.NewElement("Classifier-data");			// Create data node
+	data->SetAttribute("type", "MDM");									// Set attribute classifier type
+	data->SetAttribute("class-count", int(m_ClassCount));				// Set attribute class count
+	data->SetAttribute("metric", MetricToString(m_Metric).c_str());		// Set attribute metric
+	for (size_t i = 0; i < m_ClassCount; ++i)							// for each class
+	{
+		XMLElement* classElement = xmlDoc.NewElement("Class");			// Create class node
+		classElement->SetAttribute("class-id", int(i));					// Set attribute class id (0 to K)
+		classElement->SetAttribute("size", int(m_Means[i].rows()));		// Set Matrix size NxN
+
+		IOFormat fmt(FullPrecision, 0, " ", "\n", "", "", "", "");
+		stringstream ss;
+		ss << m_Means[i].format(fmt);
+		classElement->SetText(ss.str().c_str());						// Write Means Value
+		data->InsertEndChild(classElement);								// Add class node to data node
+	}
+	root->InsertEndChild(data);											// Add data to root
+
+	return xmlDoc.SaveFile(filename.c_str()) == 0;						// save XML (if != 0 it means error)
+}
+
+bool CMatrixClassifierMDM::loadXML(const std::string& filename)
+{
+	// Load File
+	XMLDocument xmlDoc;
+	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }		// Check File Exist and Loading
+
+	// Load Root
+	XMLNode* root = xmlDoc.FirstChild();								// Get Root Node
+	if (root == nullptr) { return false; }								// Check Root Node Exist
+
+	// Load Data
+	XMLElement* data = root->FirstChildElement("Classifier-data");		// Get Data Node
+	if (data == nullptr) { return false; }								// Check Data Node Exist
+	const string classifierType = data->Attribute("type");
+	if (classifierType != "MDM") { return false; }						// Check Type
+	setClassCount(data->IntAttribute("class-count"));					// Update Number of class
+	m_Metric = StringToMetric(data->Attribute("metric"));				// Update Metric
+
+	XMLElement* classElement = data->FirstChildElement("Class");		// Get Fist Class Node
+	for (size_t k = 0; k < m_ClassCount && classElement != nullptr; ++k)	//Check if Node exist (in case of)
+	{
+		const size_t idx = classElement->IntAttribute("class-id"),		// Get Id (normally idx = k)
+					 size = classElement->IntAttribute("size");			// Get number of row/col
+		m_Means[idx] = MatrixXd::Ones(size, size);						// Init With Identity Matrix (in case of)
+		std::stringstream iss(classElement->GetText());					// String stream to parse Matrix value
+		for (size_t i = 0; i < size; ++i)								// Fill Matrix
+		{
+			for (size_t j = 0; j < size; ++j)
+			{
+				iss >> m_Means[idx](i, j);
+			}
+		}
+		classElement = classElement->NextSiblingElement("Class");		// Next Class
+	}
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
 bool CMatrixClassifierMDM::operator==(const CMatrixClassifierMDM& obj) const
 {
 	if (m_Metric != obj.m_Metric || m_ClassCount != obj.m_ClassCount) { return false; }
 	for (size_t i = 0; i < m_ClassCount; ++i)
 	{
-		if (m_Means[i] != obj.m_Means[i]) { return false; }
+		if (!m_Means[i].isApprox(obj.m_Means[i], 1e-6)) { return false; }
 	}
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierMDM::operator!=(const CMatrixClassifierMDM& obj) const
 {

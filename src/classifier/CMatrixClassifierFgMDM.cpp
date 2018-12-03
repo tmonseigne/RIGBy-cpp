@@ -14,9 +14,28 @@ bool CMatrixClassifierFgMDM::train(const std::vector<std::vector<Eigen::MatrixXd
 }
 ///-------------------------------------------------------------------------------------------------
 
+bool CMatrixClassifierFgMDM::classify(const Eigen::MatrixXd& sample, uint32_t& classid)
+{
+	(void)sample;	(void)classid;
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
 bool CMatrixClassifierFgMDM::classify(const Eigen::MatrixXd& sample, uint32_t& classid, std::vector<double>& distance, std::vector<double>& probability)
 {
 	(void)sample;	(void)classid;	(void)distance;	(void)probability;
+	return true;
+}
+
+bool CMatrixClassifierFgMDM::saveXML(const std::string& filename)
+{
+	(void)filename;
+	return true;
+}
+
+bool CMatrixClassifierFgMDM::loadXML(const std::string& filename)
+{
+	(void)filename;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
