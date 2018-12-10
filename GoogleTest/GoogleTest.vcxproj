@@ -146,6 +146,7 @@
     <ClCompile Include="..\dependencies\googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="..\src\3rd-party\tinyxml2.cpp" />
     <ClCompile Include="..\src\classifier\CFeatureClassifierLDA.cpp" />
+    <ClCompile Include="..\src\classifier\CMatrixClassifierFgDA.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp" />
     <ClCompile Include="..\src\classifier\IFeatureClassifier.cpp" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\3rd-party\tinyxml2.h" />
     <ClInclude Include="..\src\classifier\CFeatureClassifierLDA.hpp" />
+    <ClInclude Include="..\src\classifier\CMatrixClassifierFgDA.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp" />
     <ClInclude Include="..\src\classifier\IFeatureClassifier.hpp" />

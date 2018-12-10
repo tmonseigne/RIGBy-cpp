@@ -82,6 +82,9 @@
     <ClInclude Include="..\src\3rd-party\tinyxml2.h">
       <Filter>Fichiers de ressources\3rd Party</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\classifier\CMatrixClassifierFgDA.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\test_main.cpp" />
@@ -126,6 +129,9 @@
     </ClCompile>
     <ClCompile Include="..\src\3rd-party\tinyxml2.cpp">
       <Filter>Fichiers de ressources\3rd Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\classifier\CMatrixClassifierFgDA.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

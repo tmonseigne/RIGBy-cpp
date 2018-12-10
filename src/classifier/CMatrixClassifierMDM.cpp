@@ -21,6 +21,12 @@ CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t classcount, const EMetri
 }
 ///-------------------------------------------------------------------------------------------------
 
+CMatrixClassifierMDM::~CMatrixClassifierMDM()
+{
+	m_Means.clear();
+}
+///-------------------------------------------------------------------------------------------------
+
 void CMatrixClassifierMDM::setClassCount(const size_t classcount)
 {
 	if (m_ClassCount != classcount)
@@ -114,9 +120,6 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 
 	// Load Data
 	XMLElement* data = root->FirstChildElement("Classifier-data");		// Get Data Node
-	if (data == nullptr) { return false; }								// Check Data Node Exist
-	const string classifierType = data->Attribute("type");
-	if (classifierType != "MDM") { return false; }						// Check Type
 	if (!loadHeaderAttribute(data)) { return false; }
 
 	XMLElement* classElement = data->FirstChildElement("Class");		// Get Fist Class Node
@@ -136,13 +139,18 @@ bool CMatrixClassifierMDM::saveHeaderAttribute(XMLElement* element) const
 	element->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
 {
-	setClassCount(element->IntAttribute("class-count"));					// Update Number of class
-	m_Metric = StringToMetric(element->Attribute("metric"));				// Update Metric
+	if (element == nullptr) { return false; }							// Check if Node Exist
+	const string classifierType = element->Attribute("type");			// Get type
+	if (classifierType != "MDM") { return false; }						// Check Type
+	setClassCount(element->IntAttribute("class-count"));				// Update Number of class
+	m_Metric = StringToMetric(element->Attribute("metric"));			// Update Metric
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierMDM::saveClass(XMLElement* element, const size_t index) const
 {
@@ -152,16 +160,18 @@ bool CMatrixClassifierMDM::saveClass(XMLElement* element, const size_t index) co
 	const IOFormat fmt(FullPrecision, 0, " ", "\n", "", "", "", "");
 	stringstream ss;
 	ss << m_Means[index].format(fmt);
-	element->SetText(ss.str().c_str());						// Write Means Value
+	element->SetText(ss.str().c_str());								// Write Means Value
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierMDM::loadClass(XMLElement* element, const size_t index)
 {
-	if (element == nullptr) { return false; }
+	if (element == nullptr) { return false; }					// Check if Node Exist
 	const size_t idx = element->IntAttribute("class-id"),		// Get Id (normally idx = k)
 				 size = element->IntAttribute("size");			// Get number of row/col
-	m_Means[idx] = MatrixXd::Ones(size, size);					// Init With Identity Matrix (in case of)
+	if (idx != index) { return false; }							// Check if the file is well parsed
+	m_Means[idx] = MatrixXd::Identity(size, size);				// Init With Identity Matrix (in case of)
 	std::stringstream iss(element->GetText());					// String stream to parse Matrix value
 	for (size_t i = 0; i < size; ++i)							// Fill Matrix
 	{

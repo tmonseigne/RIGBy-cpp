@@ -1,6 +1,6 @@
 ///-------------------------------------------------------------------------------------------------
 /// 
-/// \file test_RiemannUtils.hpp
+/// \file test_Misc.hpp
 /// 
 /// \brief Some constants and functions for google tests
 /// 

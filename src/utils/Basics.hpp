@@ -208,12 +208,12 @@ bool areSquare(const std::vector<Eigen::MatrixXd>& matrices);
 //********************************************************
 ///----------------------------------------------------------------------------------------------------
 /// 
-/// <summary>Return the string split by the \sep parameter</summary>
+/// <summary>Return the string split by the \p sep parameter</summary>
 /// 
 /// <param name="s">	The string to split.</param>
 /// <param name="sep">	the separator string which splits.</param>
 /// 
-/// <return>	Vector of string part</return>
+/// <returns>	Vector of string part. </returns>
 /// 
 ///----------------------------------------------------------------------------------------------------
 std::vector<std::string> Split(const std::string& s, const std::string& sep);

@@ -56,33 +56,41 @@ bool CMatrixClassifierFgMDM::loadXML(const std::string& filename)
 
 bool CMatrixClassifierFgMDM::saveHeaderAttribute(XMLElement* element) const
 {
+	(void)element;
 	return true;
 }
 
 bool CMatrixClassifierFgMDM::loadHeaderAttribute(XMLElement* element)
 {
+	(void)element;
 	return true;
 }
 
 bool CMatrixClassifierFgMDM::saveClass(XMLElement* element, const size_t index) const
 {
+	(void)element;
+	(void)index;
 	return true;
 }
 
 bool CMatrixClassifierFgMDM::loadClass(XMLElement* element, const size_t index)
 {
+	(void)element;
+	(void)index;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::operator==(const CMatrixClassifierFgMDM& obj) const
 {
+	(void)obj;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::operator!=(const CMatrixClassifierFgMDM& obj) const
 {
+	(void)obj;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
