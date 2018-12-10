@@ -13,8 +13,8 @@ public:
 
 	//***** Classifier *****
 	bool train(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets) override;
-	bool classify(const Eigen::RowVectorXd& sample, uint32_t& classid) override;
-	bool classify(const Eigen::RowVectorXd& sample, uint32_t& classid, std::vector<double>& distance, std::vector<double>& probability) override;
+	bool classify(const Eigen::RowVectorXd& sample, size_t& classid) override;
+	bool classify(const Eigen::RowVectorXd& sample, size_t& classid, std::vector<double>& distance, std::vector<double>& probability) override;
 
 	//***** XML *****
 

@@ -70,7 +70,7 @@ TEST_F(Classifier_Tests, ClassififyMDM)
 	{
 		for (size_t j = 0; j < NB_TRIALS; ++j)
 		{
-			uint32_t classid;
+			size_t classid;
 			EXPECT_TRUE(calc.classify(DataSet[i][j], classid)) << "Error during Classify : " << endl << calc << endl;
 			result(i, classid)++;
 		}

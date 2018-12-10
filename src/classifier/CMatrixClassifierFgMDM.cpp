@@ -1,5 +1,8 @@
 #include "CMatrixClassifierFgMDM.hpp"
 
+using namespace std;
+using namespace Eigen;
+using namespace tinyxml2;
 
 CMatrixClassifierFgMDM::CMatrixClassifierFgMDM(const size_t classcount)
 {
@@ -7,41 +10,95 @@ CMatrixClassifierFgMDM::CMatrixClassifierFgMDM(const size_t classcount)
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets)
+void CMatrixClassifierFgMDM::setClassCount(const size_t classcount)
+{
+	IMatrixClassifier::setClassCount(classcount);
+}
+///-------------------------------------------------------------------------------------------------
+
+bool CMatrixClassifierFgMDM::train(const std::vector<std::vector<MatrixXd>>& datasets)
 {
 	(void)datasets;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::classify(const Eigen::MatrixXd& sample, uint32_t& classid)
+bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid)
 {
-	(void)sample;	(void)classid;
+	(void)sample;
+	(void)classid;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::classify(const Eigen::MatrixXd& sample, uint32_t& classid, std::vector<double>& distance, std::vector<double>& probability)
+bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, std::vector<double>& distance, std::vector<double>& probability)
 {
-	(void)sample;	(void)classid;	(void)distance;	(void)probability;
+	(void)sample;
+	(void)classid;
+	(void)distance;
+	(void)probability;
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::saveXML(const std::string& filename)
 {
 	(void)filename;
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::loadXML(const std::string& filename)
 {
 	(void)filename;
 	return true;
 }
+
+bool CMatrixClassifierFgMDM::saveHeaderAttribute(XMLElement* element) const
+{
+	return true;
+}
+
+bool CMatrixClassifierFgMDM::loadHeaderAttribute(XMLElement* element)
+{
+	return true;
+}
+
+bool CMatrixClassifierFgMDM::saveClass(XMLElement* element, const size_t index) const
+{
+	return true;
+}
+
+bool CMatrixClassifierFgMDM::loadClass(XMLElement* element, const size_t index)
+{
+	return true;
+}
 ///-------------------------------------------------------------------------------------------------
 
-void CMatrixClassifierFgMDM::setClassCount(const size_t classcount)
+bool CMatrixClassifierFgMDM::operator==(const CMatrixClassifierFgMDM& obj) const
 {
-	IMatrixClassifier::setClassCount(classcount);
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+bool CMatrixClassifierFgMDM::operator!=(const CMatrixClassifierFgMDM& obj) const
+{
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+
+stringstream CMatrixClassifierFgMDM::print() const
+{
+	stringstream ss;
+	ss << "Nb of Class : " << m_ClassCount << endl;
+	return ss;
+}
+///-------------------------------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& os, const CMatrixClassifierFgMDM& obj)
+{
+	os << obj.print().str();
+	return os;
 }
 ///-------------------------------------------------------------------------------------------------

@@ -2,7 +2,6 @@
 #include "utils/Mean.hpp"
 #include "utils/Distance.hpp"
 #include "utils/Basics.hpp"
-#include "3rd-party/tinyxml2.h"
 #include <iostream>
 
 using namespace std;
@@ -13,6 +12,7 @@ CMatrixClassifierMDM::CMatrixClassifierMDM()
 {
 	m_Means.resize(m_ClassCount);
 }
+///-------------------------------------------------------------------------------------------------
 
 CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t classcount, const EMetrics metric)
 {
@@ -29,6 +29,7 @@ void CMatrixClassifierMDM::setClassCount(const size_t classcount)
 		m_Means.resize(m_ClassCount);
 	}
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 {
@@ -41,15 +42,14 @@ bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierMDM::classify(const MatrixXd& sample, uint32_t& classid)
+bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid)
 {
 	std::vector<double> distance, probability;
 	return classify(sample, classid, distance, probability);
 }
 ///-------------------------------------------------------------------------------------------------
 
-
-bool CMatrixClassifierMDM::classify(const MatrixXd& sample, uint32_t& classid, vector<double>& distance, vector<double>& probability)
+bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vector<double>& distance, vector<double>& probability)
 {
 	if (!isSquare(sample)) { return false; }
 	double distMin = std::numeric_limits<double>::max();
@@ -60,7 +60,7 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, uint32_t& classid, v
 		distance[i] = Distance(sample, m_Means[i], m_Metric);
 		if (distMin > distance[i])
 		{
-			classid = uint32_t(i);
+			classid = i;
 			distMin = distance[i];
 		}
 	}
@@ -80,6 +80,7 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, uint32_t& classid, v
 	}
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierMDM::saveXML(const std::string& filename)
 {
@@ -88,25 +89,18 @@ bool CMatrixClassifierMDM::saveXML(const std::string& filename)
 	xmlDoc.InsertFirstChild(root);										// Add root to XML
 
 	XMLElement* data = xmlDoc.NewElement("Classifier-data");			// Create data node
-	data->SetAttribute("type", "MDM");									// Set attribute classifier type
-	data->SetAttribute("class-count", int(m_ClassCount));				// Set attribute class count
-	data->SetAttribute("metric", MetricToString(m_Metric).c_str());		// Set attribute metric
-	for (size_t i = 0; i < m_ClassCount; ++i)							// for each class
+	if (!saveHeaderAttribute(data)) { return false; }
+	for (size_t k = 0; k < m_ClassCount; ++k)							// for each class
 	{
 		XMLElement* classElement = xmlDoc.NewElement("Class");			// Create class node
-		classElement->SetAttribute("class-id", int(i));					// Set attribute class id (0 to K)
-		classElement->SetAttribute("size", int(m_Means[i].rows()));		// Set Matrix size NxN
-
-		IOFormat fmt(FullPrecision, 0, " ", "\n", "", "", "", "");
-		stringstream ss;
-		ss << m_Means[i].format(fmt);
-		classElement->SetText(ss.str().c_str());						// Write Means Value
+		if (!saveClass(classElement, k)) { return false; }
 		data->InsertEndChild(classElement);								// Add class node to data node
 	}
 	root->InsertEndChild(data);											// Add data to root
 
 	return xmlDoc.SaveFile(filename.c_str()) == 0;						// save XML (if != 0 it means error)
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 {
@@ -123,25 +117,60 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 	if (data == nullptr) { return false; }								// Check Data Node Exist
 	const string classifierType = data->Attribute("type");
 	if (classifierType != "MDM") { return false; }						// Check Type
-	setClassCount(data->IntAttribute("class-count"));					// Update Number of class
-	m_Metric = StringToMetric(data->Attribute("metric"));				// Update Metric
+	if (!loadHeaderAttribute(data)) { return false; }
 
 	XMLElement* classElement = data->FirstChildElement("Class");		// Get Fist Class Node
-	for (size_t k = 0; k < m_ClassCount && classElement != nullptr; ++k)	//Check if Node exist (in case of)
+	for (size_t k = 0; k < m_ClassCount; ++k)							// for each class
 	{
-		const size_t idx = classElement->IntAttribute("class-id"),		// Get Id (normally idx = k)
-					 size = classElement->IntAttribute("size");			// Get number of row/col
-		m_Means[idx] = MatrixXd::Ones(size, size);						// Init With Identity Matrix (in case of)
-		std::stringstream iss(classElement->GetText());					// String stream to parse Matrix value
-		for (size_t i = 0; i < size; ++i)								// Fill Matrix
-		{
-			for (size_t j = 0; j < size; ++j)
-			{
-				iss >> m_Means[idx](i, j);
-			}
-		}
+		if (!loadClass(classElement, k)) { return false; }
 		classElement = classElement->NextSiblingElement("Class");		// Next Class
 	}
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+bool CMatrixClassifierMDM::saveHeaderAttribute(XMLElement* element) const
+{
+	element->SetAttribute("type", "MDM");								// Set attribute classifier type
+	element->SetAttribute("class-count", int(m_ClassCount));			// Set attribute class count
+	element->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
+	return true;
+}
+
+bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
+{
+	setClassCount(element->IntAttribute("class-count"));					// Update Number of class
+	m_Metric = StringToMetric(element->Attribute("metric"));				// Update Metric
+	return true;
+}
+
+bool CMatrixClassifierMDM::saveClass(XMLElement* element, const size_t index) const
+{
+	element->SetAttribute("class-id", int(index));					// Set attribute class id (0 to K)
+	element->SetAttribute("size", int(m_Means[index].rows()));		// Set Matrix size NxN
+
+	const IOFormat fmt(FullPrecision, 0, " ", "\n", "", "", "", "");
+	stringstream ss;
+	ss << m_Means[index].format(fmt);
+	element->SetText(ss.str().c_str());						// Write Means Value
+	return true;
+}
+
+bool CMatrixClassifierMDM::loadClass(XMLElement* element, const size_t index)
+{
+	if (element == nullptr) { return false; }
+	const size_t idx = element->IntAttribute("class-id"),		// Get Id (normally idx = k)
+				 size = element->IntAttribute("size");			// Get number of row/col
+	m_Means[idx] = MatrixXd::Ones(size, size);					// Init With Identity Matrix (in case of)
+	std::stringstream iss(element->GetText());					// String stream to parse Matrix value
+	for (size_t i = 0; i < size; ++i)							// Fill Matrix
+	{
+		for (size_t j = 0; j < size; ++j)
+		{
+			iss >> m_Means[idx](i, j);
+		}
+	}
+
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -162,21 +191,25 @@ bool CMatrixClassifierMDM::operator!=(const CMatrixClassifierMDM& obj) const
 	return !(*this == obj);
 }
 ///-------------------------------------------------------------------------------------------------
-ostream& operator<<(ostream& os, const CMatrixClassifierMDM& obj)
+
+stringstream CMatrixClassifierMDM::print() const
 {
-	os << "Metric : " << MetricToString(obj.m_Metric) << endl
-		<< "Nb of Class : " << obj.m_ClassCount << endl;
-	for (size_t i = 0; i < obj.m_ClassCount; ++i)
+	stringstream ss;
+	ss << "Metric : " << MetricToString(m_Metric) << endl
+		<< "Nb of Class : " << m_ClassCount << endl;
+	for (size_t i = 0; i < m_ClassCount; ++i)
 	{
-		os << "Mean Class " << i << " : ";
-		if (obj.m_Means[i].size() != 0)
-		{
-			os << endl << obj.m_Means[i] << endl;
-		}
-		else
-		{
-			os << "Not Compute" << endl;
-		}
+		ss << "Mean Class " << i << " : ";
+		if (m_Means[i].size() != 0) { ss << endl << m_Means[i] << endl; }
+		else { ss << "Not Compute" << endl; }
 	}
+	return ss;
+}
+///-------------------------------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& os, const CMatrixClassifierMDM& obj)
+{
+	os << obj.print().str();
 	return os;
 }
+///-------------------------------------------------------------------------------------------------
