@@ -8,11 +8,14 @@ using namespace Eigen;
 using namespace std;
 
 
-class Covariances_Tests : public testing::Test {};
-
-TEST_F(Covariances_Tests, Variance_V1)
+class Tests_Covariances : public testing::Test
 {
-	Initialize();
+	void SetUp() override { Initialize(); }
+};
+
+
+TEST_F(Tests_Covariances, Variance_V1)
+{
 	double calc = 0;
 	const double ref = 8.25;
 
@@ -20,9 +23,8 @@ TEST_F(Covariances_Tests, Variance_V1)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Variance V1", ref, calc).str();
 }
 
-TEST_F(Covariances_Tests, Covariance)
+TEST_F(Tests_Covariances, Covariance)
 {
-	Initialize();
 	double calc = 0;
 
 	double ref = -8.25;
@@ -34,9 +36,8 @@ TEST_F(Covariances_Tests, Covariance)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance M2", ref, calc).str();
 }
 
-TEST_F(Covariances_Tests, Covariance_Matrix_COV)
+TEST_F(Tests_Covariances, Covariance_Matrix_COV)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -8.25, -8.25, 8.25;
@@ -48,9 +49,8 @@ TEST_F(Covariances_Tests, Covariance_Matrix_COV)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix COV M2", ref, calc).str();
 }
 
-TEST_F(Covariances_Tests, Covariance_Matrix_SCM)
+TEST_F(Tests_Covariances, Covariance_Matrix_SCM)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -8.25, -8.25, 8.25;
@@ -62,9 +62,8 @@ TEST_F(Covariances_Tests, Covariance_Matrix_SCM)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix SCM M2", ref, calc).str();
 }
 
-TEST_F(Covariances_Tests, Covariance_Matrix_LWF)
+TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -6.97, -6.97, 8.25;
@@ -77,9 +76,8 @@ TEST_F(Covariances_Tests, Covariance_Matrix_LWF)
 }
 
 
-TEST_F(Covariances_Tests, Covariance_Matrix_OAS)
+TEST_F(Tests_Covariances, Covariance_Matrix_OAS)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -5.25, -5.25, 8.25;
@@ -91,9 +89,8 @@ TEST_F(Covariances_Tests, Covariance_Matrix_OAS)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix OAS M2", ref, calc).str();
 }
 
-TEST_F(Covariances_Tests, Covariance_Matrix_MCD)
+TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 4, -4, -4, 4;
@@ -106,9 +103,8 @@ TEST_F(Covariances_Tests, Covariance_Matrix_MCD)
 }
 
 
-TEST_F(Covariances_Tests, Covariance_Matrix_COR)
+TEST_F(Tests_Covariances, Covariance_Matrix_COR)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 1, -1, -1, 1;

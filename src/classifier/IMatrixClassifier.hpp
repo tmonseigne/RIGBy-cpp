@@ -19,6 +19,7 @@
 #include <Eigen/Dense>
 #include <vector>
 #include "3rd-party/tinyxml2.h"
+#include "utils/Metrics.hpp"
 
 ///----------------------------------------------------------------------------------------------------
 ///
@@ -30,6 +31,9 @@ class IMatrixClassifier
 public:	
 	/// <summary>	Number of class to classify. </summary>
 	size_t m_ClassCount = 2;
+
+	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetrics" />). </summary>
+	EMetrics m_Metric = Metric_Riemann;
 
 	//***********************	
 	//***** Constructor *****	
@@ -46,9 +50,10 @@ public:
 	/// <summary>	Initializes a new instance of the <see cref="IMatrixClassifier"/> class and set the number of class. </summary>
 	///
 	/// <param name="classcount">	The number of class. </param>
+	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetrics" />). </param>
 	///
 	///----------------------------------------------------------------------------------------------------
-	explicit IMatrixClassifier(size_t classcount);
+	explicit IMatrixClassifier(const size_t classcount, const EMetrics metric);
 	
 	///----------------------------------------------------------------------------------------------------
 	///

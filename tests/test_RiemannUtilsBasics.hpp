@@ -7,11 +7,14 @@
 using namespace Eigen;
 using namespace std;
 
-class Basics_Tests : public testing::Test {};
-
-TEST_F(Basics_Tests, VectorCenter)
+class Tests_Basics : public testing::Test
 {
-	Initialize();
+	void SetUp() override { Initialize(); }
+};
+
+
+TEST_F(Tests_Basics, VectorCenter)
+{
 	RowVectorXd ref(10), calc;
 
 	ref << -4.5, -3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, 3.5, 4.5;
@@ -19,9 +22,8 @@ TEST_F(Basics_Tests, VectorCenter)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("VectorCenter V1", ref, calc).str();
 }
 
-TEST_F(Basics_Tests, MatrixCenter)
+TEST_F(Tests_Basics, MatrixCenter)
 {
-	Initialize();
 	MatrixXd ref(2, 10), calc;
 
 	ref << -4.5, -3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, 3.5, 4.5,
@@ -36,9 +38,8 @@ TEST_F(Basics_Tests, MatrixCenter)
 }
 
 
-TEST_F(Basics_Tests, GetElements)
+TEST_F(Tests_Basics, GetElements)
 {
-	Initialize();
 	const std::vector<size_t> idx{ 0, 4, 7 };
 	RowVectorXd ref(3), calc;
 
@@ -48,9 +49,8 @@ TEST_F(Basics_Tests, GetElements)
 }
 
 
-TEST_F(Basics_Tests, ARange)
+TEST_F(Tests_Basics, ARange)
 {
-	Initialize();
 	const std::vector<size_t> ref{ 1, 3, 5, 7, 9 };
 
 	std::vector<size_t> calc;

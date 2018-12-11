@@ -7,11 +7,13 @@
 using namespace Eigen;
 using namespace std;
 
-class Means_Tests : public testing::Test {};
-
-TEST_F(Means_Tests, Euclidian)
+class Tests_Means : public testing::Test
 {
-	Initialize();
+	void SetUp() override { Initialize(); }
+};
+
+TEST_F(Tests_Means, Euclidian)
+{
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, 0.0, 0.0, 8.25;
@@ -19,9 +21,8 @@ TEST_F(Means_Tests, Euclidian)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Euclidian", ref, calc).str();
 }
 
-TEST_F(Means_Tests, LogEuclidian)
+TEST_F(Tests_Means, LogEuclidian)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 4.41379655, 0.0, 0.0, 4.41379655;
@@ -29,9 +30,8 @@ TEST_F(Means_Tests, LogEuclidian)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean LogEuclidian", ref, calc).str();
 }
 
-TEST_F(Means_Tests, Riemann)
+TEST_F(Tests_Means, Riemann)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 4.41379655, 0.0, 0.0, 4.41379655;
@@ -39,9 +39,8 @@ TEST_F(Means_Tests, Riemann)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Riemann", ref, calc).str();
 }
 
-TEST_F(Means_Tests, LogDet)
+TEST_F(Tests_Means, LogDet)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 4.41390769, 0.0, 0.0, 4.41390769;
@@ -49,9 +48,8 @@ TEST_F(Means_Tests, LogDet)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean LogDet", ref, calc).str();
 }
 
-TEST_F(Means_Tests, Kullback)
+TEST_F(Tests_Means, Kullback)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 4.41379655, 0.0, 0.0, 4.41379655;
@@ -59,9 +57,8 @@ TEST_F(Means_Tests, Kullback)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Kullback", ref, calc).str();
 }
 
-TEST_F(Means_Tests, Wasserstein)
+TEST_F(Tests_Means, Wasserstein)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 6.33517159, 0.0, 0.0, 6.33517159;
@@ -69,9 +66,8 @@ TEST_F(Means_Tests, Wasserstein)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Wasserstein", ref, calc).str();
 }
 
-TEST_F(Means_Tests, ALE)
+TEST_F(Tests_Means, ALE)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 4.41379655, 0.0, 0.0, 4.41379655;
@@ -79,9 +75,8 @@ TEST_F(Means_Tests, ALE)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean_ALE", ref, calc).str();
 }
 
-TEST_F(Means_Tests, Harmonic)
+TEST_F(Tests_Means, Harmonic)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 2.36140606, 0.0, 0.0, 2.36140606;
@@ -89,9 +84,8 @@ TEST_F(Means_Tests, Harmonic)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean_Harmonic", ref, calc).str();
 }
 
-TEST_F(Means_Tests, Identity)
+TEST_F(Tests_Means, Identity)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 
 	ref << 1.0, 0.0, 0.0, 1.0;

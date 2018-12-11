@@ -32,9 +32,6 @@ public:
 	/// <summary>	Mean Matrix of each class. </summary>
 	std::vector<Eigen::MatrixXd> m_Means;
 
-	/// <summary>	Metric to use to calculate means (see also <see cref="EMetrics" />). </summary>
-	EMetrics m_Metric = Metric_Riemann;
-
 	//***********************	
 	//***** Constructor *****
 	//***********************	
@@ -53,7 +50,7 @@ public:
 	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetrics" />). </param>
 	///
 	///----------------------------------------------------------------------------------------------------
-	explicit CMatrixClassifierMDM(size_t classcount, EMetrics metric);
+	explicit CMatrixClassifierMDM(const size_t classcount, const EMetrics metric);
 
 	///----------------------------------------------------------------------------------------------------
 	///
@@ -229,7 +226,7 @@ public:
 	///
 	/// <param name="obj">	The second object. </param>
 	///
-	/// <returns>	True if the to <see cref="CMatrixClassifierMDM"/> are equals. </returns>
+	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are equals. </returns>
 	///
 	///----------------------------------------------------------------------------------------------------
 	bool operator==(const CMatrixClassifierMDM& obj) const;
@@ -240,7 +237,7 @@ public:
 	///
 	/// <param name="obj">	The second object. </param>
 	///
-	/// <returns>	True if the to <see cref="CMatrixClassifierMDM"/> are diffrents. </returns>
+	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are diffrents. </returns>
 	///
 	///----------------------------------------------------------------------------------------------------
 	bool operator!=(const CMatrixClassifierMDM& obj) const;

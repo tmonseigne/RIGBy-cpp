@@ -7,11 +7,13 @@
 using namespace Eigen;
 using namespace std;
 
-class Distances_Tests : public testing::Test {};
-
-TEST_F(Distances_Tests, Euclidian)
+class Tests_Distances : public testing::Test
 {
-	Initialize();
+	void SetUp() override { Initialize(); }
+};
+
+TEST_F(Tests_Distances, Euclidian)
+{
 	double calc = 0;
 
 	const double ref = 19.714137059480944;
@@ -19,9 +21,8 @@ TEST_F(Distances_Tests, Euclidian)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Distance Euclidian", ref, calc).str();
 }
 
-TEST_F(Distances_Tests, LogEuclidian)
+TEST_F(Tests_Distances, LogEuclidian)
 {
-	Initialize();
 	double calc = 0;
 
 	const double ref = 3.501239615249661;
@@ -29,9 +30,8 @@ TEST_F(Distances_Tests, LogEuclidian)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Distance LogEuclidian", ref, calc).str();
 }
 
-TEST_F(Distances_Tests, Riemann)
+TEST_F(Tests_Distances, Riemann)
 {
-	Initialize();
 	double calc = 0;
 
 	const double ref = 3.5012396152496637;
@@ -39,9 +39,8 @@ TEST_F(Distances_Tests, Riemann)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Distance Riemann", ref, calc).str();
 }
 
-TEST_F(Distances_Tests, LogDet)
+TEST_F(Tests_Distances, LogDet)
 {
-	Initialize();
 	double calc = 0;
 
 	const double ref = 1.1184614299689164;
@@ -49,9 +48,8 @@ TEST_F(Distances_Tests, LogDet)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Distance LogDet", ref, calc).str();
 }
 
-TEST_F(Distances_Tests, Kullback)
+TEST_F(Tests_Distances, Kullback)
 {
-	Initialize();
 	double calc = 0;
 
 	const double ref = 9.974724868593952;
@@ -59,9 +57,8 @@ TEST_F(Distances_Tests, Kullback)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Distance Kullback", ref, calc).str();
 }
 
-TEST_F(Distances_Tests, Wasserstein)
+TEST_F(Tests_Distances, Wasserstein)
 {
-	Initialize();
 	double calc = 0;
 
 	const double ref = 3.917245689653489;

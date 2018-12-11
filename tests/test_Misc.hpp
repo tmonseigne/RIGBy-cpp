@@ -25,7 +25,7 @@
 #include "utils/Covariance.hpp"
 #include "utils/Featurization.hpp"
 
-#define REPEAT_TEST 2
+#define REPEAT_TEST 100
 
 Eigen::MatrixXd M1, M2, M1Cov, M2Cov;
 Eigen::RowVectorXd V1, M1Tan, M2Tan;

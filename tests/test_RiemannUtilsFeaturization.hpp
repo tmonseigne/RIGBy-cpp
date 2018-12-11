@@ -7,12 +7,14 @@
 using namespace Eigen;
 using namespace std;
 
-class Featurization_Tests : public testing::Test {};
-
-
-TEST_F(Featurization_Tests, GetUpperTriangle_Row)
+class Tests_Featurization : public testing::Test 
 {
-	Initialize();
+	void SetUp() override { Initialize(); }
+};
+
+
+TEST_F(Tests_Featurization, GetUpperTriangle_Row)
+{
 	RowVectorXd ref(3), calc;
 
 	ref << 8.25, -6.97, 8.25;
@@ -22,9 +24,8 @@ TEST_F(Featurization_Tests, GetUpperTriangle_Row)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("GetUpperTriangle Row By Featurization", ref, calc).str();
 }
 
-TEST_F(Featurization_Tests, GetUpperTriangle_Diagonal)
+TEST_F(Tests_Featurization, GetUpperTriangle_Diagonal)
 {
-	Initialize();
 	RowVectorXd ref(3), calc;
 
 	ref << 8.25, 8.25, -6.97;
@@ -35,9 +36,8 @@ TEST_F(Featurization_Tests, GetUpperTriangle_Diagonal)
 }
 
 
-TEST_F(Featurization_Tests, Vector2UpperTriangle_Row)
+TEST_F(Tests_Featurization, Vector2UpperTriangle_Row)
 {
-	Initialize();
 	RowVectorXd base(3);
 	MatrixXd ref(2, 2), calc;
 	base << 1, 2, 3;
@@ -46,9 +46,8 @@ TEST_F(Featurization_Tests, Vector2UpperTriangle_Row)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Vector2UpperTriangle_Row", ref, calc).str();
 }
 
-TEST_F(Featurization_Tests, Vector2UpperTriangle_Diagonal)
+TEST_F(Tests_Featurization, Vector2UpperTriangle_Diagonal)
 {
-	Initialize();
 	RowVectorXd base(3);
 	MatrixXd ref(2, 2), calc;
 	base << 1, 2, 3;
@@ -58,9 +57,8 @@ TEST_F(Featurization_Tests, Vector2UpperTriangle_Diagonal)
 }
 
 
-TEST_F(Featurization_Tests, TangentSpace)
+TEST_F(Tests_Featurization, TangentSpace)
 {
-	Initialize();
 	RowVectorXd ref(3), calc;
 	const MatrixXd iN = MatrixXd::Identity(2, 2);
 
@@ -77,9 +75,8 @@ TEST_F(Featurization_Tests, TangentSpace)
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("TangentSpace M2 By Featurization", ref, calc).str();
 }
 
-TEST_F(Featurization_Tests, UnTangentSpace)
+TEST_F(Tests_Featurization, UnTangentSpace)
 {
-	Initialize();
 	MatrixXd ref(2, 2), calc;
 	const MatrixXd iN = MatrixXd::Identity(2, 2);
 

@@ -4,18 +4,6 @@ using namespace std;
 using namespace Eigen;
 using namespace tinyxml2;
 
-CMatrixClassifierFgMDM::CMatrixClassifierFgMDM(const size_t classcount)
-{
-	CMatrixClassifierFgMDM::setClassCount(classcount);
-}
-///-------------------------------------------------------------------------------------------------
-
-void CMatrixClassifierFgMDM::setClassCount(const size_t classcount)
-{
-	IMatrixClassifier::setClassCount(classcount);
-}
-///-------------------------------------------------------------------------------------------------
-
 bool CMatrixClassifierFgMDM::train(const std::vector<std::vector<MatrixXd>>& datasets)
 {
 	(void)datasets;
@@ -53,18 +41,21 @@ bool CMatrixClassifierFgMDM::loadXML(const std::string& filename)
 	(void)filename;
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::saveHeaderAttribute(XMLElement* element) const
 {
 	(void)element;
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::loadHeaderAttribute(XMLElement* element)
 {
 	(void)element;
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::saveClass(XMLElement* element, const size_t index) const
 {
@@ -72,6 +63,7 @@ bool CMatrixClassifierFgMDM::saveClass(XMLElement* element, const size_t index) 
 	(void)index;
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::loadClass(XMLElement* element, const size_t index)
 {
