@@ -1,4 +1,5 @@
 #include "Basics.hpp"
+#include <iostream>
 
 using namespace Eigen;
 using namespace std;
@@ -6,14 +7,33 @@ using namespace std;
 //************************************************
 //******************** Matrix ********************
 //************************************************
-bool VectorCenter(RowVectorXd& v)
+//---------------------------------------------------------------------------------------------------
+bool MatrixStandardization(MatrixXd& matrix, const EMatrixStandardization standard)
 {
-	const double mu = v.mean();
-	for (size_t i = 0, s = v.size(); i < s; ++i) { v(i) -= mu; }
+	if (standard == MS_Center) { return MatrixCenter(matrix); }
+	if (standard == MS_StandardScale) { return MatrixStandardization(matrix); }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
+bool MatrixStandardization(const MatrixXd& in, MatrixXd& out, const EMatrixStandardization standard)
+{
+	out = in;
+	return MatrixStandardization(out, standard);
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool VectorCenter(RowVectorXd& vector)
+{
+	const double mu = vector.mean();
+	for (size_t i = 0, s = vector.size(); i < s; ++i) { vector(i) -= mu; }
+	return true;
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
 bool VectorCenter(const RowVectorXd& in, RowVectorXd& out)
 {
 	const double mu = in.mean();
@@ -23,34 +43,86 @@ bool VectorCenter(const RowVectorXd& in, RowVectorXd& out)
 }
 //---------------------------------------------------------------------------------------------------
 
-bool MatrixCenter(MatrixXd& m)
+//---------------------------------------------------------------------------------------------------
+bool MatrixCenter(MatrixXd& matrix)
 {
-	for (size_t i = 0, r = m.rows(), c = m.cols(); i < r; ++i)
+	for (size_t i = 0, r = matrix.rows(), c = matrix.cols(); i < r; ++i)
 	{
-		const double mu = m.row(i).mean();
-		for (size_t j = 0; j < c; ++j) { m(i, j) -= mu; }
+		const double mu = matrix.row(i).mean();
+		for (size_t j = 0; j < c; ++j) { matrix(i, j) -= mu; }
 	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MatrixCenter(const MatrixXd& in, MatrixXd& out)
 {
 	out = in;
-	for (size_t i = 0, r = out.rows(), c = out.cols(); i < r; ++i)
+	return MatrixCenter(out);
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(MatrixXd& matrix)
+{
+	vector<double> scale;
+	return MatrixStandardScaler(matrix, scale);
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(MatrixXd& matrix, std::vector<double>& scale)
+{
+	const size_t r = matrix.rows(),
+				 c = matrix.cols();
+	vector<double> mu(r, 0),
+				   sigma(r, 0);
+	scale.resize(r);
+
+	for (size_t i = 0; i < r; ++i)
 	{
-		const double mu = out.row(i).mean();
-		for (size_t j = 0; j < c; ++j) { out(i, j) -= mu; }
+		for (size_t j = 0; j < c; ++j)
+		{
+			const double value = matrix(i, j);
+			mu[i] += value;
+			sigma[i] += value * value;
+		}
+
+		mu[i] /= double(c);
+		sigma[i] = sigma[i] / double(c) - mu[i] * mu[i];
+		scale[i] = sigma[i] == 0 ? 1 : sqrt(sigma[i]);
+
+		for (size_t j = 0; j < c; ++j)
+		{
+			matrix(i, j) = (matrix(i, j) - mu[i]) / scale[i];
+		}
 	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, std::vector<double>& scale)
+{
+	out = in;
+	return MatrixStandardScaler(out, scale);
+}
+//---------------------------------------------------------------------------------------------------
 
-string MatrixPrint(const MatrixXd& m)
+//---------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out)
+{
+	vector<double> scale;
+	return MatrixStandardScaler(in, out, scale);
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+string MatrixPrint(const MatrixXd& matrix)
 {
 	std::stringstream sstream;
-	sstream << m;
+	sstream << matrix;
 	return sstream.str();
 }
 //---------------------------------------------------------------------------------------------------
@@ -62,6 +134,7 @@ string MatrixPrint(const MatrixXd& m)
 //*************************************************************
 //******************** Index Manipulations ********************
 //*************************************************************
+//---------------------------------------------------------------------------------------------------
 RowVectorXd GetElements(const RowVectorXd& row, const std::vector<size_t>& index)
 {
 	const size_t k = index.size();
@@ -80,12 +153,14 @@ RowVectorXd GetElements(const RowVectorXd& row, const std::vector<size_t>& index
 //***************************************************
 //******************** Validates ********************
 //***************************************************
+//---------------------------------------------------------------------------------------------------
 bool inRange(const double value, const double min, const double max)
 {
 	return (min <= value && value <= max);
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool areNotEmpty(const vector<MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
@@ -94,12 +169,14 @@ bool areNotEmpty(const vector<MatrixXd>& matrices)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool isNotEmpty(const MatrixXd& matrix)
 {
 	return (matrix.rows() != 0 && matrix.cols() != 0);
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool haveSameSize(const MatrixXd& a, const MatrixXd& b)
 {
 	return (isNotEmpty(a) && a.rows() == b.rows() && a.cols() == b.cols());
@@ -112,6 +189,7 @@ bool isSquare(const MatrixXd& matrix)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool areSquare(const vector<MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
@@ -119,7 +197,6 @@ bool areSquare(const vector<MatrixXd>& matrices)
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
-
 //***************************************************
 //***************************************************
 //***************************************************
@@ -127,6 +204,7 @@ bool areSquare(const vector<MatrixXd>& matrices)
 //********************************************************
 //******************** CSV MANAGEMENT ********************
 //********************************************************
+//---------------------------------------------------------------------------------------------------
 vector<string> Split(const string& s, const string& sep)
 {
 	vector<string> result;

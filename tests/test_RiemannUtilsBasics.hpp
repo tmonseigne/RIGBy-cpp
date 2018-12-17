@@ -40,7 +40,7 @@ TEST_F(Tests_Basics, MatrixCenter)
 
 TEST_F(Tests_Basics, GetElements)
 {
-	const std::vector<size_t> idx{ 0, 4, 7 };
+	const vector<size_t> idx{ 0, 4, 7 };
 	RowVectorXd ref(3), calc;
 
 	ref << 1, 5, 8;
@@ -51,10 +51,39 @@ TEST_F(Tests_Basics, GetElements)
 
 TEST_F(Tests_Basics, ARange)
 {
-	const std::vector<size_t> ref{ 1, 3, 5, 7, 9 };
+	const vector<size_t> ref{ 1, 3, 5, 7, 9 };
 
-	std::vector<size_t> calc;
+	vector<size_t> calc;
 	for (int i = 0; i < REPEAT_TEST; ++i) { calc = ARange(size_t(1), size_t(10), size_t(2)); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("ARange", ref, calc).str();
 }
 
+
+TEST_F(Tests_Basics, ReduceVector)
+{
+	vector<vector<MatrixXd>> ref;
+	ref.resize(2);
+	for (size_t i = 0; i < 2; ++i)
+	{
+		ref[i].resize(2);
+		for (size_t j = 0; j < 2; ++j)
+		{
+			ref[i][j] = VCov[j];
+		}
+	}
+	//cout << "ref" << endl;
+	//for (const auto& r : ref) { for (const auto& c : r) { cout << c<<endl; } }
+	vector<MatrixXd> calc;
+	for (int i = 0; i < REPEAT_TEST; ++i) { calc = Vector2DTo1D(ref); }
+	//cout << "calc" << endl;
+	//for (const auto& c : calc) { cout << c << endl; }
+	bool egal = true;
+	for (size_t i = 0; i < 2; ++i)
+	{
+		for (size_t j = 0; j < 2; ++j)
+		{
+			if (!isAlmostEqual(ref[i][j], calc[i * 2 + j])) { egal = false; }
+		}
+	}
+	EXPECT_TRUE(egal) << "Vector2DTo1D fail";
+}

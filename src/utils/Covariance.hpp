@@ -24,6 +24,7 @@
 #pragma once
 
 #include <Eigen/Dense>
+#include "Basics.hpp"
 
 //***************************************************
 //******************** CONSTANTS ********************
@@ -139,12 +140,11 @@ bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, double sh
 /// <param name="in">			The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="out">			The Covariance Matrix. </param>
 /// <param name="estimator">	(Optional) The selected estimator (see <see cref="EEstimator"/>). </param>
-/// <param name="center">   	(Optional) True to center the datas (each row is centered separately). </param>
 /// 
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///----------------------------------------------------------------------------------------------------
-bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = Estimator_COV, bool center = true);
+bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, const EEstimator estimator = Estimator_COV);
 //***********************************************************
 //***********************************************************
 //***********************************************************

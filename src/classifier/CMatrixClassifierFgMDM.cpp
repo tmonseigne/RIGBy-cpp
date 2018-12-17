@@ -1,12 +1,48 @@
 #include "CMatrixClassifierFgMDM.hpp"
+#include "utils/Mean.hpp"
+#include "utils/Basics.hpp"
+#include "utils/Featurization.hpp"
+#include "utils/Classification.hpp"
+#include <iostream>
 
 using namespace std;
 using namespace Eigen;
 using namespace tinyxml2;
 
-bool CMatrixClassifierFgMDM::train(const std::vector<std::vector<MatrixXd>>& datasets)
+bool CMatrixClassifierFgMDM::computeFgDA(const vector<vector<MatrixXd>>& datasets)
 {
-	(void)datasets;
+	if (datasets.empty()) { return false; }
+	// Compute Reference matrix
+	const vector<MatrixXd> data = Vector2DTo1D(datasets);		// Append datasets in one vector
+	if (!Mean(data, m_Ref, Metric_Euclidian)) { return false; }
+
+	// Transform to the Tangent Space
+	const size_t nbClass = datasets.size();
+	vector<vector<RowVectorXd>> ts(nbClass);
+	for (size_t k = 0; k < nbClass; ++k)
+	{
+		const size_t nbTrials = datasets[k].size();
+		ts[k].resize(nbTrials);
+		for (size_t i = 0; i < nbTrials; ++i)
+		{
+			if (!TangentSpace(datasets[k][i], ts[k][i], m_Ref)) { return false; }
+		}
+	}
+
+	// Compute Weight with LSQR Method
+	if (!LSQR(ts, m_Weight)) { return false; }
+
+	// Transforme weight	self._W = numpy.dot(numpy.dot(W.T, numpy.linalg.pinv(numpy.dot(W, W.T))), W)
+	const MatrixXd w = m_Weight, wT = m_Weight.transpose();
+	// (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass)) Compute the pseudo-inverse of a matrix (M * M^(-1) = I)
+	m_Weight = (wT * (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass))) * w;
+
+	return true;
+}
+
+bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
+{
+	if (!computeFgDA(datasets)) { return false; }
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -19,7 +55,7 @@ bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid)
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, std::vector<double>& distance, std::vector<double>& probability)
+bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, vector<double>& distance, vector<double>& probability)
 {
 	(void)sample;
 	(void)classid;
@@ -29,14 +65,14 @@ bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, s
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::saveXML(const std::string& filename)
+bool CMatrixClassifierFgMDM::saveXML(const string& filename)
 {
 	(void)filename;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::loadXML(const std::string& filename)
+bool CMatrixClassifierFgMDM::loadXML(const string& filename)
 {
 	(void)filename;
 	return true;
@@ -96,7 +132,7 @@ stringstream CMatrixClassifierFgMDM::print() const
 }
 ///-------------------------------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream& os, const CMatrixClassifierFgMDM& obj)
+ostream& operator<<(ostream& os, const CMatrixClassifierFgMDM& obj)
 {
 	os << obj.print().str();
 	return os;

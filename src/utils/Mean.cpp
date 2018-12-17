@@ -4,6 +4,7 @@
 #include "Distance.hpp"
 #include "Mean.hpp"
 #include <unsupported/Eigen/MatrixFunctions>
+#include <iostream>
 
 using namespace Eigen;
 using namespace std;
@@ -15,7 +16,11 @@ const size_t ITER_MAX = 50;
 
 bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metric)
 {
-	if (!areSquare(covs)) { return false; }
+	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
+	{
+		cerr << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
+		return false;
+	}
 	if (covs.size() == 1)
 	{
 		mean = covs[0];
@@ -225,7 +230,7 @@ bool MeanHarmonic(const vector<MatrixXd>& covs, MatrixXd& mean)
 
 bool MeanIdentity(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	mean = MatrixXd::Identity(covs[0].rows(), covs[0].rows());
+	mean = MatrixXd::Identity(covs[0].rows(), covs[0].cols());
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

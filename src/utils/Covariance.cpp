@@ -1,5 +1,4 @@
 # include "Covariance.hpp"
-#include "Basics.hpp"
 #include <algorithm>    // std::max
 
 using namespace Eigen;
@@ -53,20 +52,18 @@ bool ShrunkCovariance(const MatrixXd& in, MatrixXd& out, const double shrinkage)
 }
 //---------------------------------------------------------------------------------------------------
 
-bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, EEstimator estimator, bool center)
+bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estimator)
 {
 	if (!isNotEmpty(in)) { return false; }
-	MatrixXd samples;
-	if (center) { MatrixCenter(in, samples); }
 	switch (estimator)
 	{
-		case Estimator_COV: return CovarianceMatrixCOV(samples, out);
-		case Estimator_SCM: return CovarianceMatrixSCM(samples, out);
-		case Estimator_LWF: return CovarianceMatrixLWF(samples, out);
-		case Estimator_OAS: return CovarianceMatrixOAS(samples, out);
-		case Estimator_MCD: return CovarianceMatrixMCD(samples, out);
-		case Estimator_COR: return CovarianceMatrixCOR(samples, out);
-		default: return CovarianceMatrixIDE(samples, out);
+		case Estimator_COV: return CovarianceMatrixCOV(in, out);
+		case Estimator_SCM: return CovarianceMatrixSCM(in, out);
+		case Estimator_LWF: return CovarianceMatrixLWF(in, out);
+		case Estimator_OAS: return CovarianceMatrixOAS(in, out);
+		case Estimator_MCD: return CovarianceMatrixMCD(in, out);
+		case Estimator_COR: return CovarianceMatrixCOR(in, out);
+		default: return CovarianceMatrixIDE(in, out);
 	}
 }
 //---------------------------------------------------------------------------------------------------

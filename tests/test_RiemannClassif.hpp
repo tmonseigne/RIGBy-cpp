@@ -11,9 +11,9 @@ using namespace Eigen;
 using namespace std;
 
 #define NB_CLASS	4
-#define NB_TRIALS	20
-#define NB_CHAN		16
-#define NB_SAMPLE	100
+#define NB_TRIALS	4000
+#define NB_CHAN		26
+#define NB_SAMPLE	32
 
 class Tests_Classifier : public testing::Test
 {
@@ -91,10 +91,14 @@ TEST_F(Tests_Classifier, XMLMDM)
 	EXPECT_TRUE(ref == calc);
 }
 
+/*
 TEST_F(Tests_Classifier, TrainFgMDM)
 {
 	CMatrixClassifierFgMDM calc;
+	m_dataSet.resize(2);
+	m_dataSet[0].resize(4);
 	EXPECT_TRUE(calc.train(m_dataSet)) << "Error during Training : " << endl << calc << endl;
 	EXPECT_TRUE(calc.saveXML("test.xml"));
 	//cout << "Classifier : " << endl << calc << endl;
 }
+*/

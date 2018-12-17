@@ -28,6 +28,9 @@
 class CMatrixClassifierFgMDM : public CMatrixClassifierMDM
 {
 public:
+	Eigen::MatrixXd m_Ref,
+					m_Weight;
+
 	//***********************	
 	//***** Constructor *****
 	//***********************	
@@ -36,7 +39,7 @@ public:
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
 	///
 	///----------------------------------------------------------------------------------------------------
-	CMatrixClassifierFgMDM() : CMatrixClassifierMDM() { }
+	CMatrixClassifierFgMDM() { }
 
 	///----------------------------------------------------------------------------------------------------
 	///
@@ -54,6 +57,15 @@ public:
 	///
 	///----------------------------------------------------------------------------------------------------
 	~CMatrixClassifierFgMDM() override = default;
+
+	//********************
+	//***** Computes *****
+	//********************
+	bool computeFgDA(const std::vector<std::vector<Eigen::MatrixXd>>& datasets);
+
+	//********************
+	//********************
+	//********************
 
 	//**********************
 	//***** Classifier *****
@@ -244,8 +256,7 @@ public:
 	///
 	///----------------------------------------------------------------------------------------------------
 	std::string getType() const override { return "Minimum Distance to Mean with geodesic filtering"; }
-
-
+	
 	///----------------------------------------------------------------------------------------------------
 	///
 	/// <summary>	Get the Classifier information for output. </summary>
@@ -254,7 +265,6 @@ public:
 	///
 	///----------------------------------------------------------------------------------------------------
 	std::stringstream print() const override;
-
 
 	///----------------------------------------------------------------------------------------------------
 	///

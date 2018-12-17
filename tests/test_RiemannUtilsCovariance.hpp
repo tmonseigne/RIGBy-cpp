@@ -41,11 +41,11 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COV)
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -8.25, -8.25, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1, calc, Estimator_COV, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1_Center, calc, Estimator_COV); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix COV M1", ref, calc).str();
 
 	ref << 8.25, 8.25, 8.25, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2, calc, Estimator_COV, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2_Center, calc, Estimator_COV); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix COV M2", ref, calc).str();
 }
 
@@ -54,11 +54,11 @@ TEST_F(Tests_Covariances, Covariance_Matrix_SCM)
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -8.25, -8.25, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1, calc, Estimator_SCM, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1_Center, calc, Estimator_SCM); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix SCM M1", ref, calc).str();
 
 	ref << 8.25, 8.25, 8.25, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2, calc, Estimator_SCM, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2_Center, calc, Estimator_SCM); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix SCM M2", ref, calc).str();
 }
 
@@ -67,11 +67,11 @@ TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -6.97, -6.97, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1, calc, Estimator_LWF, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1_Center, calc, Estimator_LWF); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix LWF M1", ref, calc).str();
 
 	ref << 8.25, 6.97, 6.97, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2, calc, Estimator_LWF, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2_Center, calc, Estimator_LWF); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix LWF M2", ref, calc).str();
 }
 
@@ -81,11 +81,11 @@ TEST_F(Tests_Covariances, Covariance_Matrix_OAS)
 	MatrixXd ref(2, 2), calc;
 
 	ref << 8.25, -5.25, -5.25, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1, calc, Estimator_OAS, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1_Center, calc, Estimator_OAS); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix OAS M1", ref, calc).str();
 
 	ref << 8.25, 5.25, 5.25, 8.25;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2, calc, Estimator_OAS, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2_Center, calc, Estimator_OAS); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix OAS M2", ref, calc).str();
 }
 
@@ -94,11 +94,11 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 	MatrixXd ref(2, 2), calc;
 
 	ref << 4, -4, -4, 4;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1, calc, Estimator_MCD, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1_Center, calc, Estimator_MCD); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix MCD M1", ref, calc).str();
 
 	ref << 4, 4, 4, 4;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2, calc, Estimator_MCD, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2_Center, calc, Estimator_MCD); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix MCD M2", ref, calc).str();
 }
 
@@ -108,10 +108,10 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COR)
 	MatrixXd ref(2, 2), calc;
 
 	ref << 1, -1, -1, 1;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1, calc, Estimator_COR, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M1_Center, calc, Estimator_COR); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix COR M1", ref, calc).str();
 
 	ref << 1, 1, 1, 1;
-	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2, calc, Estimator_COR, true); }
+	for (int i = 0; i < REPEAT_TEST; ++i) { CovarianceMatrix(M2_Center, calc, Estimator_COR); }
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Covariance Matrix COR M2", ref, calc).str();
 }

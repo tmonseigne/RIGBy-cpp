@@ -27,7 +27,7 @@
 
 #define REPEAT_TEST 100
 
-Eigen::MatrixXd M1, M2, M1Cov, M2Cov;
+Eigen::MatrixXd M1, M2, M1_Center, M2_Center, M1Cov, M2Cov;
 Eigen::RowVectorXd V1, M1Tan, M2Tan;
 std::vector<Eigen::MatrixXd> VCov;
 const std::string Sep = "\n====================\n";
@@ -50,8 +50,11 @@ inline void Initialize()
 	V1.resize(10);
 	V1 << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
 
-	CovarianceMatrix(M1, M1Cov, Estimator_LWF, true);	// LedoitWolf assure SPD Matrix
-	CovarianceMatrix(M2, M2Cov, Estimator_LWF, true);	// LedoitWolf assure SPD Matrix
+	MatrixStandardization(M1, M1_Center, MS_Center);
+	MatrixStandardization(M2, M2_Center, MS_Center);
+
+	CovarianceMatrix(M1_Center, M1Cov, Estimator_LWF);	// LedoitWolf assure SPD Matrix
+	CovarianceMatrix(M2_Center, M2Cov, Estimator_LWF);	// LedoitWolf assure SPD Matrix
 
 	VCov.resize(2);
 	VCov[0] = M1Cov;

@@ -12,7 +12,7 @@ class Tests_Geodesic : public testing::Test
 	void SetUp() override { Initialize(); }
 };
 
-TEST_F(Tests_Featurization, Riemann)
+TEST_F(Tests_Geodesic, Riemann)
 {
 	MatrixXd ref(2, 2), calc;
 	ref << 4.41379655, 8.26508696e-15, 7.44458587e-15, 4.41379655;

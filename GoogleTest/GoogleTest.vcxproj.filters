@@ -82,8 +82,14 @@
     <ClInclude Include="..\src\3rd-party\tinyxml2.h">
       <Filter>Fichiers de ressources\3rd Party</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\classifier\CMatrixClassifierFgDA.hpp">
+    <ClInclude Include="..\src\classifier\CFgDA.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Classification.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_RiemannUtilsClassif.hpp">
+      <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -130,8 +136,11 @@
     <ClCompile Include="..\src\3rd-party\tinyxml2.cpp">
       <Filter>Fichiers de ressources\3rd Party</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\classifier\CMatrixClassifierFgDA.cpp">
+    <ClCompile Include="..\src\classifier\CFgDA.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Classification.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

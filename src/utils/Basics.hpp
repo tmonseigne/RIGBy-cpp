@@ -21,19 +21,56 @@
 #include <cmath>		// Ceil
 #include <type_traits>	// Template type
 
+/// <summary> Enumeration of Standardization method for features matrix data.</summary>
+enum EMatrixStandardization
+{
+	/// <summary>	No change. </summary>
+	MS_None,
+	/// <summary>	Standardize data by removing the mean (on each feature separately). </summary>
+	MS_Center,
+	/// <summary>	Standardize data by removing the mean and scaling to unit variance (on each feature separately). </summary>
+	MS_StandardScale
+};
+
 //************************************************
 //******************** Matrix ********************
 //************************************************
+
+///-------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Standardize data row by row with selected method (destructive operation). </summary>
+/// 
+/// <param name="matrix"> 	The matrix to standardize. </param>
+/// <param name="standard">	Standard method. </param>
+/// 
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// 
+///-------------------------------------------------------------------------------------------------
+bool MatrixStandardization(Eigen::MatrixXd& matrix, const EMatrixStandardization standard = MS_None);
+
+///-------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Standardize data row by row with selected method (non destructive operation). </summary>
+/// 
+/// <param name="in"> 		The matrix to standardize. </param>
+/// <param name="out">		The matrix standardized. </param>
+/// <param name="standard">	Standard method. </param>
+/// 
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// 
+///-------------------------------------------------------------------------------------------------
+bool MatrixStandardization(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, const EMatrixStandardization standard = MS_None);
+
 ///----------------------------------------------------------------------------------------------------
 /// 
 /// <summary>	Removes the mean of the vector to this one (destructive operation). </summary>
 /// 
-/// <param name="v">	The vector to center. </param>
+/// <param name="vector">	The vector to center. </param>
 /// 
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///----------------------------------------------------------------------------------------------------
-bool VectorCenter(Eigen::RowVectorXd& v);
+bool VectorCenter(Eigen::RowVectorXd& vector);
 
 ///-------------------------------------------------------------------------------------------------
 /// 
@@ -51,16 +88,16 @@ bool VectorCenter(const Eigen::RowVectorXd& in, Eigen::RowVectorXd& out);
 /// 
 /// <summary>	Removes the mean of each row at the matrix (destructive operation). </summary>
 /// 
-/// <param name="m">	The Matrix to center. </param>
+/// <param name="matrix">	The Matrix to center. </param>
 /// 
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///-------------------------------------------------------------------------------------------------
-bool MatrixCenter(Eigen::MatrixXd& m);
+bool MatrixCenter(Eigen::MatrixXd& matrix);
 
 ///----------------------------------------------------------------------------------------------------
 /// 
-/// <summary>	Removes the mean of each row at the matrix (destructive operation). </summary>
+/// <summary>	Removes the mean of each row at the matrix (non destructive operation). </summary>
 /// 
 /// <param name="in">	The Matrix to center. </param>
 /// <param name="out">	The Matrix centered. </param>
@@ -70,17 +107,72 @@ bool MatrixCenter(Eigen::MatrixXd& m);
 ///-------------------------------------------------------------------------------------------------
 bool MatrixCenter(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
+///----------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Removes the mean of each row at the matrix and divide by the variance (destructive operation with scale return). </summary>
+/// 
+/// <param name="matrix">	The Matrix to standardize. </param>
+/// <param name="scale">	The scale vector. </param>
+/// 
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// 
+/// \remark Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
+/// 
+///-------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(Eigen::MatrixXd& matrix, std::vector<double>& scale);
+
+///----------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Removes the mean of each row at the matrix and divide by the variance (destructive operation). </summary>
+/// 
+/// <param name="matrix">	The Matrix to standardize. </param>
+/// 
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// 
+/// \remark Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
+/// 
+///-------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(Eigen::MatrixXd& matrix);
+
+///----------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Removes the mean of each row at the matrix and divide by the variance (non destructive operation). </summary>
+/// 
+/// <param name="in">		The Matrix to standardize. </param>
+/// <param name="out">		The Matrix standardized. </param>
+/// <param name="scale">	The scale vector. </param>
+/// 
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// 
+/// \remark Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
+/// 
+///-------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, std::vector<double>& scale);
+
+///----------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Removes the mean of each row at the matrix and divide by the variance (non destructive operation). </summary>
+/// 
+/// <param name="in">	The Matrix to standardize. </param>
+/// <param name="out">	The Matrix standardized. </param>
+/// 
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// 
+/// \remark Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
+/// 
+///-------------------------------------------------------------------------------------------------
+bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
 ///----------------------------------------------------------------------------------------------------
 ///
 /// <summary>	Give the string format of Matrix for OpenViBE Log. </summary>
 ///
-/// <param name="m">	The Matrix to display. </param>
+/// <param name="matrix">	The Matrix to display. </param>
 ///
 /// <returns>		The string format. </returns>
 ///
 ///----------------------------------------------------------------------------------------------------
-std::string MatrixPrint(const Eigen::MatrixXd& m);
+std::string MatrixPrint(const Eigen::MatrixXd& matrix);
 //************************************************
 //************************************************
 //************************************************
@@ -122,6 +214,30 @@ std::vector<T> ARange(const T start, const T stop, const T step = 1)
 		result.push_back(i);
 	return result;
 }
+
+///-------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	tunr vector of vector into vector. </summary>
+/// 
+/// <typeparam name="T">	Generic type parameter. </typeparam>
+/// 
+/// <param name="in">	vector of vector. </param>
+/// 
+/// <returns>	vector&lt;T&gt; </returns>
+/// 
+///-------------------------------------------------------------------------------------------------
+template <typename T>
+std::vector<T> Vector2DTo1D(const std::vector<std::vector<T>>& in)
+{
+	std::vector<T> result;
+	size_t sum = 0;
+	for (const auto& v : in) { sum += v.size(); }
+	result.reserve(sum);
+	for (const auto& v : in) { for (const auto& e : v) { result.push_back(e); } }
+	return result;
+}
+
+
 //*************************************************************
 //*************************************************************
 //*************************************************************
