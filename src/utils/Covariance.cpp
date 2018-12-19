@@ -7,6 +7,7 @@ using namespace std;
 //***********************************************************
 //******************** COVARIANCES BASES ********************
 //***********************************************************
+//---------------------------------------------------------------------------------------------------
 double Variance(const RowVectorXd& x)
 {
 	const size_t S = x.cols();								// Number of Samples				=> S
@@ -17,6 +18,7 @@ double Variance(const RowVectorXd& x)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 double Covariance(const RowVectorXd& x, const RowVectorXd& y)
 {
 	const size_t xS = x.cols(),								// Number of Samples				=> S
@@ -26,9 +28,10 @@ double Covariance(const RowVectorXd& x, const RowVectorXd& y)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool ShrunkCovariance(MatrixXd& cov, const double shrinkage)
 {
-	if (!inRange(shrinkage, 0, 1)) { return false; }
+	if (!inRange(shrinkage, 0, 1)) { return false; }		// Verification
 	const size_t n = cov.rows();							// Number of Features				=> N
 
 	const double coef = shrinkage * cov.trace() / n;		// Diagonal Coefficient
@@ -39,31 +42,29 @@ bool ShrunkCovariance(MatrixXd& cov, const double shrinkage)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool ShrunkCovariance(const MatrixXd& in, MatrixXd& out, const double shrinkage)
 {
-	if (!inRange(shrinkage, 0, 1)) { return false; }
-	const size_t n = in.rows();								// Number of Features				=> N
-
-	const double coef = shrinkage * in.trace() / n;			// Diagonal Coefficient
-	out = (1 - shrinkage) * in;								// Shrinkage
-	for (size_t i = 0; i < n; ++i) { out(i, i) += coef; }	// Add Diagonal Coefficient
-
-	return true;
+	out = in;
+	return ShrunkCovariance(out, shrinkage);
 }
 //---------------------------------------------------------------------------------------------------
 
-bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estimator)
+//---------------------------------------------------------------------------------------------------
+bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estimator, const EStandardization standard)
 {
-	if (!isNotEmpty(in)) { return false; }
-	switch (estimator)
+	if (!isNotEmpty(in)) { return false; }					// Verification
+	MatrixXd sample;
+	MatrixStandardization(in, sample, standard);			// Standardization
+	switch (estimator)										// Switch Method
 	{
-		case Estimator_COV: return CovarianceMatrixCOV(in, out);
-		case Estimator_SCM: return CovarianceMatrixSCM(in, out);
-		case Estimator_LWF: return CovarianceMatrixLWF(in, out);
-		case Estimator_OAS: return CovarianceMatrixOAS(in, out);
-		case Estimator_MCD: return CovarianceMatrixMCD(in, out);
-		case Estimator_COR: return CovarianceMatrixCOR(in, out);
-		default: return CovarianceMatrixIDE(in, out);
+		case Estimator_COV: return CovarianceMatrixCOV(sample, out);
+		case Estimator_SCM: return CovarianceMatrixSCM(sample, out);
+		case Estimator_LWF: return CovarianceMatrixLWF(sample, out);
+		case Estimator_OAS: return CovarianceMatrixOAS(sample, out);
+		case Estimator_MCD: return CovarianceMatrixMCD(sample, out);
+		case Estimator_COR: return CovarianceMatrixCOR(sample, out);
+		default: return CovarianceMatrixIDE(sample, out);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -75,6 +76,7 @@ bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estima
 //***********************************************************
 //******************** COVARIANCES TYPES ********************
 //***********************************************************
+//---------------------------------------------------------------------------------------------------
 bool CovarianceMatrixCOV(const MatrixXd& samples, MatrixXd& cov)
 {
 	const size_t n = samples.rows();						// Number of Features				=> N
@@ -95,6 +97,7 @@ bool CovarianceMatrixCOV(const MatrixXd& samples, MatrixXd& cov)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool CovarianceMatrixSCM(const MatrixXd& samples, MatrixXd& cov)
 {
 	cov = samples * samples.transpose();					// X*X^T
@@ -103,20 +106,20 @@ bool CovarianceMatrixSCM(const MatrixXd& samples, MatrixXd& cov)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool CovarianceMatrixLWF(const MatrixXd& samples, MatrixXd& cov)
 {
 	const size_t n = samples.rows(),						// Number of Features				=> N
 				 S = samples.cols();						// Number of Samples				=> S
 
 	CovarianceMatrixCOV(samples, cov);						// Initial Covariance Matrix		=> Cov
-	const MatrixXd x2 = samples.cwiseProduct(samples),		// Squared each sample				=> X^2
-				   cov2 = cov.cwiseProduct(cov);			// Squared each element of Cov		=> Cov^2
-
 	const double mu = cov.trace() / n;
 	MatrixXd mDelta = cov;									// mDelta = cov - mu * I_n
 	for (size_t i = 0; i < n; ++i) { mDelta(i, i) -= mu; }
+	const MatrixXd x2 = samples.cwiseProduct(samples),		// Squared each sample				=> X^2
+				   cov2 = cov.cwiseProduct(cov);			// Squared each element of Cov		=> Cov^2
 
-	const double delta = (mDelta * mDelta).sum() / n,
+	const double delta = (mDelta.cwiseProduct(mDelta)).sum() / n,
 				 beta = 1. / double(n * S) * (x2 * x2.transpose() / double(S) - cov2).sum(),
 				 shrinkage = min(beta, delta) / delta;		// Assure shrinkage <= 1
 
@@ -124,6 +127,7 @@ bool CovarianceMatrixLWF(const MatrixXd& samples, MatrixXd& cov)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool CovarianceMatrixOAS(const MatrixXd& samples, MatrixXd& cov)
 {
 	const size_t n = samples.rows(),						// Number of Features				=> N
@@ -134,7 +138,7 @@ bool CovarianceMatrixOAS(const MatrixXd& samples, MatrixXd& cov)
 	// Compute Shrinkage : Formula from Chen et al.'s
 	const double mu = cov.trace() / n,
 				 mu2 = mu * mu,
-				 alpha = (cov * cov).mean(),
+				 alpha = (cov.cwiseProduct(cov)).mean(),
 				 num = alpha + mu2,
 				 den = (s + 1) * (alpha - mu2 / n),
 				 shrinkage = ((den == 0) ? 1.0 : min(num / den, 1.0));
@@ -143,12 +147,14 @@ bool CovarianceMatrixOAS(const MatrixXd& samples, MatrixXd& cov)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool CovarianceMatrixMCD(const MatrixXd& samples, MatrixXd& cov)
 {
 	return CovarianceMatrixIDE(samples, cov);
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool CovarianceMatrixCOR(const MatrixXd& samples, MatrixXd& cov)
 {
 	const size_t n = samples.rows();						// Number of Features				=> N
@@ -159,20 +165,20 @@ bool CovarianceMatrixCOR(const MatrixXd& samples, MatrixXd& cov)
 	{
 		for (size_t j = 0; j < n; ++j)
 		{
-			cov(i, j) = cov(i, j) / (d(i) * d(j));
+			cov(i, j) /= d(i) * d(j);
 		}
 	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool CovarianceMatrixIDE(const MatrixXd& samples, MatrixXd& cov)
 {
 	cov = MatrixXd::Identity(samples.rows(), samples.rows());
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
-
 //***********************************************************
 //***********************************************************
 //***********************************************************

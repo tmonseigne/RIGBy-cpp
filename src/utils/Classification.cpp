@@ -6,7 +6,7 @@
 using namespace std;
 using namespace Eigen;
 
-bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, MatrixXd& weight)
+bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weight)
 {
 	// Precomputation
 	if (datasets.empty()) { return false; }
@@ -20,6 +20,11 @@ bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, MatrixXd
 		totalSample += nbSample[k];
 	}
 
+	cout << "nbClass : " << nbClass << endl
+		<< "nbFeatures : " << nbFeatures << endl
+		<< "totalSample : " << totalSample << endl;
+
+
 	// Compute Class Euclidian mean
 	MatrixXd mean = MatrixXd::Zero(nbClass, nbFeatures);
 	for (size_t k = 0; k < nbClass; ++k)
@@ -30,6 +35,9 @@ bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, MatrixXd
 		}
 		mean.row(k) /= double(nbSample[k]);
 	}
+
+	cout << "Mean : " << endl << mean << endl;
+
 
 	// Compute Class Covariance
 	MatrixXd cov = MatrixXd::Zero(nbFeatures, nbFeatures);
@@ -43,25 +51,37 @@ bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, MatrixXd
 		}
 
 		// Standardize Features
-		vector<double> scale;
+		RowVectorXd scale;
+		cout << "classData : " << k << endl << classData << endl;
 		MatrixStandardScaler(classData, scale);
+		cout << "classData standard : " << k << endl << classData << endl;
+		cout << "classData scale : " << k << endl << MatrixXd(scale) << endl;
+		cout << "classData scale t : " << k << endl << MatrixXd(scale.transpose()) << endl;
 
 		//Compute Covariance of this class
 		MatrixXd classCov;
 		if (!CovarianceMatrix(classData, classCov, Estimator_LWF)) { return false; }
+		cout << "classCov : " << k << endl << classCov << endl;
 
 		// Rescale
-		for (size_t i = 0; i < nbFeatures; ++i){
-			for (size_t j = 0; j < nbFeatures; ++j){
+		//classCov = MatrixXd(scale) * classCov * MatrixXd(scale.transpose());
+		for (size_t i = 0; i < nbFeatures; ++i)
+		{
+			for (size_t j = 0; j < nbFeatures; ++j)
+			{
 				classCov(i, j) *= scale[i] * scale[j];
 			}
 		}
+		cout << "classCov : " << k << endl << classCov << endl;
 
 		//Add to cov with good weight
 		cov += (double(nbSample[k]) / double(totalSample)) * classCov;
 	}
 
+	cout << "cov : " << endl << cov << endl;
+
 	// linear least squares systems solver
 	weight = cov.bdcSvd(ComputeThinU | ComputeThinV).solve(mean.transpose()).transpose();
+	cout << "Weights" << endl << weight << endl;
 	return true;
 }

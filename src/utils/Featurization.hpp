@@ -23,14 +23,28 @@
 /// <summary>	Compute the features vector of covariance matrix with the selected method. </summary>
 ///
 /// <param name="matrix">	 	The covariance matrix. </param>
-/// <param name="ref">		 	The reference Matrix (usefull for Tangent Space Featurization). </param>
 /// <param name="rowVector">	The Feature Vector. </param>
 /// <param name="tangent">   	(Optional) True to use tangent space featurization, Upper Triangle Squeeze if false. </param>
+/// <param name="ref">		 	The reference Matrix (usefull for Tangent Space Featurization). </param>
 ///
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///-------------------------------------------------------------------------------------------------
 bool Featurization(const Eigen::MatrixXd& matrix, Eigen::RowVectorXd& rowVector, bool tangent = true, const Eigen::MatrixXd& ref = Eigen::MatrixXd());
+
+///-------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Compute the covariance matrix of features vector with the selected method. </summary>
+///
+/// <param name="rowVector">	The Feature Vector. </param>
+/// <param name="matrix">	 	The covariance matrix. </param>
+/// <param name="tangent">   	(Optional) True to use tangent space featurization, Upper Triangle Squeeze if false. </param>
+/// <param name="ref">		 	The reference Matrix (usefull for Tangent Space Featurization). </param>
+///
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// 
+///-------------------------------------------------------------------------------------------------
+bool UnFeaturization(const Eigen::RowVectorXd& rowVector, Eigen::MatrixXd& matrix, bool tangent = true, const Eigen::MatrixXd& ref = Eigen::MatrixXd());
 
 ///-------------------------------------------------------------------------------------------------
 /// 
@@ -74,7 +88,7 @@ bool SqueezeUpperTriangle(const Eigen::MatrixXd& matrix, Eigen::RowVectorXd& row
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///-------------------------------------------------------------------------------------------------
-bool Vector2UpperTriangle(const Eigen::RowVectorXd& rowVector, Eigen::MatrixXd& matrix, bool rowMajor = true);
+bool UnSqueezeUpperTriangle(const Eigen::RowVectorXd& rowVector, Eigen::MatrixXd& matrix, bool rowMajor = true);
 
 ///-------------------------------------------------------------------------------------------------
 /// 
@@ -110,7 +124,7 @@ bool TangentSpace(const Eigen::MatrixXd& matrix, Eigen::RowVectorXd& rowVector, 
 ///
 /// \f[
 /// \begin{aligned}
-///	\text{With : } M_\text{Ts} &= \operatorname{Vector2UpperTriangle}(V_\text{Ts}) \quad \text{ and } \quad \mathsf{U}_{M}\text{ the upper triangular matrix.}\\
+///	\text{With : } M_\text{Ts} &= \operatorname{UnSqueezeUpperTriangle}(V_\text{Ts}) \quad \text{ and } \quad \mathsf{U}_{M}\text{ the upper triangular matrix.}\\
 ///	M_\text{Coeffs} &= \operatorname{diag}\left(M_\text{Ts}\right) + \frac{\mathsf{U}_{M_\text{Ts}} + \mathsf{U}_{M_\text{Ts}}^{\mathsf{T}}}{\sqrt{2}}\\
 ///	\Rightarrow M &= M_\text{Ref}^{1/2} ~  \exp{\left(M_\text{Coeffs}\right)} ~  M_\text{Ref}^{1/2}
 ///	\end{aligned}

@@ -14,20 +14,18 @@ const double EPSILON = 0.0001;			// 10^{-4}
 const size_t ITER_MAX = 50;
 
 
+//---------------------------------------------------------------------------------------------------
 bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metric)
 {
-	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
+	if (covs.empty()) { return false; }							// If no matrix in vector
+	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))	// Force Square Matrix for non Euclidian and non Identity metric
 	{
 		cerr << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
 		return false;
 	}
-	if (covs.size() == 1)
-	{
-		mean = covs[0];
-		return true;
-	}
+	if (covs.size() == 1) { mean = covs[0];		return true; }	// If just one matrix in vector
 
-	switch (metric)
+	switch (metric)												// Switch method
 	{
 		case Metric_Riemann: return MeanRiemann(covs, mean);
 		case Metric_Euclidian: return MeanEuclidian(covs, mean);
@@ -41,7 +39,9 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 		default: return MeanIdentity(covs, mean);
 	}
 }
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double epsilon, const int maxIter)
 {
 	(void)epsilon;
@@ -51,6 +51,7 @@ bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double epsilon, c
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MeanRiemann(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
@@ -61,9 +62,9 @@ bool MeanRiemann(const vector<MatrixXd>& covs, MatrixXd& mean)
 		   crit = numeric_limits<double>::max();			// Current change					=> crit
 	if (!MeanEuclidian(covs, mean)) { return false; }		// Initial Mean
 
-	while (i < ITER_MAX && EPSILON < crit && EPSILON < nu)
+	while (i < ITER_MAX && EPSILON < crit && EPSILON < nu)	// Stopping criterion
 	{
-		i++;
+		i++;												// Iteration Criterion
 		const MatrixXd sC = mean.sqrt(),					// Square root of Mean				=> sC
 					   isC = sC.inverse();					// Inverse Square root of Mean		=> isC
 		MatrixXd mJ = MatrixXd::Zero(n, n);					// Change							=> J
@@ -81,15 +82,13 @@ bool MeanRiemann(const vector<MatrixXd>& covs, MatrixXd& mean)
 			nu *= 0.95;
 			tau = h;
 		}
-		else
-		{
-			nu *= 0.5;
-		}
+		else { nu *= 0.5; }
 	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MeanEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
@@ -99,6 +98,8 @@ bool MeanEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 	mean /= double(k);										// Normalization
 	return true;
 }
+//---------------------------------------------------------------------------------------------------
+
 //---------------------------------------------------------------------------------------------------
 bool MeanLogEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
@@ -110,6 +111,8 @@ bool MeanLogEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
 bool MeanLogDet(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
@@ -118,9 +121,9 @@ bool MeanLogDet(const vector<MatrixXd>& covs, MatrixXd& mean)
 	double crit = std::numeric_limits<double>::max();		// Current change					=> crit
 	if (!MeanEuclidian(covs, mean)) { return false; }		// Initial Mean
 
-	while (i < ITER_MAX && EPSILON < crit)
+	while (i < ITER_MAX && EPSILON < crit)					// Stopping criterion
 	{
-		i++;
+		i++;												// Iteration Criterion
 		MatrixXd mJ = MatrixXd::Zero(n, n);					// Change							=> J
 
 		for (const MatrixXd& cov : covs)					// Sum of ((Ci+M)/2)^{-1}
@@ -135,6 +138,7 @@ bool MeanLogDet(const vector<MatrixXd>& covs, MatrixXd& mean)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MeanKullback(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	MatrixXd m1, m2;
@@ -145,6 +149,7 @@ bool MeanKullback(const vector<MatrixXd>& covs, MatrixXd& mean)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MeanWasserstein(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
@@ -155,9 +160,9 @@ bool MeanWasserstein(const vector<MatrixXd>& covs, MatrixXd& mean)
 	if (!MeanEuclidian(covs, mean)) { return false; }		// Initial Mean
 	MatrixXd sC = mean.sqrt();								// Square root of Mean				=> sC
 
-	while (i < ITER_MAX && EPSILON < crit)
+	while (i < ITER_MAX && EPSILON < crit)					// Stopping criterion
 	{
-		i++;
+		i++;												// Iteration Criterion
 		MatrixXd mJ = MatrixXd::Zero(n, n);					// Change							=> J
 
 		for (const MatrixXd& cov : covs)					// Sum of sqrt(sC*Ci*sC)
@@ -175,6 +180,7 @@ bool MeanWasserstein(const vector<MatrixXd>& covs, MatrixXd& mean)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MeanALE(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
@@ -184,9 +190,9 @@ bool MeanALE(const vector<MatrixXd>& covs, MatrixXd& mean)
 	if (!AJDPham(covs, mean)) { return false; }				// Initial Mean
 	MatrixXd mJ;											// Change
 
-	while (i < ITER_MAX && EPSILON < crit)
+	while (i < ITER_MAX && EPSILON < crit)					// Stopping criterion
 	{
-		i++;
+		i++;												// Iteration Criterion
 		mJ = MatrixXd::Zero(n, n);							// Change							=> J
 
 		for (const MatrixXd& cov : covs)					// Sum of log(C^T*Ci*C)
@@ -201,12 +207,12 @@ bool MeanALE(const vector<MatrixXd>& covs, MatrixXd& mean)
 		crit = DistanceRiemann(MatrixXd::Identity(n, n), update);
 	}
 
-	mJ = MatrixXd::Zero(n, n);
-	for (const MatrixXd& cov : covs)
+	mJ = MatrixXd::Zero(n, n);								// Last Change						=> J
+	for (const MatrixXd& cov : covs)						// Sum of log(C^T*Ci*C)
 	{
 		mJ += (mean.transpose() * cov * mean).log();
 	}
-	mJ /= double(k);
+	mJ /= double(k);										// Normalization
 
 	MatrixXd mA = mean.inverse();
 	mean = mA.transpose() * mJ.exp() * mA;
@@ -214,6 +220,7 @@ bool MeanALE(const vector<MatrixXd>& covs, MatrixXd& mean)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MeanHarmonic(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
@@ -228,6 +235,7 @@ bool MeanHarmonic(const vector<MatrixXd>& covs, MatrixXd& mean)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool MeanIdentity(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	mean = MatrixXd::Identity(covs[0].rows(), covs[0].cols());

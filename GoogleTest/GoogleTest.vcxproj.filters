@@ -19,27 +19,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\tests\test_RiemannUtilsMean.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tests\test_RiemannClassif.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tests\test_RiemannUtilsBasics.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tests\test_RiemannUtilsCovariance.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tests\test_RiemannUtilsDistance.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tests\test_RiemannUtilsFeaturization.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tests\test_RiemannUtilsGeodesics.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
     <ClInclude Include="..\tests\test_Misc.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
@@ -88,7 +67,31 @@
     <ClInclude Include="..\src\utils\Classification.hpp">
       <Filter>Fichiers de ressources\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\tests\test_RiemannUtilsClassif.hpp">
+    <ClInclude Include="..\tests\test_Init.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_Classifier.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsBasics.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsClassif.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsCovariance.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsDistance.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsFeaturization.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsGeodesics.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsMean.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>

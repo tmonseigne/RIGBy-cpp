@@ -22,14 +22,14 @@
 #include <type_traits>	// Template type
 
 /// <summary> Enumeration of Standardization method for features matrix data.</summary>
-enum EMatrixStandardization
+enum EStandardization
 {
 	/// <summary>	No change. </summary>
-	MS_None,
+	Standardization_None,
 	/// <summary>	Standardize data by removing the mean (on each feature separately). </summary>
-	MS_Center,
+	Standardization_Center,
 	/// <summary>	Standardize data by removing the mean and scaling to unit variance (on each feature separately). </summary>
-	MS_StandardScale
+	Standardization_StandardScale
 };
 
 //************************************************
@@ -46,7 +46,7 @@ enum EMatrixStandardization
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///-------------------------------------------------------------------------------------------------
-bool MatrixStandardization(Eigen::MatrixXd& matrix, const EMatrixStandardization standard = MS_None);
+bool MatrixStandardization(Eigen::MatrixXd& matrix, EStandardization standard = Standardization_None);
 
 ///-------------------------------------------------------------------------------------------------
 /// 
@@ -59,30 +59,7 @@ bool MatrixStandardization(Eigen::MatrixXd& matrix, const EMatrixStandardization
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///-------------------------------------------------------------------------------------------------
-bool MatrixStandardization(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, const EMatrixStandardization standard = MS_None);
-
-///----------------------------------------------------------------------------------------------------
-/// 
-/// <summary>	Removes the mean of the vector to this one (destructive operation). </summary>
-/// 
-/// <param name="vector">	The vector to center. </param>
-/// 
-/// <returns>	True if it succeeds, false if it fails. </returns>
-/// 
-///----------------------------------------------------------------------------------------------------
-bool VectorCenter(Eigen::RowVectorXd& vector);
-
-///-------------------------------------------------------------------------------------------------
-/// 
-/// <summary>	Removes the mean of the vector to this one (non destructive operation). </summary>
-/// 
-/// <param name="in"> 	The vector to center. </param>
-/// <param name="out">	The vector centered. </param>
-/// 
-/// <returns>	True if it succeeds, false if it fails. </returns>
-/// 
-///-------------------------------------------------------------------------------------------------
-bool VectorCenter(const Eigen::RowVectorXd& in, Eigen::RowVectorXd& out);
+bool MatrixStandardization(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EStandardization standard = Standardization_None);
 
 ///----------------------------------------------------------------------------------------------------
 /// 
@@ -119,7 +96,7 @@ bool MatrixCenter(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 /// \remark Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
 /// 
 ///-------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(Eigen::MatrixXd& matrix, std::vector<double>& scale);
+bool MatrixStandardScaler(Eigen::MatrixXd& matrix, Eigen::RowVectorXd& scale);
 
 ///----------------------------------------------------------------------------------------------------
 /// 
@@ -147,7 +124,7 @@ bool MatrixStandardScaler(Eigen::MatrixXd& matrix);
 /// \remark Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
 /// 
 ///-------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, std::vector<double>& scale);
+bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, Eigen::RowVectorXd& scale);
 
 ///----------------------------------------------------------------------------------------------------
 /// 

@@ -16,6 +16,15 @@ bool Featurization(const MatrixXd& matrix, RowVectorXd& rowVector, const bool ta
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
+bool UnFeaturization(const RowVectorXd& rowVector, MatrixXd& matrix, const bool tangent, const MatrixXd& ref)
+{
+	if (tangent) { return UnTangentSpace(rowVector, matrix, ref); }
+	return UnSqueezeUpperTriangle(rowVector, matrix, true);
+}
+//---------------------------------------------------------------------------------------------------
+
+
 bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const bool rowMajor)
 {
 	if (!isSquare(matrix)) { return false; }					// Verification
@@ -47,7 +56,7 @@ bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const 
 }
 //---------------------------------------------------------------------------------------------------
 
-bool Vector2UpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, const bool rowMajor)
+bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, const bool rowMajor)
 {
 	const size_t nR = rowVector.size(),							// Size of Row					=> Nr
 				 n = int((sqrt(1 + 8 * nR) - 1) / 2);			// Number of Features			=> N
@@ -61,7 +70,7 @@ bool Vector2UpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, const 
 		{
 			for (size_t j = i; j < n; ++j)
 			{
-				matrix(i, j) = rowVector[idx++];
+				matrix(j, i) = matrix(i, j) = rowVector[idx++];
 			}
 		}
 	}
@@ -71,7 +80,7 @@ bool Vector2UpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, const 
 		{
 			for (size_t j = i; j < n; ++j)
 			{
-				matrix(j, j - i) = rowVector[idx++];
+				matrix(j - i, j) = matrix(j, j - i) = rowVector[idx++];
 			}
 		}
 	}
@@ -90,10 +99,9 @@ bool TangentSpace(const MatrixXd& matrix, RowVectorXd& rowVector, const MatrixXd
 				   mCoeffs = M_SQRT2 * MatrixXd(MatrixXd::Ones(n, n).triangularView<StrictlyUpper>()) + MatrixXd::Identity(n, n);
 
 	RowVectorXd vJ, vCoeffs;
-	SqueezeUpperTriangle(mJ, vJ, true);
-	SqueezeUpperTriangle(mCoeffs, vCoeffs, true);
-
-	rowVector = vCoeffs.cwiseProduct(vJ);
+	SqueezeUpperTriangle(mJ, vJ, true);							// Get upper triangle of J		=> vJ
+	SqueezeUpperTriangle(mCoeffs, vCoeffs, true);				// Get upper triangle of Coefs	=> vCoeffs
+	rowVector = vCoeffs.cwiseProduct(vJ);						// element-wise multiplication
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
@@ -101,7 +109,7 @@ bool TangentSpace(const MatrixXd& matrix, RowVectorXd& rowVector, const MatrixXd
 bool UnTangentSpace(const RowVectorXd& rowVector, MatrixXd& matrix, const MatrixXd& ref)
 {
 	const size_t n = matrix.rows();								// Number of Features			=> N
-	if (!Vector2UpperTriangle(rowVector, matrix)) { return false; }
+	if (!UnSqueezeUpperTriangle(rowVector, matrix)) { return false; }
 
 	const MatrixXd sC = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
 				   coeffs = MatrixXd(matrix.triangularView<StrictlyUpper>()) / M_SQRT2;

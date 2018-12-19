@@ -19,7 +19,6 @@
 
 #pragma once
 
-#include <Eigen/Dense>
 #include <vector>
 #include <type_traits>
 #include "utils/Covariance.hpp"
@@ -50,8 +49,8 @@ inline void Initialize()
 	V1.resize(10);
 	V1 << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
 
-	MatrixStandardization(M1, M1_Center, MS_Center);
-	MatrixStandardization(M2, M2_Center, MS_Center);
+	MatrixStandardization(M1, M1_Center, Standardization_Center);
+	MatrixStandardization(M2, M2_Center, Standardization_Center);
 
 	CovarianceMatrix(M1_Center, M1Cov, Estimator_LWF);	// LedoitWolf assure SPD Matrix
 	CovarianceMatrix(M2_Center, M2Cov, Estimator_LWF);	// LedoitWolf assure SPD Matrix
@@ -93,7 +92,7 @@ inline bool isAlmostEqual(const double x, const double y, const double epsilon =
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///-------------------------------------------------------------------------------------------------
-template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 bool isAlmostEqual(const std::vector<T>& x, const std::vector<T>& y, const double epsilon = 0.0001)
 {
 	double xsum = 0.0, ysum = 0.0;
@@ -133,7 +132,7 @@ inline bool isAlmostEqual(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, co
 ///-------------------------------------------------------------------------------------------------
 inline std::stringstream ErrorMsg(const std::string& name, const double ref, const double calc)
 {
-	std::stringstream  ss;
+	std::stringstream ss;
 	ss << Sep << name << " : " << std::endl << "  Ref : \t" << ref << std::endl << "  Calc : \t" << calc << Sep;
 	return ss;
 }
@@ -151,16 +150,18 @@ inline std::stringstream ErrorMsg(const std::string& name, const double ref, con
 /// <returns>	Error message. </returns>
 /// 
 ///-------------------------------------------------------------------------------------------------
-template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-inline std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, const std::vector<T>& calc)
+template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
+std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, const std::vector<T>& calc)
 {
-	std::stringstream  ss;
+	std::stringstream ss;
 	ss << Sep << name << " : " << std::endl << "  Ref : \t[";
-	for (const T& t : ref) {
+	for (const T& t : ref)
+	{
 		ss << t << ", ";
 	}
 	ss << "\b\b]" << std::endl << "  Calc : \t[";
-	for (const T& t : calc) {
+	for (const T& t : calc)
+	{
 		ss << t << ", ";
 	}
 	ss << "\b\b]" << Sep;
@@ -180,7 +181,7 @@ inline std::stringstream ErrorMsg(const std::string& name, const std::vector<T>&
 ///-------------------------------------------------------------------------------------------------
 inline std::stringstream ErrorMsg(const std::string& name, const Eigen::MatrixXd& ref, const Eigen::MatrixXd& calc)
 {
-	std::stringstream  ss;
+	std::stringstream ss;
 	ss << Sep << name << " : " << std::endl << "********** Ref **********\n" << ref << std::endl << "********** Calc **********\n" << calc << Sep;
 	return ss;
 }

@@ -32,9 +32,9 @@ bool CMatrixClassifierFgMDM::computeFgDA(const vector<vector<MatrixXd>>& dataset
 	// Compute Weight with LSQR Method
 	if (!LSQR(ts, m_Weight)) { return false; }
 
-	// Transforme weight	self._W = numpy.dot(numpy.dot(W.T, numpy.linalg.pinv(numpy.dot(W, W.T))), W)
+	// Transform weight
 	const MatrixXd w = m_Weight, wT = m_Weight.transpose();
-	// (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass)) Compute the pseudo-inverse of a matrix (M * M^(-1) = I)
+	// colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass)) Compute the pseudo-inverse of a matrix (M * M^(-1) = I)
 	m_Weight = (wT * (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass))) * w;
 
 	return true;

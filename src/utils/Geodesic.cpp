@@ -4,12 +4,13 @@
 
 using namespace Eigen;
 
+//---------------------------------------------------------------------------------------------------
 bool Geodesic(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const EMetrics metric, const double alpha)
 {
-	if (!haveSameSize(a, b)) { return false; }
-	if (!isSquare(a)) { return false; }
-	if (!inRange(alpha, 0, 1)) { return false; }
-	switch (metric)
+	if (!haveSameSize(a, b)) { return false; }							// Verification same size
+	if (!isSquare(a)) { return false; }									// Verification square matrix
+	if (!inRange(alpha, 0, 1)) { return false; }						// Vérification alpha in [0;1]
+	switch (metric)														// Switch metric
 	{
 		case Metric_Riemann: return GeodesicRiemann(a, b, g, alpha);
 		case Metric_Euclidian: return GeodesicEuclidian(a, b, g, alpha);
@@ -20,6 +21,7 @@ bool Geodesic(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const EMetrics 
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool GeodesicRiemann(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const double alpha)
 {
 	const MatrixXd sA = a.sqrt(),
@@ -29,6 +31,7 @@ bool GeodesicRiemann(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const do
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool GeodesicEuclidian(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const double alpha)
 {
 	g = (1 - alpha) * a + alpha * b;
@@ -36,6 +39,7 @@ bool GeodesicEuclidian(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const 
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool GeodesicLogEuclidian(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const double alpha)
 {
 	g = ((1 - alpha) * a.log() + alpha * b.log()).exp();
@@ -43,6 +47,7 @@ bool GeodesicLogEuclidian(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, con
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool GeodesicIdentity(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const double alpha)
 {
 	(void)b;

@@ -15,16 +15,15 @@
 /// \remarks 
 /// - List of Estimator inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>).
 /// - <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html">Ledoit and Wolf Estimator</a> inspired by <a href="http://scikit-learn.org">sklearn</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
-/// - <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.OAS.html">Oracle Approximating Shrinkage (OAS) Estimator</a> Inspired by <a href="http://scikit-learn.org">sklearn</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>) doesn't Work.
-/// - Normalized Spatial Covariance Matrix (SCM) Estimator must be validated by another library.
-/// - Minimum Covariance Determinant (MCD) Estimator isn't implemented.
+/// - <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.OAS.html">Oracle Approximating Shrinkage (OAS) Estimator</a> Inspired by <a href="http://scikit-learn.org">sklearn</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).
+/// - <b>Minimum Covariance Determinant (MCD) Estimator isn't implemented.</b>
 /// 
 ///-------------------------------------------------------------------------------------------------
 
 #pragma once
 
-#include <Eigen/Dense>
 #include "Basics.hpp"
+#include <Eigen/Dense>
 
 //***************************************************
 //******************** CONSTANTS ********************
@@ -34,7 +33,7 @@ enum EEstimator
 {
 	/// <summary>The Simple Covariance Estimator.</summary>
 	Estimator_COV,
-	/// <summary>The Sample Covariance Matrix (SCM) Estimator.</summary>
+	/// <summary>The Normalized Spatial Covariance Matrix (SCM) Estimator.</summary>
 	Estimator_SCM,
 	/// <summary>The Ledoit and Wolf Estimator.</summary>
 	Estimator_LWF,
@@ -53,7 +52,7 @@ inline std::string EstimatorToString(const EEstimator estimator)
 	switch (estimator)
 	{
 		case Estimator_COV: return "Covariance";
-		case Estimator_SCM: return "Sample Covariance Matrix (SCM)";
+		case Estimator_SCM: return "Normalized Spatial Covariance Matrix (SCM)";
 		case Estimator_LWF: return "Ledoit and Wolf";
 		case Estimator_OAS: return "Oracle Approximating Shrinkage (OAS)";
 		case Estimator_MCD: return "Minimum Covariance Determinant (MCD)";
@@ -140,11 +139,12 @@ bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, double sh
 /// <param name="in">			The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="out">			The Covariance Matrix. </param>
 /// <param name="estimator">	(Optional) The selected estimator (see <see cref="EEstimator"/>). </param>
+/// <param name="standard">		(Optional) Standardize the data (see <see cref="EStandardization"/>). </param>
 /// 
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
 ///----------------------------------------------------------------------------------------------------
-bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, const EEstimator estimator = Estimator_COV);
+bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = Estimator_COV, EStandardization standard = Standardization_Center);
 //***********************************************************
 //***********************************************************
 //***********************************************************
@@ -188,8 +188,6 @@ bool CovarianceMatrixCOV(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// 
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// 
-/// \todo Must be validated by another library.
-///
 ///----------------------------------------------------------------------------------------------------
 bool CovarianceMatrixSCM(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
@@ -256,8 +254,6 @@ bool CovarianceMatrixLWF(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// <param name="cov">	  	The Covariance Matrix. </param>
 /// 
 /// <returns>	True if it succeeds, false if it fails. </returns>
-
-/// \todo Doesn't work
 /// 
 ///----------------------------------------------------------------------------------------------------
 bool CovarianceMatrixOAS(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);

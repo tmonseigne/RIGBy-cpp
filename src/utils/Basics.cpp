@@ -1,5 +1,4 @@
 #include "Basics.hpp"
-#include <iostream>
 
 using namespace Eigen;
 using namespace std;
@@ -8,38 +7,19 @@ using namespace std;
 //******************** Matrix ********************
 //************************************************
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardization(MatrixXd& matrix, const EMatrixStandardization standard)
+bool MatrixStandardization(MatrixXd& matrix, const EStandardization standard)
 {
-	if (standard == MS_Center) { return MatrixCenter(matrix); }
-	if (standard == MS_StandardScale) { return MatrixStandardization(matrix); }
+	if (standard == Standardization_Center) { return MatrixCenter(matrix); }
+	if (standard == Standardization_StandardScale) { return MatrixStandardization(matrix); }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardization(const MatrixXd& in, MatrixXd& out, const EMatrixStandardization standard)
+bool MatrixStandardization(const MatrixXd& in, MatrixXd& out, const EStandardization standard)
 {
 	out = in;
 	return MatrixStandardization(out, standard);
-}
-//---------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------
-bool VectorCenter(RowVectorXd& vector)
-{
-	const double mu = vector.mean();
-	for (size_t i = 0, s = vector.size(); i < s; ++i) { vector(i) -= mu; }
-	return true;
-}
-//---------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------
-bool VectorCenter(const RowVectorXd& in, RowVectorXd& out)
-{
-	const double mu = in.mean();
-	out = in;
-	for (size_t i = 0, s = out.size(); i < s; ++i) { out(i) -= mu; }
-	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -66,13 +46,13 @@ bool MatrixCenter(const MatrixXd& in, MatrixXd& out)
 //---------------------------------------------------------------------------------------------------
 bool MatrixStandardScaler(MatrixXd& matrix)
 {
-	vector<double> scale;
+	RowVectorXd scale;
 	return MatrixStandardScaler(matrix, scale);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(MatrixXd& matrix, std::vector<double>& scale)
+bool MatrixStandardScaler(MatrixXd& matrix, RowVectorXd& scale)
 {
 	const size_t r = matrix.rows(),
 				 c = matrix.cols();
@@ -103,7 +83,7 @@ bool MatrixStandardScaler(MatrixXd& matrix, std::vector<double>& scale)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, std::vector<double>& scale)
+bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out, RowVectorXd& scale)
 {
 	out = in;
 	return MatrixStandardScaler(out, scale);
@@ -113,7 +93,7 @@ bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, std::
 //---------------------------------------------------------------------------------------------------
 bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out)
 {
-	vector<double> scale;
+	RowVectorXd scale;
 	return MatrixStandardScaler(in, out, scale);
 }
 //---------------------------------------------------------------------------------------------------
