@@ -22,11 +22,12 @@
 #include <vector>
 #include<Eigen/Dense>
 
-#define NB_CLASS 2
-#define NB_CHAN 3
-#define NB_SAMPLE 10
-#define NB_TRIALS1 7
-#define NB_TRIALS2 5
+#define NB_CLASS	02
+#define NB_CHAN		03
+#define NB_SAMPLE	10
+#define NB_TRIALS1	07
+#define NB_TRIALS2	05
+#define NB_TRIALS	12
 
 //********************************************
 //********** Initialisation Dataset **********
@@ -916,7 +917,7 @@ namespace InitGeodesics
 	{
 		inline std::vector<Eigen::MatrixXd> Dataset()
 		{
-			std::vector<Eigen::MatrixXd> result(NB_TRIALS1 + NB_TRIALS2);
+			std::vector<Eigen::MatrixXd> result(NB_TRIALS);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
 
 			result[0] << 2.22943763, 0.68053524, 0.27049252,
@@ -978,7 +979,7 @@ namespace InitGeodesics
 	{
 		inline std::vector<Eigen::MatrixXd> Dataset()
 		{
-			std::vector<Eigen::MatrixXd> result(NB_TRIALS1 + NB_TRIALS2);
+			std::vector<Eigen::MatrixXd> result(NB_TRIALS);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
 
 			result[0] << 2.01103272, 0.58044721, 0.23030037,
@@ -1040,7 +1041,7 @@ namespace InitGeodesics
 	{
 		inline std::vector<Eigen::MatrixXd> Dataset()
 		{
-			std::vector<Eigen::MatrixXd> result(NB_TRIALS1 + NB_TRIALS2);
+			std::vector<Eigen::MatrixXd> result(NB_TRIALS);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
 
 			result[0] << 2.00307073, 0.5751925, 0.23695849,
@@ -1105,7 +1106,7 @@ namespace InitFeaturization
 	{
 		inline std::vector<Eigen::RowVectorXd> Dataset()
 		{
-			std::vector<Eigen::RowVectorXd> result(NB_TRIALS1 + NB_TRIALS2);
+			std::vector<Eigen::RowVectorXd> result(NB_TRIALS);
 			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
 			for (auto& m : result) { m.resize(nbFeatures); }
 
@@ -1130,7 +1131,7 @@ namespace InitFeaturization
 	{
 		inline std::vector<Eigen::RowVectorXd> Dataset()
 		{
-			std::vector<Eigen::RowVectorXd> result(NB_TRIALS1 + NB_TRIALS2);
+			std::vector<Eigen::RowVectorXd> result(NB_TRIALS);
 			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
 			for (auto& m : result) { m.resize(nbFeatures); }
 
@@ -1147,6 +1148,85 @@ namespace InitFeaturization
 			result[10] << 1.89536719, 0.324938579, -0.160114662, 2.27210757, 0.207207210, 1.21252525;
 			result[11] << 1.60313579, 0.00319114656, 0.00000000, 1.60719310, -0.00136763424, 1.59967111;
 
+			return result;
+		}
+	}
+}
+
+namespace InitClassif
+{
+	//**************************
+	//********** LSQR **********
+	//**************************
+	namespace LSQR
+	{
+		inline Eigen::MatrixXd Dataset()
+		{
+			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
+			Eigen::MatrixXd result(1, nbFeatures);
+			result << -5.62849964, 2.57528317, -0.41393163, 3.79788328, -1.7915752, 3.63071567;
+			return result;
+		}
+	}
+
+	//**********************************
+	//********** FgDA Compute **********
+	//**********************************
+	namespace FgDACompute 
+	{
+		inline Eigen::MatrixXd Dataset()
+		{
+			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
+			Eigen::MatrixXd result(nbFeatures, nbFeatures);
+			result << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
+				-0.20916523, 0.09570218, -0.01538245, 0.14113622, -0.06657818, 0.13492396,
+				0.03361964, -0.01538245, 0.00247246, -0.02268517, 0.01070127, -0.02168666,
+				-0.30846516, 0.14113622, -0.02268517, 0.20813978, -0.09818576, 0.1989783,
+				0.14551225, -0.06657818, 0.01070127, -0.09818576, 0.04631716, -0.09386402,
+				-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
+			return result;
+		}
+	}
+}
+
+namespace InitMatrixClassif
+{
+	namespace MDM
+	{
+		inline std::vector<Eigen::MatrixXd> Dataset()
+		{
+			std::vector<Eigen::MatrixXd> result(NB_CLASS);
+			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result[0] << 1.92849739, -0.1538202, 0.01072518,
+				-0.1538202, 1.41817199, 0.06326929,
+				0.01072518, 0.06326929, 0.6661666;
+
+			result[1] << 1.46525466, 0.258979, 0.03170221,
+				0.258979, 1.94533383, 0.03574208,
+				0.03170221, 0.03574208, 1.13153112;
+			return result;
+		}
+
+		inline std::vector<size_t> Prediction()
+		{
+			return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 };
+		}
+		inline std::vector<std::vector<double>> PredictionDistance()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0] = { 1.31463344, 1.47485448 };
+			result[1] = { 0.46432719, 1.0518174 };
+			result[2] = { 0.60142988, 0.81244503 };
+			result[3] = { 1.10287315, 1.84954868 };
+			result[4] = { 0.6261118, 1.06715414 };
+			result[5] = { 0.6119972, 0.33114704 };
+			result[6] = { 0.63524993, 0.4765002 };
+			result[7] = { 0.84537755, 0.7475473 };
+			result[8] = { 0.95109119, 0.41332152 };
+			result[9] = { 1.06734674, 0.55234461 };
+			result[10] = { 0.85650116, 0.39055362 };
+			result[11] = { 0.92153991, 0.45995369 };
 			return result;
 		}
 	}

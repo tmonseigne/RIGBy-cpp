@@ -2,3 +2,5 @@
 build/
 
 docs/html/
+
+*.TMP

@@ -194,7 +194,7 @@ std::vector<T> ARange(const T start, const T stop, const T step = 1)
 
 ///-------------------------------------------------------------------------------------------------
 /// 
-/// <summary>	tunr vector of vector into vector. </summary>
+/// <summary>	Turn vector of vector into vector. </summary>
 /// 
 /// <typeparam name="T">	Generic type parameter. </typeparam>
 /// 
@@ -214,6 +214,35 @@ std::vector<T> Vector2DTo1D(const std::vector<std::vector<T>>& in)
 	return result;
 }
 
+///-------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Turn vector into vector of vector with postiion repartition. </summary>
+/// 
+/// <typeparam name="T">	Generic type parameter. </typeparam>
+/// 
+/// <param name="in">		vector of vector. </param>
+/// <param name="position">	position of element (size of position is the number of row the values are the number of element on each row). </param>
+/// 
+/// <returns>	vector&lt;T&gt; </returns>
+/// 
+///-------------------------------------------------------------------------------------------------
+template <typename T>
+std::vector<std::vector<T>> Vector1DTo2D(const std::vector<T>& in, const std::vector<size_t>& position)
+{
+	const size_t n = position.size();
+	std::vector<std::vector<T>> result(n);
+	size_t idx = 0;
+	for(size_t i = 0; i < n; ++i)
+	{
+		const size_t nbSample = position[i];
+		result[i].resize(nbSample);
+		for (size_t j = 0; j < nbSample; ++j)
+		{
+			result[i][j] = in[idx++];
+		}
+	}
+	return result;
+}
 
 //*************************************************************
 //*************************************************************

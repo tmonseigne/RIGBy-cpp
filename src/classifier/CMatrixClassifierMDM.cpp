@@ -8,12 +8,14 @@ using namespace std;
 using namespace Eigen;
 using namespace tinyxml2;
 
+///-------------------------------------------------------------------------------------------------
 CMatrixClassifierMDM::CMatrixClassifierMDM()
 {
 	m_Means.resize(m_ClassCount);
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t classcount, const EMetrics metric)
 {
 	CMatrixClassifierMDM::setClassCount(classcount);
@@ -21,12 +23,14 @@ CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t classcount, const EMetri
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 CMatrixClassifierMDM::~CMatrixClassifierMDM()
 {
 	m_Means.clear();
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 void CMatrixClassifierMDM::setClassCount(const size_t classcount)
 {
 	if (m_ClassCount != classcount)
@@ -37,6 +41,7 @@ void CMatrixClassifierMDM::setClassCount(const size_t classcount)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 {
 	setClassCount(datasets.size());										// Change the number of class if needed
@@ -48,6 +53,7 @@ bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid)
 {
 	std::vector<double> distance, probability;
@@ -55,6 +61,7 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vector<double>& distance, vector<double>& probability)
 {
 	if (!isSquare(sample)) { return false; }
@@ -88,6 +95,7 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vec
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::saveXML(const std::string& filename)
 {
 	XMLDocument xmlDoc;
@@ -108,6 +116,7 @@ bool CMatrixClassifierMDM::saveXML(const std::string& filename)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 {
 	// Load File
@@ -132,6 +141,7 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::saveHeaderAttribute(XMLElement* element) const
 {
 	element->SetAttribute("type", "MDM");								// Set attribute classifier type
@@ -141,6 +151,7 @@ bool CMatrixClassifierMDM::saveHeaderAttribute(XMLElement* element) const
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
 {
 	if (element == nullptr) { return false; }							// Check if Node Exist
@@ -152,6 +163,7 @@ bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::saveClass(XMLElement* element, const size_t index) const
 {
 	element->SetAttribute("class-id", int(index));					// Set attribute class id (0 to K)
@@ -165,6 +177,7 @@ bool CMatrixClassifierMDM::saveClass(XMLElement* element, const size_t index) co
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::loadClass(XMLElement* element, const size_t index)
 {
 	if (element == nullptr) { return false; }					// Check if Node Exist
@@ -185,6 +198,7 @@ bool CMatrixClassifierMDM::loadClass(XMLElement* element, const size_t index)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::operator==(const CMatrixClassifierMDM& obj) const
 {
 	if (m_Metric != obj.m_Metric || m_ClassCount != obj.m_ClassCount) { return false; }
@@ -196,12 +210,14 @@ bool CMatrixClassifierMDM::operator==(const CMatrixClassifierMDM& obj) const
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::operator!=(const CMatrixClassifierMDM& obj) const
 {
 	return !(*this == obj);
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 stringstream CMatrixClassifierMDM::print() const
 {
 	stringstream ss;
@@ -217,6 +233,7 @@ stringstream CMatrixClassifierMDM::print() const
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 std::ostream& operator<<(std::ostream& os, const CMatrixClassifierMDM& obj)
 {
 	os << obj.print().str();

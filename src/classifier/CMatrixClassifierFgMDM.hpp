@@ -39,7 +39,7 @@ public:
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
 	///
 	///----------------------------------------------------------------------------------------------------
-	CMatrixClassifierFgMDM() { }
+	CMatrixClassifierFgMDM() = default;
 
 	///----------------------------------------------------------------------------------------------------
 	///
@@ -57,11 +57,6 @@ public:
 	///
 	///----------------------------------------------------------------------------------------------------
 	~CMatrixClassifierFgMDM() override = default;
-
-	//********************
-	//***** Computes *****
-	//********************
-	bool computeFgDA(const std::vector<std::vector<Eigen::MatrixXd>>& datasets);
 
 	//********************
 	//********************

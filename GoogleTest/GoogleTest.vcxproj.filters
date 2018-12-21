@@ -70,13 +70,7 @@
     <ClInclude Include="..\tests\test_Init.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\tests\test_Classifier.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
     <ClInclude Include="..\tests\test_UtilsBasics.hpp">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tests\test_UtilsClassif.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="..\tests\test_UtilsCovariance.hpp">
@@ -92,6 +86,12 @@
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="..\tests\test_UtilsMean.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsClassifier.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\test_MatrixClassifier.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>

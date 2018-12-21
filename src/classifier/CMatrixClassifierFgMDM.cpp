@@ -3,18 +3,17 @@
 #include "utils/Basics.hpp"
 #include "utils/Featurization.hpp"
 #include "utils/Classification.hpp"
-#include <iostream>
 
 using namespace std;
 using namespace Eigen;
 using namespace tinyxml2;
 
-bool CMatrixClassifierFgMDM::computeFgDA(const vector<vector<MatrixXd>>& datasets)
+bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
 {
 	if (datasets.empty()) { return false; }
 	// Compute Reference matrix
 	const vector<MatrixXd> data = Vector2DTo1D(datasets);		// Append datasets in one vector
-	if (!Mean(data, m_Ref, Metric_Euclidian)) { return false; }
+	if (!Mean(data, m_Ref, Metric_Riemann)) { return false; }
 
 	// Transform to the Tangent Space
 	const size_t nbClass = datasets.size();
@@ -29,39 +28,45 @@ bool CMatrixClassifierFgMDM::computeFgDA(const vector<vector<MatrixXd>>& dataset
 		}
 	}
 
-	// Compute Weight with LSQR Method
-	if (!LSQR(ts, m_Weight)) { return false; }
+	// Compute FgDA Weight
+	if (!(FgDACompute(ts, m_Weight))) { return false; }
 
-	// Transform weight
-	const MatrixXd w = m_Weight, wT = m_Weight.transpose();
-	// colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass)) Compute the pseudo-inverse of a matrix (M * M^(-1) = I)
-	m_Weight = (wT * (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass))) * w;
 
-	return true;
-}
+	// Convert Dataset
+	vector<vector<MatrixXd>> newDatasets(nbClass);
+	vector<vector<RowVectorXd>> filtered(nbClass);
+	for (size_t k = 0; k < nbClass; ++k)
+	{
+		const size_t nbTrials = datasets[k].size();
+		newDatasets[k].resize(nbTrials);
+		filtered[k].resize(nbTrials);
+		for (size_t i = 0; i < nbTrials; ++i)
+		{
+			if (!FgDAApply(ts[k][i], filtered[k][i], m_Weight)) { return false; }				// Apply Filter
+			if (!UnTangentSpace(filtered[k][i], newDatasets[k][i], m_Ref)) { return false; }	// Return to Matrix Space
+		}
+	}
 
-bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
-{
-	if (!computeFgDA(datasets)) { return false; }
-	return true;
+	return CMatrixClassifierMDM::train(newDatasets);											// Train MDM
 }
 ///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid)
 {
-	(void)sample;
-	(void)classid;
-	return true;
+	std::vector<double> distance, probability;
+	return classify(sample, classid, distance, probability);
 }
 ///-------------------------------------------------------------------------------------------------
 
 bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, vector<double>& distance, vector<double>& probability)
 {
-	(void)sample;
-	(void)classid;
-	(void)distance;
-	(void)probability;
-	return true;
+	RowVectorXd ts, filtered;
+	MatrixXd newSample;
+	
+	if (!TangentSpace(sample, ts, m_Ref)) { return false; }				// Transform to the Tangent Space
+	if (!FgDAApply(ts, filtered, m_Weight)) { return false; }			// Apply Filter
+	if (!UnTangentSpace(filtered, newSample, m_Ref)) { return false; }	// Return to Matrix Space
+	return CMatrixClassifierMDM::classify(newSample, classid, distance, probability);
 }
 ///-------------------------------------------------------------------------------------------------
 

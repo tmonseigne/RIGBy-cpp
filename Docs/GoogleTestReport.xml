@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="32" failures="4" disabled="0" errors="0" timestamp="2018-12-19T16:32:45" time="0.067" name="AllTests">
+<testsuites tests="37" failures="3" disabled="0" errors="0" timestamp="2018-12-21T16:50:58" time="0.007" name="AllTests">
   <testsuite name="Tests_Basics" tests="4" failures="0" disabled="0" errors="0" time="0">
     <testcase name="MatrixCenter" status="run" time="0" classname="Tests_Basics" />
     <testcase name="GetElements" status="run" time="0" classname="Tests_Basics" />
     <testcase name="ARange" status="run" time="0" classname="Tests_Basics" />
     <testcase name="ReduceVector" status="run" time="0" classname="Tests_Basics" />
   </testsuite>
-  <testsuite name="Tests_Covariances" tests="6" failures="1" disabled="0" errors="0" time="0.001">
-    <testcase name="Covariance_Matrix_COR" status="run" time="0" classname="Tests_Covariances" />
+  <testsuite name="Tests_Covariances" tests="6" failures="1" disabled="0" errors="0" time="0.002">
+    <testcase name="Covariance_Matrix_COR" status="run" time="0.001" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_COV" status="run" time="0" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_LWF" status="run" time="0" classname="Tests_Covariances" />
-    <testcase name="Covariance_Matrix_MCD" status="run" time="0.001" classname="Tests_Covariances">
+    <testcase name="Covariance_Matrix_MCD" status="run" time="0" classname="Tests_Covariances">
       <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilscovariance.hpp:75&#x0A;Value of: false&#x0A;  Actual: false&#x0A;Expected: true&#x0A;Not implemented" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilscovariance.hpp:75
 Value of: false
   Actual: false
@@ -18,14 +18,14 @@ Expected: true
 Not implemented]]></failure>
     </testcase>
     <testcase name="Covariance_Matrix_OAS" status="run" time="0" classname="Tests_Covariances" />
-    <testcase name="Covariance_Matrix_SCM" status="run" time="0" classname="Tests_Covariances" />
+    <testcase name="Covariance_Matrix_SCM" status="run" time="0.001" classname="Tests_Covariances" />
   </testsuite>
-  <testsuite name="Tests_Means" tests="9" failures="2" disabled="0" errors="0" time="0.003">
+  <testsuite name="Tests_Means" tests="9" failures="2" disabled="0" errors="0" time="0.002">
     <testcase name="Euclidian" status="run" time="0" classname="Tests_Means" />
-    <testcase name="LogEuclidian" status="run" time="0.001" classname="Tests_Means" />
+    <testcase name="LogEuclidian" status="run" time="0" classname="Tests_Means" />
     <testcase name="Riemann" status="run" time="0" classname="Tests_Means" />
-    <testcase name="LogDet" status="run" time="0.001" classname="Tests_Means" />
-    <testcase name="Kullback" status="run" time="0" classname="Tests_Means" />
+    <testcase name="LogDet" status="run" time="0" classname="Tests_Means" />
+    <testcase name="Kullback" status="run" time="0.001" classname="Tests_Means" />
     <testcase name="Wasserstein" status="run" time="0.001" classname="Tests_Means">
       <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsmean.hpp:55&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Mean Matrix Wasserstein : &#x0A;********** Ref **********&#x0A;  1.79644 0.0229425 0.0241814&#x0A;0.0229425   1.69012 0.0531142&#x0A;0.0241814 0.0531142  0.879272&#x0A;********** Calc **********&#x0A;  1.79532 0.0229131 0.0240602&#x0A;0.0229131   1.68891 0.0529672&#x0A;0.0240602 0.0529672  0.878498&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsmean.hpp:55
 Value of: isAlmostEqual(ref, calc)
@@ -61,174 +61,26 @@ Not implemented]]></failure>
     <testcase name="Riemann" status="run" time="0" classname="Tests_Distances" />
     <testcase name="LogDet" status="run" time="0" classname="Tests_Distances" />
     <testcase name="Kullback" status="run" time="0" classname="Tests_Distances" />
-    <testcase name="Wasserstein" status="run" time="0.001" classname="Tests_Distances" />
+    <testcase name="Wasserstein" status="run" time="0" classname="Tests_Distances" />
   </testsuite>
   <testsuite name="Tests_Geodesic" tests="3" failures="0" disabled="0" errors="0" time="0">
     <testcase name="Euclidian" status="run" time="0" classname="Tests_Geodesic" />
     <testcase name="LogEuclidian" status="run" time="0" classname="Tests_Geodesic" />
     <testcase name="Riemann" status="run" time="0" classname="Tests_Geodesic" />
   </testsuite>
-  <testsuite name="Tests_Featurization" tests="4" failures="1" disabled="0" errors="0" time="0.062">
-    <testcase name="TangentSpace" status="run" time="0.059" classname="Tests_Featurization">
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [0] : &#x0A;********** Ref **********&#x0A; 0.199235   0.81955  0.455833 0.0626526  0.539844 -0.741892&#x0A;********** Calc **********&#x0A; 0.473408  0.833923  0.449895  0.303098  0.554706 -0.846595&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [0] : 
-********** Ref **********
- 0.199235   0.81955  0.455833 0.0626526  0.539844 -0.741892
-********** Calc **********
- 0.473408  0.833923  0.449895  0.303098  0.554706 -0.846595
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [1] : &#x0A;********** Ref **********&#x0A;   0.080208   -0.563804    -0.19864   -0.127114 -0.00487228   -0.249937&#x0A;********** Calc **********&#x0A; 0.349918 -0.556605 -0.184195   0.10781 0.0255847 -0.344655&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [1] : 
-********** Ref **********
-   0.080208   -0.563804    -0.19864   -0.127114 -0.00487228   -0.249937
-********** Calc **********
- 0.349918 -0.556605 -0.184195   0.10781 0.0255847 -0.344655
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [2] : &#x0A;********** Ref **********&#x0A;  -0.339271  -0.0139971 -0.00466568   -0.465779  -0.0482677  -0.0912752&#x0A;********** Calc **********&#x0A; -0.0712418 -0.00705127   0.0072398   -0.230151  -0.0157242   -0.185017&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [2] : 
-********** Ref **********
-  -0.339271  -0.0139971 -0.00466568   -0.465779  -0.0482677  -0.0912752
-********** Calc **********
- -0.0712418 -0.00705127   0.0072398   -0.230151  -0.0157242   -0.185017
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [3] : &#x0A;********** Ref **********&#x0A; 0.340392 -0.598736 -0.235577 -0.700729 0.0208989 -0.983607&#x0A;********** Calc **********&#x0A;  0.61096 -0.590184 -0.213456 -0.466116 0.0503721  -1.07887&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [3] : 
-********** Ref **********
- 0.340392 -0.598736 -0.235577 -0.700729 0.0208989 -0.983607
-********** Calc **********
-  0.61096 -0.590184 -0.213456 -0.466116 0.0503721  -1.07887
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [4] : &#x0A;********** Ref **********&#x0A; 0.460531 -0.525463 -0.140679 0.0467777 -0.210488 -0.064314&#x0A;********** Calc **********&#x0A; 0.729858 -0.516811 -0.128005  0.282731 -0.177834  -0.15968&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [4] : 
-********** Ref **********
- 0.460531 -0.525463 -0.140679 0.0467777 -0.210488 -0.064314
-********** Calc **********
- 0.729858 -0.516811 -0.128005  0.282731 -0.177834  -0.15968
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [5] : &#x0A;********** Ref **********&#x0A;-0.0365709 -0.0231085 0.00568693 -0.0103298  0.0144379   0.345776&#x0A;********** Calc **********&#x0A; 0.231464 -0.016155 0.0177235  0.225332 0.0473172  0.251994&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [5] : 
-********** Ref **********
--0.0365709 -0.0231085 0.00568693 -0.0103298  0.0144379   0.345776
-********** Calc **********
- 0.231464 -0.016155 0.0177235  0.225332 0.0473172  0.251994
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [6] : &#x0A;********** Ref **********&#x0A; 0.138707  -0.11421 0.0805721   0.27541  -0.14046  0.229318&#x0A;********** Calc **********&#x0A; 0.407018 -0.107807 0.0919673  0.511453 -0.106803  0.134879&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [6] : 
-********** Ref **********
- 0.138707  -0.11421 0.0805721   0.27541  -0.14046  0.229318
-********** Calc **********
- 0.407018 -0.107807 0.0919673  0.511453 -0.106803  0.134879
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [7] : &#x0A;********** Ref **********&#x0A; -0.520652   0.371046     0.1247  -0.218553 -0.0850847  -0.166468&#x0A;********** Calc **********&#x0A; -0.251856   0.377835   0.137773  0.0169082 -0.0531804  -0.260809&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [7] : 
-********** Ref **********
- -0.520652   0.371046     0.1247  -0.218553 -0.0850847  -0.166468
-********** Calc **********
- -0.251856   0.377835   0.137773  0.0169082 -0.0531804  -0.260809
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [8] : &#x0A;********** Ref **********&#x0A;-0.426651  0.415411 0.0874109  0.286166 0.0283238  0.115654&#x0A;********** Calc **********&#x0A;-0.157828  0.423366  0.100198  0.521216 0.0601157 0.0216961&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [8] : 
-********** Ref **********
--0.426651  0.415411 0.0874109  0.286166 0.0283238  0.115654
-********** Calc **********
--0.157828  0.423366  0.100198  0.521216 0.0601157 0.0216961
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [9] : &#x0A;********** Ref **********&#x0A;0.0870064 0.0237524  0.040235  0.518589   -0.1719  0.584293&#x0A;********** Calc **********&#x0A; 0.355111 0.0304063 0.0527094  0.754911 -0.138877  0.489782&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [9] : 
-********** Ref **********
-0.0870064 0.0237524  0.040235  0.518589   -0.1719  0.584293
-********** Calc **********
- 0.355111 0.0304063 0.0527094  0.754911 -0.138877  0.489782
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [10] : &#x0A;********** Ref **********&#x0A;0.0811604  0.220608 -0.191089  0.329666  0.123954  0.365188&#x0A;********** Calc **********&#x0A; 0.350543  0.226801 -0.180184  0.565479  0.157218  0.269908&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [10] : 
-********** Ref **********
-0.0811604  0.220608 -0.191089  0.329666  0.123954  0.365188
-********** Calc **********
- 0.350543  0.226801 -0.180184  0.565479  0.157218  0.269908
-====================
-]]></failure>
-      <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24&#x0A;Value of: isAlmostEqual(ref[i], calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;TangentSpace Sample [11] : &#x0A;********** Ref **********&#x0A;-0.0640951 -0.0110488 -0.0237867 0.00324331 -0.0663866   0.657265&#x0A;********** Calc **********&#x0A;  0.203932 -0.0041182 -0.0118944   0.238866 -0.0338041    0.56353&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsfeaturization.hpp:24
-Value of: isAlmostEqual(ref[i], calc)
-  Actual: false
-Expected: true
-
-====================
-TangentSpace Sample [11] : 
-********** Ref **********
--0.0640951 -0.0110488 -0.0237867 0.00324331 -0.0663866   0.657265
-********** Calc **********
-  0.203932 -0.0041182 -0.0118944   0.238866 -0.0338041    0.56353
-====================
-]]></failure>
-    </testcase>
-    <testcase name="UnTangentSpace" status="run" time="0.001" classname="Tests_Featurization" />
+  <testsuite name="Tests_Featurization" tests="4" failures="0" disabled="0" errors="0" time="0">
+    <testcase name="TangentSpace" status="run" time="0" classname="Tests_Featurization" />
+    <testcase name="UnTangentSpace" status="run" time="0" classname="Tests_Featurization" />
     <testcase name="Squeeze" status="run" time="0" classname="Tests_Featurization" />
     <testcase name="UnSqueeze" status="run" time="0" classname="Tests_Featurization" />
+  </testsuite>
+  <testsuite name="Tests_Classifier" tests="2" failures="0" disabled="0" errors="0" time="0.001">
+    <testcase name="LSQR" status="run" time="0.001" classname="Tests_Classifier" />
+    <testcase name="FgDACompute" status="run" time="0" classname="Tests_Classifier" />
+  </testsuite>
+  <testsuite name="Tests_MatrixClassifier" tests="3" failures="0" disabled="0" errors="0" time="0.001">
+    <testcase name="MDMTrain" status="run" time="0" classname="Tests_MatrixClassifier" />
+    <testcase name="MDMClassifify" status="run" time="0.001" classname="Tests_MatrixClassifier" />
+    <testcase name="MDMSave" status="run" time="0" classname="Tests_MatrixClassifier" />
   </testsuite>
 </testsuites>

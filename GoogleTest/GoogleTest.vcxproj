@@ -178,9 +178,9 @@
     <ClInclude Include="..\src\utils\Metrics.hpp" />
     <ClInclude Include="..\tests\test_Init.hpp" />
     <ClInclude Include="..\tests\test_Misc.hpp" />
-    <ClInclude Include="..\tests\test_Classifier.hpp" />
+    <ClInclude Include="..\tests\test_MatrixClassifier.hpp" />
     <ClInclude Include="..\tests\test_UtilsBasics.hpp" />
-    <ClInclude Include="..\tests\test_UtilsClassif.hpp" />
+    <ClInclude Include="..\tests\test_UtilsClassifier.hpp" />
     <ClInclude Include="..\tests\test_UtilsCovariance.hpp" />
     <ClInclude Include="..\tests\test_UtilsDistance.hpp" />
     <ClInclude Include="..\tests\test_UtilsFeaturization.hpp" />

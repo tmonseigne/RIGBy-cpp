@@ -5,5 +5,6 @@
 
 bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
 
-bool FgDACompute(const std::vector<std::vector<Eigen::MatrixXd>>& datasets);
-bool FgDAApply(const std::vector<std::vector<Eigen::MatrixXd>>& datasets);
+bool FgDACompute(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
+
+bool FgDAApply(const Eigen::RowVectorXd& in, Eigen::RowVectorXd& out, const Eigen::MatrixXd& weight);

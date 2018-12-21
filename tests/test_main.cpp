@@ -7,8 +7,8 @@
 #include "test_UtilsDistance.hpp"
 #include "test_UtilsGeodesics.hpp"
 #include "test_UtilsFeaturization.hpp"
-//#include "test_UtilsClassif.hpp"
-//#include "test_Classif.hpp"
+#include "test_UtilsClassifier.hpp"
+#include "test_MatrixClassifier.hpp"
 // ReSharper restore CppUnusedIncludeDirective
 
 int main(int argc, char** argv)

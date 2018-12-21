@@ -21,47 +21,9 @@
 
 #include <vector>
 #include <type_traits>
-#include "utils/Covariance.hpp"
-#include "utils/Featurization.hpp"
+#include <Eigen/Dense>
 
-#define REPEAT_TEST 100
-
-Eigen::MatrixXd M1, M2, M1_Center, M2_Center, M1Cov, M2Cov;
-Eigen::RowVectorXd V1, M1Tan, M2Tan;
-std::vector<Eigen::MatrixXd> VCov;
-const std::string Sep = "\n====================\n";
-
-///-------------------------------------------------------------------------------------------------
-/// 
-/// <summary>	Initializes The 6 Main Objects. </summary>
-///
-///-------------------------------------------------------------------------------------------------
-inline void Initialize()
-{
-	M1.resize(2, 10);
-	M1 << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-		20, 19, 18, 17, 16, 15, 14, 13, 12, 11;
-
-	M2.resize(2, 10);
-	M2 << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-		1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
-
-	V1.resize(10);
-	V1 << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
-
-	MatrixStandardization(M1, M1_Center, Standardization_Center);
-	MatrixStandardization(M2, M2_Center, Standardization_Center);
-
-	CovarianceMatrix(M1_Center, M1Cov, Estimator_LWF);	// LedoitWolf assure SPD Matrix
-	CovarianceMatrix(M2_Center, M2Cov, Estimator_LWF);	// LedoitWolf assure SPD Matrix
-
-	VCov.resize(2);
-	VCov[0] = M1Cov;
-	VCov[1] = M2Cov;
-	const Eigen::MatrixXd I_N = Eigen::MatrixXd::Identity(2, 2);
-	TangentSpace(M1Cov, M1Tan, I_N);
-	TangentSpace(M2Cov, M2Tan, I_N);
-}
+const std::string SEP = "\n====================\n";
 
 ///-------------------------------------------------------------------------------------------------
 /// 
@@ -98,7 +60,7 @@ bool isAlmostEqual(const std::vector<T>& x, const std::vector<T>& y, const doubl
 	double xsum = 0.0, ysum = 0.0;
 	for (const auto& n : x) { xsum += n; }
 	for (const auto& n : y) { ysum += n; }
-	return isAlmostEqual(xsum, ysum, epsilon);
+	return (x.size() == y.size() && isAlmostEqual(xsum, ysum, epsilon));
 }
 
 ///-------------------------------------------------------------------------------------------------
@@ -116,7 +78,25 @@ bool isAlmostEqual(const std::vector<T>& x, const std::vector<T>& y, const doubl
 ///-------------------------------------------------------------------------------------------------
 inline bool isAlmostEqual(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, const double epsilon = 0.0001)
 {
-	return isAlmostEqual(x.cwiseAbs().sum(), y.cwiseAbs().sum(), epsilon);
+	return (x.size() == y.size() && isAlmostEqual(x.cwiseAbs().sum(), y.cwiseAbs().sum(), epsilon));
+}
+
+///-------------------------------------------------------------------------------------------------
+/// 
+/// <summary>	Error message for size_t. </summary>
+///
+/// <param name="name">	The name of the test. </param>
+/// <param name="ref"> 	The reference value. </param>
+/// <param name="calc">	The calculate value. </param>
+///
+/// <returns>	Error message. </returns>
+/// 
+///-------------------------------------------------------------------------------------------------
+inline std::stringstream ErrorMsg(const std::string& name, const size_t ref, const size_t calc)
+{
+	std::stringstream ss;
+	ss << SEP << name << " : " << std::endl << "  Ref : \t" << ref << std::endl << "  Calc : \t" << calc << SEP;
+	return ss;
 }
 
 ///-------------------------------------------------------------------------------------------------
@@ -133,7 +113,7 @@ inline bool isAlmostEqual(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, co
 inline std::stringstream ErrorMsg(const std::string& name, const double ref, const double calc)
 {
 	std::stringstream ss;
-	ss << Sep << name << " : " << std::endl << "  Ref : \t" << ref << std::endl << "  Calc : \t" << calc << Sep;
+	ss << SEP << name << " : " << std::endl << "  Ref : \t" << ref << std::endl << "  Calc : \t" << calc << SEP;
 	return ss;
 }
 
@@ -154,7 +134,7 @@ template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::
 std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, const std::vector<T>& calc)
 {
 	std::stringstream ss;
-	ss << Sep << name << " : " << std::endl << "  Ref : \t[";
+	ss << SEP << name << " : " << std::endl << "  Ref : \t[";
 	for (const T& t : ref)
 	{
 		ss << t << ", ";
@@ -164,7 +144,7 @@ std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, c
 	{
 		ss << t << ", ";
 	}
-	ss << "\b\b]" << Sep;
+	ss << "\b\b]" << SEP;
 	return ss;
 }
 
@@ -182,6 +162,6 @@ std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, c
 inline std::stringstream ErrorMsg(const std::string& name, const Eigen::MatrixXd& ref, const Eigen::MatrixXd& calc)
 {
 	std::stringstream ss;
-	ss << Sep << name << " : " << std::endl << "********** Ref **********\n" << ref << std::endl << "********** Calc **********\n" << calc << Sep;
+	ss << SEP << name << " : " << std::endl << "********** Ref **********\n" << ref << std::endl << "********** Calc **********\n" << calc << SEP;
 	return ss;
 }

@@ -1,11 +1,11 @@
 #include "Classification.hpp"
 #include "Covariance.hpp"
 #include "Basics.hpp"
-#include <iostream>
 
 using namespace std;
 using namespace Eigen;
 
+///-------------------------------------------------------------------------------------------------
 bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weight)
 {
 	// Precomputation
@@ -20,11 +20,6 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 		totalSample += nbSample[k];
 	}
 
-	cout << "nbClass : " << nbClass << endl
-		<< "nbFeatures : " << nbFeatures << endl
-		<< "totalSample : " << totalSample << endl;
-
-
 	// Compute Class Euclidian mean
 	MatrixXd mean = MatrixXd::Zero(nbClass, nbFeatures);
 	for (size_t k = 0; k < nbClass; ++k)
@@ -35,9 +30,6 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 		}
 		mean.row(k) /= double(nbSample[k]);
 	}
-
-	cout << "Mean : " << endl << mean << endl;
-
 
 	// Compute Class Covariance
 	MatrixXd cov = MatrixXd::Zero(nbFeatures, nbFeatures);
@@ -52,16 +44,11 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 
 		// Standardize Features
 		RowVectorXd scale;
-		cout << "classData : " << k << endl << classData << endl;
 		MatrixStandardScaler(classData, scale);
-		cout << "classData standard : " << k << endl << classData << endl;
-		cout << "classData scale : " << k << endl << MatrixXd(scale) << endl;
-		cout << "classData scale t : " << k << endl << MatrixXd(scale.transpose()) << endl;
 
 		//Compute Covariance of this class
 		MatrixXd classCov;
 		if (!CovarianceMatrix(classData, classCov, Estimator_LWF)) { return false; }
-		cout << "classCov : " << k << endl << classCov << endl;
 
 		// Rescale
 		//classCov = MatrixXd(scale) * classCov * MatrixXd(scale.transpose());
@@ -72,16 +59,40 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 				classCov(i, j) *= scale[i] * scale[j];
 			}
 		}
-		cout << "classCov : " << k << endl << classCov << endl;
 
 		//Add to cov with good weight
 		cov += (double(nbSample[k]) / double(totalSample)) * classCov;
 	}
 
-	cout << "cov : " << endl << cov << endl;
-
 	// linear least squares systems solver
 	weight = cov.bdcSvd(ComputeThinU | ComputeThinV).solve(mean.transpose()).transpose();
-	cout << "Weights" << endl << weight << endl;
+	
+	// Treat binary case as a special case
+	if (nbClass == 2) { weight = weight.row(1) - weight.row(0); }
 	return true;
 }
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+bool FgDACompute(const vector<vector<RowVectorXd>>& datasets, MatrixXd& weight)
+{
+	// Compute LSQR Weight
+	MatrixXd w;
+	if (!LSQR(datasets, w)) { return false; }
+	const size_t nbClass = w.rows();
+
+	// Transform to FgDA Weight
+	const MatrixXd wT = w.transpose();
+	weight = (wT * (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass))) * w;
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+bool FgDAApply(const RowVectorXd& in, RowVectorXd& out, const MatrixXd& weight)
+{
+	if (in.cols() != weight.rows()) { return false; }
+	out = in * weight;
+	return true;
+}
+///-------------------------------------------------------------------------------------------------

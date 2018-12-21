@@ -9,6 +9,7 @@ using namespace std;
 #define M_SQRT2 1.4142135623730950488016887242097
 #endif
 
+//---------------------------------------------------------------------------------------------------
 bool Featurization(const MatrixXd& matrix, RowVectorXd& rowVector, const bool tangent, const MatrixXd& ref)
 {
 	if (tangent) { return TangentSpace(matrix, rowVector, ref); }
@@ -24,15 +25,15 @@ bool UnFeaturization(const RowVectorXd& rowVector, MatrixXd& matrix, const bool 
 }
 //---------------------------------------------------------------------------------------------------
 
-
+//---------------------------------------------------------------------------------------------------
 bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const bool rowMajor)
 {
 	if (!isSquare(matrix)) { return false; }					// Verification
 	const size_t n = matrix.rows();								// Number of Features			=> N
 	rowVector.resize(n * (n + 1) / 2);							// Resize
 
-	size_t idx = 0;
-	if (rowMajor)
+	size_t idx = 0;												// Row Index					=> idx
+	if (rowMajor)												// Row Major Method
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
@@ -42,7 +43,7 @@ bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const 
 			}
 		}
 	}
-	else
+	else														// Diagonal Method
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
@@ -56,6 +57,7 @@ bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const 
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, const bool rowMajor)
 {
 	const size_t nR = rowVector.size(),							// Size of Row					=> Nr
@@ -63,8 +65,8 @@ bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, cons
 	if (n == 0) { return false; }								// Verification
 	matrix.setZero(n, n);										// Init
 
-	size_t idx = 0;
-	if (rowMajor)
+	size_t idx = 0;												// Row Index					=> idx
+	if (rowMajor)												// Row Major Method
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
@@ -74,7 +76,7 @@ bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, cons
 			}
 		}
 	}
-	else
+	else														// Diagonal Method
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
@@ -88,24 +90,26 @@ bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, cons
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool TangentSpace(const MatrixXd& matrix, RowVectorXd& rowVector, const MatrixXd& ref)
 {
 	if (!isSquare(matrix)) { return false; }					// Verification
 	const size_t n = matrix.rows();								// Number of Features			=> N
 
 	const MatrixXd sC = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
-				   isC = sC.sqrt().inverse(),					// Inverse Square root of ref	=> isC
+				   isC = sC.inverse(),							// Inverse Square root of ref	=> isC
 				   mJ = (isC * matrix * isC).log(),				// Transformation Matrix		=> mJ
 				   mCoeffs = M_SQRT2 * MatrixXd(MatrixXd::Ones(n, n).triangularView<StrictlyUpper>()) + MatrixXd::Identity(n, n);
 
 	RowVectorXd vJ, vCoeffs;
-	SqueezeUpperTriangle(mJ, vJ, true);							// Get upper triangle of J		=> vJ
-	SqueezeUpperTriangle(mCoeffs, vCoeffs, true);				// Get upper triangle of Coefs	=> vCoeffs
+	if (!SqueezeUpperTriangle(mJ, vJ, true)) { return false; }	// Get upper triangle of J		=> vJ
+	if (!SqueezeUpperTriangle(mCoeffs, vCoeffs, true)) { return false; }	// ... of Coefs		=> vCoeffs
 	rowVector = vCoeffs.cwiseProduct(vJ);						// element-wise multiplication
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 bool UnTangentSpace(const RowVectorXd& rowVector, MatrixXd& matrix, const MatrixXd& ref)
 {
 	const size_t n = matrix.rows();								// Number of Features			=> N
