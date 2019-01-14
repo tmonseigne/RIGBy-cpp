@@ -1,3 +1,14 @@
+///-------------------------------------------------------------------------------------------------
+/// 
+/// \file test_UtilsCovariance.hpp
+/// \brief Tests for Riemannian Geometry Utils : Covariance
+/// \author Thibaut Monseigne (Inria).
+/// \version 1.0.
+/// \date 09/01/2019.
+/// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
+/// 
+///-------------------------------------------------------------------------------------------------
+
 #pragma once
 
 #include "gtest/gtest.h"
@@ -54,7 +65,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COV)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 {
-	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::LWF::Dataset();
+	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::LWF::Reference();
 	calc.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
 	{
@@ -74,7 +85,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 {
 	EXPECT_TRUE(false) << "Not implemented";
 	/*
-	vector<vector<MatrixXd>> calc, ref = InitCovariance::MCD::Dataset();
+	vector<vector<MatrixXd>> calc, ref = InitCovariance::MCD::Reference();
 	calc.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
 	{
@@ -93,7 +104,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Covariances, Covariance_Matrix_OAS)
 {
-	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::OAS::Dataset();
+	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::OAS::Reference();
 	calc.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
 	{
@@ -111,7 +122,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_OAS)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Covariances, Covariance_Matrix_SCM)
 {
-	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::SCM::Dataset();
+	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::SCM::Reference();
 	calc.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
 	{

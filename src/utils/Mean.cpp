@@ -18,7 +18,8 @@ const size_t ITER_MAX = 50;
 bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metric)
 {
 	if (covs.empty()) { return false; }							// If no matrix in vector
-	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))	// Force Square Matrix for non Euclidian and non Identity metric
+	// Force Square Matrix for non Euclidian and non Identity metric
+	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
 	{
 		cerr << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
 		return false;
@@ -44,8 +45,7 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 //---------------------------------------------------------------------------------------------------
 bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double epsilon, const int maxIter)
 {
-	(void)epsilon;
-	(void)maxIter;
+	(void)epsilon;	(void)maxIter;
 	MeanIdentity(covs, ajd);
 	return false;
 }
@@ -54,29 +54,24 @@ bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double epsilon, c
 //---------------------------------------------------------------------------------------------------
 bool MeanRiemann(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
-				 n = covs[0].rows();						// Number of Features				=> N
-	size_t i = 0;											// Index of Covariance Matrix		=> i
-	double nu = 1.0,										// Coefficient change				=> nu
-		   tau = numeric_limits<double>::max(),				// Coefficient change criterion		=> tau
-		   crit = numeric_limits<double>::max();			// Current change					=> crit
-	if (!MeanEuclidian(covs, mean)) { return false; }		// Initial Mean
+	const size_t k = covs.size(), n = covs[0].rows();			// Number of Matrix & Features		=> K & N
+	size_t i = 0;												// Index of Covariance Matrix		=> i
+	double nu = 1.0,											// Coefficient change				=> nu
+		   tau = numeric_limits<double>::max(),					// Coefficient change criterion		=> tau
+		   crit = numeric_limits<double>::max();				// Current change					=> crit
+	if (!MeanEuclidian(covs, mean)) { return false; }			// Initial Mean
 
-	while (i < ITER_MAX && EPSILON < crit && EPSILON < nu)	// Stopping criterion
+	while (i < ITER_MAX && EPSILON < crit && EPSILON < nu)		// Stopping criterion
 	{
-		i++;												// Iteration Criterion
-		const MatrixXd sC = mean.sqrt(),					// Square root of Mean				=> sC
-					   isC = sC.inverse();					// Inverse Square root of Mean		=> isC
-		MatrixXd mJ = MatrixXd::Zero(n, n);					// Change							=> J
-		for (const MatrixXd& cov : covs)					// Sum of log(isC*Ci*isC)
-		{
-			mJ += (isC * cov * isC).log();
-		}
-		mJ /= double(k);									// Normalization
-		crit = mJ.norm();									// Current change criterion
-		mean = sC * (nu * mJ).exp() * sC;					// Update Mean M = sC * exp(nu*J) * sC
+		i++;													// Iteration Criterion
+		const MatrixXd sC = mean.sqrt(), isC = sC.inverse();	// Square root & Inverse Square root of Mean	=> sC & isC
+		MatrixXd mJ = MatrixXd::Zero(n, n);						// Change							=> J
+		for (const MatrixXd& cov : covs) { mJ += (isC * cov * isC).log(); }	// Sum of log(isC*Ci*isC)
+		mJ /= double(k);										// Normalization
+		crit = mJ.norm();										// Current change criterion
+		mean = sC * (nu * mJ).exp() * sC;						// Update Mean M = sC * exp(nu*J) * sC
 
-		const double h = nu * crit;							// Update Coefficient change
+		const double h = nu * crit;								// Update Coefficient change
 		if (h < tau)
 		{
 			nu *= 0.95;
@@ -91,11 +86,10 @@ bool MeanRiemann(const vector<MatrixXd>& covs, MatrixXd& mean)
 //---------------------------------------------------------------------------------------------------
 bool MeanEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
-				 n = covs[0].rows();						// Number of Features				=> N
-	mean = MatrixXd::Zero(n, n);							// Initial Mean
-	for (const MatrixXd& cov : covs) { mean += cov; }		// Sum of Ci
-	mean /= double(k);										// Normalization
+	const size_t k = covs.size(), n = covs[0].rows();			// Number of Matrix & Features		=> K & N
+	mean = MatrixXd::Zero(n, n);								// Initial Mean
+	for (const MatrixXd& cov : covs) { mean += cov; }			// Sum of Ci
+	mean /= double(k);											// Normalization
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
@@ -103,11 +97,10 @@ bool MeanEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 //---------------------------------------------------------------------------------------------------
 bool MeanLogEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
-				 n = covs[0].rows();						// Number of Features				=> N
-	mean = MatrixXd::Zero(n, n);							// Initial Mean
-	for (const MatrixXd& cov : covs) { mean += cov.log(); }	// Sum of log(Ci)
-	mean = (mean / double(k)).exp();						// Normalization
+	const size_t k = covs.size(), n = covs[0].rows();			// Number of Matrix & Features		=> K & N
+	mean = MatrixXd::Zero(n, n);								// Initial Mean
+	for (const MatrixXd& cov : covs) { mean += cov.log(); }		// Sum of log(Ci)
+	mean = (mean / double(k)).exp();							// Normalization
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
@@ -115,24 +108,20 @@ bool MeanLogEuclidian(const vector<MatrixXd>& covs, MatrixXd& mean)
 //---------------------------------------------------------------------------------------------------
 bool MeanLogDet(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
-				 n = covs[0].rows();						// Number of Features				=> N
-	size_t i = 0;											// Index of Covariance Matrix		=> i
-	double crit = std::numeric_limits<double>::max();		// Current change					=> crit
-	if (!MeanEuclidian(covs, mean)) { return false; }		// Initial Mean
-
-	while (i < ITER_MAX && EPSILON < crit)					// Stopping criterion
+	const size_t k = covs.size(), n = covs[0].rows();			// Number of Matrix & Features		=> K & N
+	size_t i = 0;												// Index of Covariance Matrix		=> i
+	double crit = std::numeric_limits<double>::max();			// Current change					=> crit
+	if (!MeanEuclidian(covs, mean)) { return false; }			// Initial Mean
+	
+	while (i < ITER_MAX && EPSILON < crit)						// Stopping criterion
 	{
-		i++;												// Iteration Criterion
-		MatrixXd mJ = MatrixXd::Zero(n, n);					// Change							=> J
+		i++;													// Iteration Criterion
+		MatrixXd mJ = MatrixXd::Zero(n, n);						// Change							=> J
 
-		for (const MatrixXd& cov : covs)					// Sum of ((Ci+M)/2)^{-1}
-		{
-			mJ += (0.5 * (cov + mean)).inverse();
-		}
-		mJ = (mJ / double(k)).inverse();					// Normalization
-		crit = (mJ - mean).norm();							// Current change criterion
-		mean = mJ;											// Update mean
+		for (const MatrixXd& cov : covs) { mJ += (0.5 * (cov + mean)).inverse(); }	// Sum of ((Ci+M)/2)^{-1}
+		mJ = (mJ / double(k)).inverse();						// Normalization
+		crit = (mJ - mean).norm();								// Current change criterion
+		mean = mJ;												// Update mean
 	}
 	return true;
 }
@@ -152,30 +141,26 @@ bool MeanKullback(const vector<MatrixXd>& covs, MatrixXd& mean)
 //---------------------------------------------------------------------------------------------------
 bool MeanWasserstein(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
-				 n = covs[0].rows();						// Number of Features				=> N
-	size_t i = 0;											// Index of Covariance Matrix		=> i
-	double crit = std::numeric_limits<double>::max();		// Current change					=> crit
+	const size_t k = covs.size(), n = covs[0].rows();			// Number of Matrix & Features		=> K & N
+	size_t i = 0;												// Index of Covariance Matrix		=> i
+	double crit = std::numeric_limits<double>::max();			// Current change					=> crit
 
-	if (!MeanEuclidian(covs, mean)) { return false; }		// Initial Mean
-	MatrixXd sC = mean.sqrt();								// Square root of Mean				=> sC
+	if (!MeanEuclidian(covs, mean)) { return false; }			// Initial Mean
+	MatrixXd sC = mean.sqrt();									// Square root of Mean				=> sC
 
-	while (i < ITER_MAX && EPSILON < crit)					// Stopping criterion
+	while (i < ITER_MAX && EPSILON < crit)						// Stopping criterion
 	{
-		i++;												// Iteration Criterion
-		MatrixXd mJ = MatrixXd::Zero(n, n);					// Change							=> J
+		i++;													// Iteration Criterion
+		MatrixXd mJ = MatrixXd::Zero(n, n);						// Change							=> J
 
-		for (const MatrixXd& cov : covs)					// Sum of sqrt(sC*Ci*sC)
-		{
-			mJ += (sC * cov * sC).sqrt();
-		}
-		mJ /= double(k);									// Normalization
+		for (const MatrixXd& cov : covs) { mJ += (sC * cov * sC).sqrt(); }	// Sum of sqrt(sC*Ci*sC)
+		mJ /= double(k);										// Normalization
 
-		const MatrixXd sJ = mJ.sqrt();						// Square root of change			=> sJ
-		crit = (sJ - sC).norm();							// Current change criterion
-		sC = sJ;											// Update sC
+		const MatrixXd sJ = mJ.sqrt();							// Square root of change			=> sJ
+		crit = (sJ - sC).norm();								// Current change criterion
+		sC = sJ;												// Update sC
 	}
-	mean = sC * sC;											// Un-square root 
+	mean = sC * sC;												// Un-square root 
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
@@ -183,36 +168,29 @@ bool MeanWasserstein(const vector<MatrixXd>& covs, MatrixXd& mean)
 //---------------------------------------------------------------------------------------------------
 bool MeanALE(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
-				 n = covs[0].rows();						// Number of Features				=> N
-	size_t i = 0;											// Index of Covariance Matrix		=> i
-	double crit = std::numeric_limits<double>::max();		// Change criterion					=> crit
-	if (!AJDPham(covs, mean)) { return false; }				// Initial Mean
-	MatrixXd mJ;											// Change
+	const size_t k = covs.size(), n = covs[0].rows();			// Number of Matrix & Features		=> K & N
+	size_t i = 0;												// Index of Covariance Matrix		=> i
+	double crit = std::numeric_limits<double>::max();			// Change criterion					=> crit
+	if (!AJDPham(covs, mean)) { return false; }					// Initial Mean
+	MatrixXd mJ;												// Change
 
-	while (i < ITER_MAX && EPSILON < crit)					// Stopping criterion
+	while (i < ITER_MAX && EPSILON < crit)						// Stopping criterion
 	{
-		i++;												// Iteration Criterion
-		mJ = MatrixXd::Zero(n, n);							// Change							=> J
+		i++;													// Iteration Criterion
+		mJ = MatrixXd::Zero(n, n);								// Change							=> J
 
-		for (const MatrixXd& cov : covs)					// Sum of log(C^T*Ci*C)
-		{
-			mJ += (mean.transpose() * cov * mean).log();
-		}
-		mJ /= double(k);									// Normalization
+		for (const MatrixXd& cov : covs) { mJ += (mean.transpose() * cov * mean).log(); }	// Sum of log(C^T*Ci*C)
+		mJ /= double(k);										// Normalization
 
-		MatrixXd update = mJ.exp().diagonal().asDiagonal();	// Update Form						=> U
-		mean = mean * update.sqrt().inverse();				// Update Mean M = M * U^{-1/2}
+		MatrixXd update = mJ.exp().diagonal().asDiagonal();		// Update Form						=> U
+		mean = mean * update.sqrt().inverse();					// Update Mean M = M * U^{-1/2}
 
 		crit = DistanceRiemann(MatrixXd::Identity(n, n), update);
 	}
 
-	mJ = MatrixXd::Zero(n, n);								// Last Change						=> J
-	for (const MatrixXd& cov : covs)						// Sum of log(C^T*Ci*C)
-	{
-		mJ += (mean.transpose() * cov * mean).log();
-	}
-	mJ /= double(k);										// Normalization
+	mJ = MatrixXd::Zero(n, n);									// Last Change						=> J
+	for (const MatrixXd& cov : covs) { mJ += (mean.transpose() * cov * mean).log(); }	// Sum of log(C^T*Ci*C)
+	mJ /= double(k);											// Normalization
 
 	MatrixXd mA = mean.inverse();
 	mean = mA.transpose() * mJ.exp() * mA;
@@ -223,14 +201,10 @@ bool MeanALE(const vector<MatrixXd>& covs, MatrixXd& mean)
 //---------------------------------------------------------------------------------------------------
 bool MeanHarmonic(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
-	const size_t k = covs.size(),							// Number of Covariance Matrix		=> K
-				 n = covs[0].rows();						// Number of Features				=> N
-	mean = MatrixXd::Zero(n, n);							// Initial Mean
-	for (const MatrixXd& cov : covs)						// Sum of Inverse
-	{
-		mean += cov.inverse();
-	}
-	mean = (mean / double(k)).inverse();					// Normalization and inverse
+	const size_t k = covs.size(), n = covs[0].rows();			// Number of Matrix & Features		=> K & N
+	mean = MatrixXd::Zero(n, n);								// Initial Mean
+	for (const MatrixXd& cov : covs) { mean += cov.inverse(); }	// Sum of Inverse
+	mean = (mean / double(k)).inverse();						// Normalization and inverse
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

@@ -24,8 +24,7 @@ bool Geodesic(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const EMetrics 
 //---------------------------------------------------------------------------------------------------
 bool GeodesicRiemann(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const double alpha)
 {
-	const MatrixXd sA = a.sqrt(),
-				   isA = sA.inverse();
+	const MatrixXd sA = a.sqrt(), isA = sA.inverse();
 	g = sA * (isA * b * isA).pow(alpha) * sA;
 	return true;
 }
@@ -50,8 +49,7 @@ bool GeodesicLogEuclidian(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, con
 //---------------------------------------------------------------------------------------------------
 bool GeodesicIdentity(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const double alpha)
 {
-	(void)b;
-	(void)alpha;
+	(void)b;	(void)alpha;
 	g = MatrixXd::Identity(a.rows(), a.rows());
 	return true;
 }

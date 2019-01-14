@@ -22,16 +22,10 @@
     <ClInclude Include="..\tests\test_Misc.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\classifier\CFeatureClassifierLDA.hpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\classifier\IFeatureClassifier.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
     <ClInclude Include="..\src\classifier\IMatrixClassifier.hpp">
@@ -60,9 +54,6 @@
     </ClInclude>
     <ClInclude Include="..\src\3rd-party\tinyxml2.h">
       <Filter>Fichiers de ressources\3rd Party</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\classifier\CFgDA.hpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
     <ClInclude Include="..\src\utils\Classification.hpp">
       <Filter>Fichiers de ressources\Utils</Filter>
@@ -97,16 +88,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\test_main.cpp" />
-    <ClCompile Include="..\src\classifier\CFeatureClassifierLDA.cpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\classifier\IFeatureClassifier.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
     <ClCompile Include="..\src\classifier\IMatrixClassifier.cpp">
@@ -138,9 +123,6 @@
     </ClCompile>
     <ClCompile Include="..\src\3rd-party\tinyxml2.cpp">
       <Filter>Fichiers de ressources\3rd Party</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\classifier\CFgDA.cpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
     <ClCompile Include="..\src\utils\Classification.cpp">
       <Filter>Fichiers de ressources\Utils</Filter>

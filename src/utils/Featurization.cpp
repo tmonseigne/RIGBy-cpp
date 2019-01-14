@@ -37,20 +37,14 @@ bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const 
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
-			for (size_t j = i; j < n; ++j)
-			{
-				rowVector[idx++] = matrix(i, j);
-			}
+			for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(i, j); }
 		}
 	}
 	else														// Diagonal Method
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
-			for (size_t j = i; j < n; ++j)
-			{
-				rowVector[idx++] = matrix(j, j - i);
-			}
+			for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(j, j - i); }
 		}
 	}
 	return true;
@@ -70,20 +64,14 @@ bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, cons
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
-			for (size_t j = i; j < n; ++j)
-			{
-				matrix(j, i) = matrix(i, j) = rowVector[idx++];
-			}
+			for (size_t j = i; j < n; ++j) { matrix(j, i) = matrix(i, j) = rowVector[idx++]; }
 		}
 	}
 	else														// Diagonal Method
 	{
 		for (size_t i = 0; i < n; ++i)
 		{
-			for (size_t j = i; j < n; ++j)
-			{
-				matrix(j - i, j) = matrix(j, j - i) = rowVector[idx++];
-			}
+			for (size_t j = i; j < n; ++j) { matrix(j - i, j) = matrix(j, j - i) = rowVector[idx++]; }
 		}
 	}
 	return true;

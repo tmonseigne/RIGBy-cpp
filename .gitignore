@@ -4,3 +4,4 @@ build/
 docs/html/
 
 *.TMP
+*.DotSettings.user

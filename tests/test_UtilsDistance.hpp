@@ -1,3 +1,14 @@
+///-------------------------------------------------------------------------------------------------
+/// 
+/// \file test_UtilsDistance.hpp
+/// \brief Tests for Riemannian Geometry Utils : Distance
+/// \author Thibaut Monseigne (Inria).
+/// \version 1.0.
+/// \date 09/01/2019.
+/// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
+/// 
+///-------------------------------------------------------------------------------------------------
+
 #pragma once
 
 #include "gtest/gtest.h"
@@ -5,6 +16,7 @@
 #include "test_Init.hpp"
 #include "utils/Distance.hpp"
 
+//---------------------------------------------------------------------------------------------------
 class Tests_Distances : public testing::Test
 {
 protected:
@@ -12,72 +24,85 @@ protected:
 
 	void SetUp() override
 	{
-		m_dataSet = Vector2DTo1D(InitCovariance::LWF::Dataset());
+		m_dataSet = Vector2DTo1D(InitCovariance::LWF::Reference());
 	}
 };
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Distances, Euclidian)
 {
-	const std::vector<double> ref = InitDistance::Euclidian::Dataset();
-	const Eigen::MatrixXd mean = InitMeans::Euclidian::Dataset();
+	const std::vector<double> ref = InitDistance::Euclidian::Reference();
+	const Eigen::MatrixXd mean = InitMeans::Euclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Euclidian);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Euclidian Sample [" + std::to_string(i) + "]", ref[i], calc).str();
 	}
 }
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Distances, LogEuclidian)
 {
-	const std::vector<double> ref = InitDistance::LogEuclidian::Dataset();
-	const Eigen::MatrixXd mean = InitMeans::LogEuclidian::Dataset();
+	const std::vector<double> ref = InitDistance::LogEuclidian::Reference();
+	const Eigen::MatrixXd mean = InitMeans::LogEuclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_LogEuclidian);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogEuclidian Sample [" + std::to_string(i) + "]", ref[i], calc).str();
 	}
 }
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Distances, Riemann)
 {
-	const std::vector<double> ref = InitDistance::Riemann::Dataset();
-	const Eigen::MatrixXd mean = InitMeans::Riemann::Dataset();
+	const std::vector<double> ref = InitDistance::Riemann::Reference();
+	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Riemann);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Riemann Sample [" + std::to_string(i) + "]", ref[i], calc).str();
 	}
 }
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Distances, LogDet)
 {
-	const std::vector<double> ref = InitDistance::LogDeterminant::Dataset();
-	const Eigen::MatrixXd mean = InitMeans::LogDeterminant::Dataset();
+	const std::vector<double> ref = InitDistance::LogDeterminant::Reference();
+	const Eigen::MatrixXd mean = InitMeans::LogDeterminant::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_LogDet);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogDet Sample [" + std::to_string(i) + "]", ref[i], calc).str();
 	}
 }
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Distances, Kullback)
 {
-	const std::vector<double> ref = InitDistance::Kullback::Dataset();
-	const Eigen::MatrixXd mean = InitMeans::Kullback::Dataset();
+	const std::vector<double> ref = InitDistance::Kullback::Reference();
+	const Eigen::MatrixXd mean = InitMeans::Kullback::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Kullback);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Kullback Sample [" + std::to_string(i) + "]", ref[i], calc).str();
 	}
 }
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Distances, Wasserstein)
 {
-	const std::vector<double> ref = InitDistance::Wasserstein::Dataset();
-	const Eigen::MatrixXd mean = InitMeans::Wasserstein::Dataset();
+	const std::vector<double> ref = InitDistance::Wasserstein::Reference();
+	const Eigen::MatrixXd mean = InitMeans::Wasserstein::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Wasserstein);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", ref[i], calc).str();
 	}
 }
+//---------------------------------------------------------------------------------------------------

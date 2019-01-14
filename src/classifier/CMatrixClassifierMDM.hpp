@@ -1,15 +1,10 @@
 ///-------------------------------------------------------------------------------------------------
 /// 
 /// \file CMatrixClassifierMDM.hpp
-/// 
 /// \brief Class of Minimum Distance to Mean (MDM) Classifier
-/// 
 /// \author Thibaut Monseigne (Inria).
-/// 
 /// \version 1.0.
-/// 
 /// \date 10/12/2018.
-/// 
 /// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
 /// 
 ///-------------------------------------------------------------------------------------------------
@@ -19,93 +14,48 @@
 #include "IMatrixClassifier.hpp"
 #include "utils/Metrics.hpp"
 
-///-------------------------------------------------------------------------------------------------
-/// 
 /// <summary>	Class of Minimum Distance to Mean (MDM) Classifier. </summary>
-/// 
 /// <seealso cref="IMatrixClassifier" />
-/// 
-///-------------------------------------------------------------------------------------------------
 class CMatrixClassifierMDM : public IMatrixClassifier
 {
-public:	
+public:
 	/// <summary>	Mean Matrix of each class. </summary>
 	std::vector<Eigen::MatrixXd> m_Means;
 
 	//***********************	
 	//***** Constructor *****
 	//***********************	
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// <summary>	Default constructor. Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
 	CMatrixClassifierMDM();
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class and set the number of class and the metric. </summary>
-	///
-	/// <param name="classcount">	The number of class. </param>
-	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetrics" />). </param>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// <summary>	Default Copy constructor. Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
+	/// \copydetails IMatrixClassifier(const IMatrixClassifier&)
+	CMatrixClassifierMDM(const CMatrixClassifierMDM& obj);
+
+	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class and set base members. </summary>
+	/// \copydetails IMatrixClassifier(const size_t, const EMetrics)
 	explicit CMatrixClassifierMDM(const size_t classcount, const EMetrics metric);
 
-	///----------------------------------------------------------------------------------------------------
-	///
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
-	///
-	/// \remark clear the <see cref="m_Means"/> vector of Matrix.
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
 	~CMatrixClassifierMDM() override;
 
 	//**********************
 	//***** Classifier *****
 	//**********************
-	///----------------------------------------------------------------------------------------------------
-	///
 	/// <summary>	Sets the class count. </summary>
-	///
-	/// <param name="classcount">	The classcount. </param>
-	///
-	/// \remark resize the <see cref="m_Means"/> vector of Matrix.
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydetails IMatrixClassifier::setClassCount(const size_t)
+	/// <remarks>	resize the <see cref="m_Means"/> vector of Matrix. </remarks>
 	void setClassCount(const size_t classcount) override;
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Train the classifier with the dataset. 
-	///
-	/// Each row is the trials of each class. The trainer compute the mean of each row with the <see cref="EMetrics" /> in <see cref="m_Metric"/> member.
-	/// </summary>
-	///
-	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydoc IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) override;
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Classify the matrix and return the class id (override of same function with all argument). </summary>
-	///
-	/// <param name="sample">	The sample to classify. </param>
-	/// <param name="classid">	The predicted class. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydoc IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classid) override;
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class. 
-	///
-	/// Compute the distance between the sample and each mean matrix.\n
+	/// \copybrief IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&)
+	/// <summary>	Compute the distance between the sample and each mean matrix.\n
 	/// The class with the closest mean is the predicted class.\n
 	/// The distance is returned.\n
 	/// The probability \f$ \mathcal{P}_i \f$ to be the class \f$ i \f$ is compute as :
@@ -115,160 +65,70 @@ public:
 	/// \f]\n
 	/// <b>Remark</b> : The probability is normalized \f$ \sum{\left(\mathcal{P}_i\right)} = 1 \f$
 	///	</summary>
-	///
-	/// <param name="sample">		The sample to classify. </param>
-	/// <param name="classid">		The predicted class. </param>
-	/// <param name="distance">		The distance of the sample with each class. </param>
-	/// <param name="probability">	The probability of the sample with each class. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classid, std::vector<double>& distance, std::vector<double>& probability) override;
 
 	//***********************
 	//***** XML Manager *****
 	//***********************
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Saves the classifier information in an XML file. </summary>
-	///
-	/// <param name="filename">	Filename. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+
+	/// \copydoc IMatrixClassifier::saveXML(const std::string&)
 	bool saveXML(const std::string& filename) override;
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Loads the classifier information from an XML file. </summary>
-	///
-	/// <param name="filename">	Filename. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydoc IMatrixClassifier::loadXML(const std::string&)
 	bool loadXML(const std::string& filename) override;
 
-	///----------------------------------------------------------------------------------------------------
-	///
 	/// <summary>	Add the attribute on the first node.
 	///
 	/// -# The type of the classifier : MDM
 	/// -# The number of class : <see cref="m_ClassCount"/>
 	/// -# The metric to use : <see cref="m_Metric"/>
 	/// </summary>
-	///
-	/// <param name="element">	Node to modify. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydetails IMatrixClassifier::saveHeaderAttribute(tinyxml2::XMLElement*) const
 	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
 
-	///----------------------------------------------------------------------------------------------------
-	///
 	/// <summary>	Loads the attribute on the first node.
 	///
 	/// -# Check the type : MDM
 	/// -# The number of class : <see cref="m_ClassCount"/>
 	/// -# The metric to use : <see cref="m_Metric"/>
 	/// </summary>
-	///
-	/// <param name="element">	Node to read. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydetails IMatrixClassifier::loadHeaderAttribute(tinyxml2::XMLElement*)
 	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
-
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Saves the information of ith (\p index) class. 
-	///
-	/// -# Save the id of the class \f$[0-\f$<see cref="m_ClassCount"/>\f$]\f$.
-	/// -# Save the size \f$N\f$ of the matrix (Squared Matrix of \f$N \times N\f$ double).
-	/// -# The matrix with space separator (and new line for each row for readability).
-	/// </summary>
-	///
-	/// <param name="element">	Node of the class. </param>
-	/// <param name="index">	Class number. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
-	bool saveClass(tinyxml2::XMLElement* element, const size_t index) const override;
-
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Loads the information of ith (\p index) class. 
-	///
-	/// -# Check the index.
-	/// -# Load the matrix.
-	/// </summary>
-	///
-	/// <param name="element">	Node of the class. </param>
-	/// <param name="index">	Class number. </param>
-	///
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
-	bool loadClass(tinyxml2::XMLElement* element, const size_t index) override;
-
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Override the egal operator (with 1e-6 precision). </summary>
-	///
-	/// <param name="obj">	The second object. </param>
-	///
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are equals. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
-	bool operator==(const CMatrixClassifierMDM& obj) const;
+	/// \copydoc IMatrixClassifier::isEqual(const IMatrixClassifier&, const double) const
+	bool isEqual(const CMatrixClassifierMDM& obj, const double precision = 1e-6) const;
+	
+	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
+	void copy(const CMatrixClassifierMDM& obj);
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Override the not egal operator (with 1e-6 precision). </summary>
-	///
-	/// <param name="obj">	The second object. </param>
-	///
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are diffrents. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
-	bool operator!=(const CMatrixClassifierMDM& obj) const;
-
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Get the type of the classifier. </summary>
-	///
+	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
 	std::string getType() const override { return "Minimum Distance to Mean"; }
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Get the Classifier information for output. </summary>
-	///
-	/// <returns>	The Classifier print in stringstream. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
+	/// \copydoc IMatrixClassifier::print()
 	std::stringstream print() const override;
 
-	///----------------------------------------------------------------------------------------------------
-	///
-	/// <summary>	Override the ostream operator. </summary>
-	///
-	/// <param name="os">	The ostream. </param>
-	/// <param name="obj">	The object. </param>
-	///
-	/// <returns>	Return the modified ostream. </returns>
-	///
-	///----------------------------------------------------------------------------------------------------
-	friend std::ostream& operator <<(std::ostream& os, const CMatrixClassifierMDM& obj);
+	/// \copydoc IMatrixClassifier::operator=(const IMatrixClassifier&)
+	CMatrixClassifierMDM& operator=(const CMatrixClassifierMDM& obj)
+	{
+		copy(obj);
+		return *this;
+	}
+
+	/// \copydoc IMatrixClassifier::operator==(const IMatrixClassifier&) const
+	bool operator==(const CMatrixClassifierMDM& obj) const { return isEqual(obj); }
+
+	/// \copydoc IMatrixClassifier::operator!=(const IMatrixClassifier&) const
+	bool operator!=(const CMatrixClassifierMDM& obj) const { return !isEqual(obj); }
+
+	/// \copydoc IMatrixClassifier::operator<<(std::ostream&, const IMatrixClassifier&)
+	friend std::ostream& operator <<(std::ostream& os, const CMatrixClassifierMDM& obj)
+	{
+		os << obj.print().str();
+		return os;
+	}
 };

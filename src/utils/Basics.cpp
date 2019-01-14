@@ -54,10 +54,8 @@ bool MatrixStandardScaler(MatrixXd& matrix)
 //---------------------------------------------------------------------------------------------------
 bool MatrixStandardScaler(MatrixXd& matrix, RowVectorXd& scale)
 {
-	const size_t r = matrix.rows(),
-				 c = matrix.cols();
-	vector<double> mu(r, 0),
-				   sigma(r, 0);
+	const size_t r = matrix.rows(), c = matrix.cols();
+	vector<double> mu(r, 0), sigma(r, 0);
 	scale.resize(r);
 
 	for (size_t i = 0; i < r; ++i)
@@ -107,6 +105,13 @@ string MatrixPrint(const MatrixXd& matrix)
 }
 //---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
+bool AreEquals(const MatrixXd& matrix1, const MatrixXd& matrix2, const double precision)
+{
+	return matrix1.size() == matrix2.size() && (matrix1.size() == 0 || matrix1.isApprox(matrix2, precision));
+}
+//---------------------------------------------------------------------------------------------------
+
 //************************************************
 //************************************************
 //************************************************
@@ -119,10 +124,7 @@ RowVectorXd GetElements(const RowVectorXd& row, const std::vector<size_t>& index
 {
 	const size_t k = index.size();
 	RowVectorXd result(k);
-	for (size_t i = 0; i < k; ++i)
-	{
-		result[i] = row[index[i]];
-	}
+	for (size_t i = 0; i < k; ++i) { result[i] = row[index[i]]; }
 	return result;
 }
 //---------------------------------------------------------------------------------------------------

@@ -24,10 +24,7 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 	MatrixXd mean = MatrixXd::Zero(nbClass, nbFeatures);
 	for (size_t k = 0; k < nbClass; ++k)
 	{
-		for (size_t i = 0; i < nbSample[k]; ++i)
-		{
-			mean.row(k) += datasets[k][i];
-		}
+		for (size_t i = 0; i < nbSample[k]; ++i) { mean.row(k) += datasets[k][i]; }
 		mean.row(k) /= double(nbSample[k]);
 	}
 
@@ -37,10 +34,7 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 	{
 		//Fit Data to existing covariance matrix method
 		MatrixXd classData(nbFeatures, nbSample[k]);
-		for (size_t i = 0; i < nbSample[k]; ++i)
-		{
-			classData.col(i) = datasets[k][i];
-		}
+		for (size_t i = 0; i < nbSample[k]; ++i) { classData.col(i) = datasets[k][i]; }
 
 		// Standardize Features
 		RowVectorXd scale;
@@ -54,21 +48,23 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 		//classCov = MatrixXd(scale) * classCov * MatrixXd(scale.transpose());
 		for (size_t i = 0; i < nbFeatures; ++i)
 		{
-			for (size_t j = 0; j < nbFeatures; ++j)
-			{
-				classCov(i, j) *= scale[i] * scale[j];
-			}
+			for (size_t j = 0; j < nbFeatures; ++j) { classCov(i, j) *= scale[i] * scale[j]; }
 		}
 
 		//Add to cov with good weight
 		cov += (double(nbSample[k]) / double(totalSample)) * classCov;
 	}
 
-	// linear least squares systems solver
-	weight = cov.bdcSvd(ComputeThinU | ComputeThinV).solve(mean.transpose()).transpose();
-	
+	// linear least squares systems solver (Sometimes solver fails)
+	weight = cov.colPivHouseholderQr().solve(mean.transpose()).transpose();
+	//weight = cov.completeOrthogonalDecomposition().solve(mean.transpose()).transpose();
+	//weight = cov.bdcSvd(ComputeThinU | ComputeThinV).solve(mean.transpose()).transpose();
 	// Treat binary case as a special case
-	if (nbClass == 2) { weight = weight.row(1) - weight.row(0); }
+	if (nbClass == 2)
+	{
+		const MatrixXd tmp = weight.row(1) - weight.row(0);	// Need to use a tmp variable otherwise sometimes error
+		weight = tmp;
+	}
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------

@@ -1,17 +1,11 @@
 ///-------------------------------------------------------------------------------------------------
 /// 
 /// \file Metrics.hpp
-/// 
 /// \brief All Metrics.
-/// 
 /// \author Thibaut Monseigne (Inria).
-/// 
 /// \version 1.0.
-/// 
 /// \date 26/10/2018.
-/// 
 /// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
-/// 
 /// \remarks 
 /// - List of Metrics inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>).
 /// 
@@ -20,7 +14,7 @@
 #pragma once
 #include <string>
 
-/// <summary> Enumeration of metrics. Inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a>.</summary>
+/// <summary>	Enumeration of metrics. Inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a>. </summary>
 enum EMetrics
 {
 	/// <summary>	The Riemannian Metric. </summary>
@@ -43,6 +37,9 @@ enum EMetrics
 	Metric_Identity
 };
 
+/// <summary>	Convert Metrics to string. </summary>
+/// <param name="metric">	The metric. </param>
+/// <returns>	std::string </returns>
 inline std::string MetricToString(const EMetrics metric)
 {
 	switch (metric)
@@ -60,7 +57,10 @@ inline std::string MetricToString(const EMetrics metric)
 	}
 }
 
-inline EMetrics StringToMetric(const std::string metric)
+/// <summary>	Convert string to Metric. </summary>
+/// <param name="metric">	The metric. </param>
+/// <returns>	<see cref="EMetrics"/> </returns>
+inline EMetrics StringToMetric(const std::string& metric)
 {
 	if (metric == "Riemann") { return Metric_Riemann; }
 	if (metric == "Euclidian") { return Metric_Euclidian; }

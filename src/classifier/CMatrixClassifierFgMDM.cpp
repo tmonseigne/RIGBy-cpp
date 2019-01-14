@@ -8,6 +8,14 @@ using namespace std;
 using namespace Eigen;
 using namespace tinyxml2;
 
+///-------------------------------------------------------------------------------------------------
+CMatrixClassifierFgMDM::CMatrixClassifierFgMDM(const CMatrixClassifierFgMDM& obj)
+{
+	copy(obj);
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
 {
 	if (datasets.empty()) { return false; }
@@ -17,22 +25,21 @@ bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
 
 	// Transform to the Tangent Space
 	const size_t nbClass = datasets.size();
-	vector<vector<RowVectorXd>> ts(nbClass);
+	vector<vector<RowVectorXd>> tsSample(nbClass);
 	for (size_t k = 0; k < nbClass; ++k)
 	{
 		const size_t nbTrials = datasets[k].size();
-		ts[k].resize(nbTrials);
+		tsSample[k].resize(nbTrials);
 		for (size_t i = 0; i < nbTrials; ++i)
 		{
-			if (!TangentSpace(datasets[k][i], ts[k][i], m_Ref)) { return false; }
+			if (!TangentSpace(datasets[k][i], tsSample[k][i], m_Ref)) { return false; }
 		}
 	}
 
 	// Compute FgDA Weight
-	if (!(FgDACompute(ts, m_Weight))) { return false; }
+	if (!FgDACompute(tsSample, m_Weight)) { return false; }
 
-
-	// Convert Dataset
+	// Convert Datasets
 	vector<vector<MatrixXd>> newDatasets(nbClass);
 	vector<vector<RowVectorXd>> filtered(nbClass);
 	for (size_t k = 0; k < nbClass; ++k)
@@ -42,15 +49,16 @@ bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
 		filtered[k].resize(nbTrials);
 		for (size_t i = 0; i < nbTrials; ++i)
 		{
-			if (!FgDAApply(ts[k][i], filtered[k][i], m_Weight)) { return false; }				// Apply Filter
+			if (!FgDAApply(tsSample[k][i], filtered[k][i], m_Weight)) { return false; }	// Apply Filter
 			if (!UnTangentSpace(filtered[k][i], newDatasets[k][i], m_Ref)) { return false; }	// Return to Matrix Space
 		}
 	}
 
-	return CMatrixClassifierMDM::train(newDatasets);											// Train MDM
+	return CMatrixClassifierMDM::train(newDatasets);					// Train MDM
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid)
 {
 	std::vector<double> distance, probability;
@@ -58,88 +66,139 @@ bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, vector<double>& distance, vector<double>& probability)
 {
-	RowVectorXd ts, filtered;
+	RowVectorXd tsSample, filtered;
 	MatrixXd newSample;
-	
-	if (!TangentSpace(sample, ts, m_Ref)) { return false; }				// Transform to the Tangent Space
-	if (!FgDAApply(ts, filtered, m_Weight)) { return false; }			// Apply Filter
+
+	if (!TangentSpace(sample, tsSample, m_Ref)) { return false; }		// Transform to the Tangent Space
+	if (!FgDAApply(tsSample, filtered, m_Weight)) { return false; }		// Apply Filter
 	if (!UnTangentSpace(filtered, newSample, m_Ref)) { return false; }	// Return to Matrix Space
 	return CMatrixClassifierMDM::classify(newSample, classid, distance, probability);
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::saveXML(const string& filename)
 {
-	(void)filename;
-	return true;
+	XMLDocument xmlDoc;
+	// Create Root
+	XMLNode* root = xmlDoc.NewElement("Classifier");				// Create root node
+	xmlDoc.InsertFirstChild(root);									// Add root to XML
+
+	// Write Header
+	XMLElement* data = xmlDoc.NewElement("Classifier-data");		// Create data node
+	if (!saveHeaderAttribute(data)) { return false; }				// Save Header attribute
+
+	// Write Reference
+	XMLElement* reference = xmlDoc.NewElement("Reference");			// Create Reference node
+	if (!saveMatrix(reference, m_Ref)) { return false; }			// Save class
+	data->InsertEndChild(reference);								// Add class node to data node
+
+	// Write Weight
+	XMLElement* weight = xmlDoc.NewElement("Weight");				// Create Reference node
+	if (!saveMatrix(weight, m_Weight)) { return false; }			// Save class
+	data->InsertEndChild(weight);									// Add class node to data node
+
+	// Write Class
+	for (size_t k = 0; k < m_ClassCount; ++k)						// for each class
+	{
+		XMLElement* element = xmlDoc.NewElement("Class");			// Create class node
+		element->SetAttribute("class-id", int(k));					// Set attribute class id (0 to K)
+		if (!saveMatrix(element, m_Means[k])) { return false; }		// Save class
+		data->InsertEndChild(element);								// Add class node to data node
+	}
+	root->InsertEndChild(data);										// Add data to root
+
+	return xmlDoc.SaveFile(filename.c_str()) == 0;					// save XML (if != 0 it means error)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::loadXML(const string& filename)
 {
-	(void)filename;
+	// Load File
+	XMLDocument xmlDoc;
+	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }	// Check File Exist and Loading
+
+	// Load Root
+	XMLNode* root = xmlDoc.FirstChild();							// Get Root Node
+	if (root == nullptr) { return false; }							// Check Root Node Exist
+
+	// Load Header
+	XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
+	if (!loadHeaderAttribute(data)) { return false; }				// Load Header attribute
+
+	// Load Reference
+	XMLElement* ref = data->FirstChildElement("Reference");			// Get Reference Node
+	if (!loadMatrix(ref, m_Ref)) { return false; }					// Load Reference Matrix
+
+	// Load Weight
+	XMLElement* weight = data->FirstChildElement("Weight");			// Get Weight Node
+	if (!loadMatrix(weight, m_Weight)) { return false; }			// Load Weight Matrix
+
+	// Load Class
+	XMLElement* element = data->FirstChildElement("Class");			// Get Fist Class Node
+	for (size_t k = 0; k < m_ClassCount; ++k)						// for each class
+	{
+		if (element == nullptr) { return false; }					// Check if Node Exist
+		const size_t idx = element->IntAttribute("class-id");		// Get Id (normally idx = k)
+		if (idx != k) { return false; }								// Check Id
+		if (!loadMatrix(element, m_Means[k])) { return false; }		// Load Class Matrix
+		element = element->NextSiblingElement("Class");				// Next Class
+	}
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::saveHeaderAttribute(XMLElement* element) const
 {
-	(void)element;
+	element->SetAttribute("type", "FgMDM");								// Set attribute classifier type
+	element->SetAttribute("class-count", int(m_ClassCount));			// Set attribute class count
+	element->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::loadHeaderAttribute(XMLElement* element)
 {
-	(void)element;
+	if (element == nullptr) { return false; }						// Check if Node Exist
+	const string classifierType = element->Attribute("type");		// Get type
+	if (classifierType != "FgMDM") { return false; }				// Check Type
+	setClassCount(element->IntAttribute("class-count"));			// Update Number of class
+	m_Metric = StringToMetric(element->Attribute("metric"));		// Update Metric
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::saveClass(XMLElement* element, const size_t index) const
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierFgMDM::isEqual(const CMatrixClassifierFgMDM& obj, const double precision) const
 {
-	(void)element;
-	(void)index;
+	if (!CMatrixClassifierMDM::isEqual(obj, precision)) { return false; }	// Compare base members
+	if (!AreEquals(m_Ref, obj.m_Ref, precision)) { return false; }			// Compare Reference
+	if (!AreEquals(m_Weight, obj.m_Weight, precision)) { return false; }	// Compare Weight
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::loadClass(XMLElement* element, const size_t index)
+///-------------------------------------------------------------------------------------------------
+void CMatrixClassifierFgMDM::copy(const CMatrixClassifierFgMDM& obj)
 {
-	(void)element;
-	(void)index;
-	return true;
+	CMatrixClassifierMDM::copy(obj);
+	m_Ref = obj.m_Ref;
+	m_Weight = obj.m_Weight;
 }
 ///-------------------------------------------------------------------------------------------------
 
-bool CMatrixClassifierFgMDM::operator==(const CMatrixClassifierFgMDM& obj) const
-{
-	(void)obj;
-	return true;
-}
 ///-------------------------------------------------------------------------------------------------
-
-bool CMatrixClassifierFgMDM::operator!=(const CMatrixClassifierFgMDM& obj) const
-{
-	(void)obj;
-	return true;
-}
-///-------------------------------------------------------------------------------------------------
-
-
 stringstream CMatrixClassifierFgMDM::print() const
 {
-	stringstream ss;
-	ss << "Nb of Class : " << m_ClassCount << endl;
+	stringstream ss = CMatrixClassifierMDM::print();				// Print base information
+	ss << "Reference matrix : " << endl << m_Ref << endl;			// Reference 
+	ss << "Weight matrix : " << endl << m_Weight << endl;			// Print Weight
 	return ss;
-}
-///-------------------------------------------------------------------------------------------------
-
-ostream& operator<<(ostream& os, const CMatrixClassifierFgMDM& obj)
-{
-	os << obj.print().str();
-	return os;
 }
 ///-------------------------------------------------------------------------------------------------

@@ -1,19 +1,13 @@
 ///-------------------------------------------------------------------------------------------------
 /// 
 /// \file test_Init.hpp
-/// 
 /// \brief Some constants Initialisation functions for google tests
-/// 
 /// \author Thibaut Monseigne (Inria).
-/// 
 /// \version 0.1.
-/// 
 /// \date 26/10/2018.
-/// 
 /// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
-/// 
 /// \remarks 
-/// - For this test I compare the results with the <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> library (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>) or <a href="http://scikit-learn.org">sklearn</a> if pyRiemman just redirect the function.
+/// - For this tests I compare the results with the <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> library (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>) or <a href="http://scikit-learn.org">sklearn</a> if pyRiemman just redirect the function.
 /// 
 ///-------------------------------------------------------------------------------------------------
 
@@ -21,6 +15,8 @@
 
 #include <vector>
 #include<Eigen/Dense>
+#include "classifier/CMatrixClassifierMDM.hpp"
+#include "classifier/CMatrixClassifierFgMDM.hpp"
 
 #define NB_CLASS	02
 #define NB_CHAN		03
@@ -29,9 +25,9 @@
 #define NB_TRIALS2	05
 #define NB_TRIALS	12
 
-//********************************************
-//********** Initialisation Dataset **********
-//********************************************
+//*********************************************
+//********** Initialisation Datasets **********
+//*********************************************
 namespace InitDataset
 {
 	inline std::vector<Eigen::MatrixXd> FirstClassDataset()
@@ -113,16 +109,16 @@ namespace InitDataset
 		result.insert(result.end(), std::make_move_iterator(s2.begin()), std::make_move_iterator(s2.end()));
 		return result;
 	}
-}  // namespace Dataset
+}  // namespace InitDataset
 
-//******************************************************
-//********** Initialisation Basics of Dataset **********
-//******************************************************
+//*****************************************************************
+//********** Initialisation Basics Reference of Datasets **********
+//*****************************************************************
 namespace InitBasics
 {
 	namespace Center
 	{
-		inline std::vector<Eigen::MatrixXd> FirstClassDataset()
+		inline std::vector<Eigen::MatrixXd> FirstClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS1);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_SAMPLE); }
@@ -158,7 +154,7 @@ namespace InitBasics
 			return result;
 		}
 
-		inline std::vector<Eigen::MatrixXd> SecondClassDataset()
+		inline std::vector<Eigen::MatrixXd> SecondClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS2);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_SAMPLE); }
@@ -186,23 +182,24 @@ namespace InitBasics
 			return result;
 		}
 
-		inline std::vector<std::vector<Eigen::MatrixXd>> Dataset()
+		inline std::vector<std::vector<Eigen::MatrixXd>> Reference()
 		{
 			std::vector<std::vector<Eigen::MatrixXd>> result;
 			result.resize(2);
-			result[0] = FirstClassDataset();
-			result[1] = SecondClassDataset();
+			result[0] = FirstClassReference();
+			result[1] = SecondClassReference();
 			return result;
 		}
 	}
 }
-//**********************************************************
-//********** Initialisation Covariance of Dataset **********
-//**********************************************************
+
+//*********************************************************************
+//********** Initialisation Covariance Reference of Datasets **********
+//*********************************************************************
 namespace InitCovariance
 {
 	//*********************************
-	//********** COR Dataset **********
+	//********** COR Reference **********
 	//*********************************	
 	namespace COR
 	{
@@ -282,7 +279,7 @@ namespace InitCovariance
 	// namespace COR
 
 	//*********************************
-	//********** COV Dataset **********
+	//********** COV Reference **********
 	//*********************************	
 	namespace COV
 	{
@@ -362,11 +359,11 @@ namespace InitCovariance
 	// namespace COV
 
 	//*********************************
-	//********** LWF Dataset **********
+	//********** LWF Reference **********
 	//*********************************
 	namespace LWF
 	{
-		inline std::vector<Eigen::MatrixXd> FirstClassDataset()
+		inline std::vector<Eigen::MatrixXd> FirstClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(7);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -402,7 +399,7 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<Eigen::MatrixXd> SecondClassDataset()
+		inline std::vector<Eigen::MatrixXd> SecondClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(5);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -430,23 +427,23 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<std::vector<Eigen::MatrixXd>> Dataset()
+		inline std::vector<std::vector<Eigen::MatrixXd>> Reference()
 		{
 			std::vector<std::vector<Eigen::MatrixXd>> result;
 			result.resize(2);
-			result[0] = FirstClassDataset();
-			result[1] = SecondClassDataset();
+			result[0] = FirstClassReference();
+			result[1] = SecondClassReference();
 			return result;
 		}
 	}
 	// namespace LWF
 
 	//*********************************
-	//********** MCD Dataset **********
+	//********** MCD Reference **********
 	//*********************************	
 	namespace MCD
 	{
-		inline std::vector<Eigen::MatrixXd> FirstClassDataset()
+		inline std::vector<Eigen::MatrixXd> FirstClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS1);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -482,7 +479,7 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<Eigen::MatrixXd> SecondClassDataset()
+		inline std::vector<Eigen::MatrixXd> SecondClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS2);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -510,23 +507,23 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<std::vector<Eigen::MatrixXd>> Dataset()
+		inline std::vector<std::vector<Eigen::MatrixXd>> Reference()
 		{
 			std::vector<std::vector<Eigen::MatrixXd>> result;
 			result.resize(2);
-			result[0] = FirstClassDataset();
-			result[1] = SecondClassDataset();
+			result[0] = FirstClassReference();
+			result[1] = SecondClassReference();
 			return result;
 		}
 	}
 	// namespace MCD
 
 	//*********************************
-	//********** OAS Dataset **********
+	//********** OAS Reference **********
 	//*********************************	
 	namespace OAS
 	{
-		inline std::vector<Eigen::MatrixXd> FirstClassDataset()
+		inline std::vector<Eigen::MatrixXd> FirstClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS1);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -562,7 +559,7 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<Eigen::MatrixXd> SecondClassDataset()
+		inline std::vector<Eigen::MatrixXd> SecondClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS2);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -590,23 +587,23 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<std::vector<Eigen::MatrixXd>> Dataset()
+		inline std::vector<std::vector<Eigen::MatrixXd>> Reference()
 		{
 			std::vector<std::vector<Eigen::MatrixXd>> result;
 			result.resize(2);
-			result[0] = FirstClassDataset();
-			result[1] = SecondClassDataset();
+			result[0] = FirstClassReference();
+			result[1] = SecondClassReference();
 			return result;
 		}
 	}
 	// namespace OAS
 
 	//*********************************
-	//********** SCM Dataset **********
+	//********** SCM Reference **********
 	//*********************************	
 	namespace SCM
 	{
-		inline std::vector<Eigen::MatrixXd> FirstClassDataset()
+		inline std::vector<Eigen::MatrixXd> FirstClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS1);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -642,7 +639,7 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<Eigen::MatrixXd> SecondClassDataset()
+		inline std::vector<Eigen::MatrixXd> SecondClassReference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS2);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -670,12 +667,12 @@ namespace InitCovariance
 			return result;
 		}
 
-		inline std::vector<std::vector<Eigen::MatrixXd>> Dataset()
+		inline std::vector<std::vector<Eigen::MatrixXd>> Reference()
 		{
 			std::vector<std::vector<Eigen::MatrixXd>> result;
 			result.resize(2);
-			result[0] = FirstClassDataset();
-			result[1] = SecondClassDataset();
+			result[0] = FirstClassReference();
+			result[1] = SecondClassReference();
 			return result;
 		}
 	}
@@ -683,9 +680,9 @@ namespace InitCovariance
 }
 // namespace InitCovariance
 
-//*****************************************************
-//********** Initialisation Means of Dataset **********
-//*****************************************************
+//****************************************************************
+//********** Initialisation Means Reference of Datasets **********
+//****************************************************************
 namespace InitMeans
 {
 	//************************************
@@ -693,7 +690,7 @@ namespace InitMeans
 	//************************************	
 	namespace Euclidian
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.87394645, 0.02563437, 0.0298922,
@@ -709,7 +706,7 @@ namespace InitMeans
 	//****************************************	
 	namespace LogEuclidian
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.7137077, 0.01869396, 0.02040996,
@@ -725,7 +722,7 @@ namespace InitMeans
 	//**********************************	
 	namespace Riemann
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.70952664, 0.01674082, 0.02077766,
@@ -741,7 +738,7 @@ namespace InitMeans
 	//******************************************	
 	namespace LogDeterminant
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.70798275, 0.01610538, 0.02003787,
@@ -757,7 +754,7 @@ namespace InitMeans
 	//***********************************	
 	namespace Kullback
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.71301511, 0.01811099, 0.02219169,
@@ -773,7 +770,7 @@ namespace InitMeans
 	//**************************************	
 	namespace Wasserstein
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.79643838, 0.0229425, 0.02418139,
@@ -789,7 +786,7 @@ namespace InitMeans
 	//******************************	
 	namespace ALE
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.70133202, 0.01256147, 0.01500743,
@@ -805,7 +802,7 @@ namespace InitMeans
 	//***********************************	
 	namespace Harmonic
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1.56594664, 0.01175612, 0.01576697,
@@ -821,7 +818,7 @@ namespace InitMeans
 	//***********************************	
 	namespace Identity
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			Eigen::MatrixXd result(NB_CHAN, NB_CHAN);
 			result << 1, 0, 0,
@@ -833,9 +830,9 @@ namespace InitMeans
 	}
 }
 
-//********************************************************
-//********** Initialisation Distance of Dataset **********
-//********************************************************
+//*******************************************************************
+//********** Initialisation Distance Reference of Datasets **********
+//*******************************************************************
 namespace InitDistance
 {
 	//************************************
@@ -843,7 +840,7 @@ namespace InitDistance
 	//************************************	
 	namespace Euclidian
 	{
-		inline std::vector<double> Dataset()
+		inline std::vector<double> Reference()
 		{
 			return std::vector<double>{ 2.27941886, 1.06479476, 1.02847791, 1.59375373, 1.55723736, 0.38300632, 0.50680192, 1.04235464, 1.05530485, 1.12584212, 0.7888681, 0.74648348 };
 		}
@@ -854,7 +851,7 @@ namespace InitDistance
 	//****************************************	
 	namespace LogEuclidian
 	{
-		inline std::vector<double> Dataset()
+		inline std::vector<double> Reference()
 		{
 			return std::vector<double>{ 1.32256326, 0.66407543, 0.58679669, 1.40770199, 0.74410706, 0.35240113, 0.43103276, 0.71149032, 0.67768624, 0.80611325, 0.59020555, 0.66716464 };
 		}
@@ -865,7 +862,7 @@ namespace InitDistance
 	//**********************************	
 	namespace Riemann
 	{
-		inline std::vector<double> Dataset()
+		inline std::vector<double> Reference()
 		{
 			return std::vector<double>{ 1.32849591, 0.66514346, 0.58560532, 1.41024439, 0.747409, 0.34896944, 0.43236778, 0.71205324, 0.67698377, 0.80599981, 0.59091178, 0.66423683 };
 		}
@@ -876,7 +873,7 @@ namespace InitDistance
 	//******************************************	
 	namespace LogDeterminant
 	{
-		inline std::vector<double> Dataset()
+		inline std::vector<double> Reference()
 		{
 			return std::vector<double>{ 0.46451334, 0.23505451, 0.20685864, 0.49230328, 0.26223382, 0.1207747, 0.15093304, 0.25002132, 0.23755315, 0.28080601, 0.20652205, 0.23046043 };
 		}
@@ -887,7 +884,7 @@ namespace InitDistance
 	//***********************************	
 	namespace Kullback
 	{
-		inline std::vector<double> Dataset()
+		inline std::vector<double> Reference()
 		{
 			return std::vector<double>{ 0.9229355, 0.22182567, 0.17231943, 1.04684976, 0.28821354, 0.06625571, 0.09835624, 0.26108052, 0.23637438, 0.34499747, 0.18292577, 0.238331 };
 		}
@@ -898,16 +895,16 @@ namespace InitDistance
 	//**************************************	
 	namespace Wasserstein
 	{
-		inline std::vector<double> Dataset()
+		inline std::vector<double> Reference()
 		{
 			return std::vector<double>{ 0.80006691, 0.41547827, 0.38690865, 0.70393068, 0.5282644, 0.16253726, 0.22475651, 0.42258195, 0.41676291, 0.45835023, 0.32884, 0.33947315 };
 		}
 	}
 }
 
-//*********************************************************
-//********** Initialisation Geodesics of Dataset **********
-//*********************************************************
+//********************************************************************
+//********** Initialisation Geodesics Reference of Datasets **********
+//********************************************************************
 namespace InitGeodesics
 {
 	//****************************************
@@ -915,7 +912,7 @@ namespace InitGeodesics
 	//****************************************	
 	namespace Euclidian
 	{
-		inline std::vector<Eigen::MatrixXd> Dataset()
+		inline std::vector<Eigen::MatrixXd> Reference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -977,7 +974,7 @@ namespace InitGeodesics
 	//********************************************	
 	namespace LogEuclidian
 	{
-		inline std::vector<Eigen::MatrixXd> Dataset()
+		inline std::vector<Eigen::MatrixXd> Reference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -1039,7 +1036,7 @@ namespace InitGeodesics
 	//**************************************	
 	namespace Riemann
 	{
-		inline std::vector<Eigen::MatrixXd> Dataset()
+		inline std::vector<Eigen::MatrixXd> Reference()
 		{
 			std::vector<Eigen::MatrixXd> result(NB_TRIALS);
 			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
@@ -1097,14 +1094,14 @@ namespace InitGeodesics
 	}
 }
 
-//*************************************************************
-//********** Initialisation Featurization of Dataset **********
-//*************************************************************
+//************************************************************************
+//********** Initialisation Featurization Reference of Datasets **********
+//************************************************************************
 namespace InitFeaturization
 {
 	namespace TangentSpace
 	{
-		inline std::vector<Eigen::RowVectorXd> Dataset()
+		inline std::vector<Eigen::RowVectorXd> Reference()
 		{
 			std::vector<Eigen::RowVectorXd> result(NB_TRIALS);
 			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
@@ -1129,7 +1126,7 @@ namespace InitFeaturization
 
 	namespace Squeeze
 	{
-		inline std::vector<Eigen::RowVectorXd> Dataset()
+		inline std::vector<Eigen::RowVectorXd> Reference()
 		{
 			std::vector<Eigen::RowVectorXd> result(NB_TRIALS);
 			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
@@ -1153,6 +1150,9 @@ namespace InitFeaturization
 	}
 }
 
+//**********************************************************************
+//********** Initialisation Classifiers Reference of Datasets **********
+//**********************************************************************
 namespace InitClassif
 {
 	//**************************
@@ -1160,7 +1160,7 @@ namespace InitClassif
 	//**************************
 	namespace LSQR
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
 			Eigen::MatrixXd result(1, nbFeatures);
@@ -1174,7 +1174,7 @@ namespace InitClassif
 	//**********************************
 	namespace FgDACompute 
 	{
-		inline Eigen::MatrixXd Dataset()
+		inline Eigen::MatrixXd Reference()
 		{
 			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
 			Eigen::MatrixXd result(nbFeatures, nbFeatures);
@@ -1189,22 +1189,26 @@ namespace InitClassif
 	}
 }
 
+//*****************************************************************************
+//********** Initialisation Matrix Classifiers Reference of Datasets **********
+//*****************************************************************************
 namespace InitMatrixClassif
 {
 	namespace MDM
 	{
-		inline std::vector<Eigen::MatrixXd> Dataset()
+		inline CMatrixClassifierMDM Reference()
 		{
-			std::vector<Eigen::MatrixXd> result(NB_CLASS);
-			for (auto& m : result) { m.resize(NB_CHAN, NB_CHAN); }
+			CMatrixClassifierMDM result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
 
-			result[0] << 1.92849739, -0.1538202, 0.01072518,
+			result.m_Means[0] << 1.92849739, -0.1538202, 0.01072518,
 				-0.1538202, 1.41817199, 0.06326929,
 				0.01072518, 0.06326929, 0.6661666;
 
-			result[1] << 1.46525466, 0.258979, 0.03170221,
+			result.m_Means[1] << 1.46525466, 0.258979, 0.03170221,
 				0.258979, 1.94533383, 0.03574208,
 				0.03170221, 0.03574208, 1.13153112;
+
 			return result;
 		}
 
@@ -1212,6 +1216,7 @@ namespace InitMatrixClassif
 		{
 			return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 };
 		}
+
 		inline std::vector<std::vector<double>> PredictionDistance()
 		{
 			std::vector<std::vector<double>> result(NB_TRIALS);
@@ -1227,6 +1232,62 @@ namespace InitMatrixClassif
 			result[9] = { 1.06734674, 0.55234461 };
 			result[10] = { 0.85650116, 0.39055362 };
 			result[11] = { 0.92153991, 0.45995369 };
+			return result;
+		}
+	}
+
+	namespace FgMDM
+	{
+		inline CMatrixClassifierFgMDM Reference()
+		{
+			CMatrixClassifierFgMDM result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 2.08042432, -0.08968098, 0.03145977,
+				-0.08968098, 1.41163613, 0.09127538,
+				0.03145977, 0.09127538, 0.734828;
+
+			result.m_Means[1] << 1.30840283, 0.15716713, 0.00232698,
+				0.15716713, 1.93455782, -0.01963492,
+				0.00232698, -0.01963492, 0.98852719;
+
+			result.m_Ref.resize(NB_CHAN, NB_CHAN);
+			result.m_Ref << 1.70952664, 0.01674082, 0.02077766,
+				0.01674082, 1.60344581, 0.05423902,
+				0.02077766, 0.05423902, 0.8303257;
+
+			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
+			result.m_Weight.resize(nbFeatures, nbFeatures);
+			result.m_Weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
+				-0.20916523, 0.09570218, -0.01538245, 0.14113622, -0.06657818, 0.13492396,
+				0.03361964, -0.01538245, 0.00247246, -0.02268517, 0.01070127, -0.02168666,
+				-0.30846516, 0.14113622, -0.02268517, 0.20813978, -0.09818576, 0.1989783,
+				0.14551225, -0.06657818, 0.01070127, -0.09818576, 0.04631716, -0.09386402,
+				-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
+
+			return result;
+		}
+
+		inline std::vector<size_t> Prediction()
+		{
+			return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 };
+		}
+
+		inline std::vector<std::vector<double>> PredictionDistance()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0] = { 0.02665352, 0.71870784 };
+			result[1] = { 0.0963665, 0.78842083 };
+			result[2] = { 0.27172762, 0.4203267 };
+			result[3] = { 0.86848167, 1.56053599 };
+			result[4] = { 0.13999143, 0.83204575 };
+			result[5] = { 0.44863838, 0.24341594 };
+			result[6] = { 0.41112711, 0.28092722 };
+			result[7] = { 0.59496729, 0.09708703 };
+			result[8] = { 0.87589215, 0.18383782 };
+			result[9] = { 0.76329856, 0.07124423 };
+			result[10] = { 0.59422854, 0.09782578 };
+			result[11] = { 0.63188509, 0.06016924 };
 			return result;
 		}
 	}

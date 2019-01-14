@@ -1,3 +1,14 @@
+///-------------------------------------------------------------------------------------------------
+/// 
+/// \file test_UtilsBasics.hpp
+/// \brief Tests for Riemannian Geometry Utils : Basics
+/// \author Thibaut Monseigne (Inria).
+/// \version 1.0.
+/// \date 09/01/2019.
+/// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
+/// 
+///-------------------------------------------------------------------------------------------------
+
 #pragma once
 
 #include "gtest/gtest.h"
@@ -18,7 +29,7 @@ protected:
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Basics, MatrixCenter)
 {
-	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitBasics::Center::Dataset();
+	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitBasics::Center::Reference();
 	calc.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
 	{
@@ -44,7 +55,6 @@ TEST_F(Tests_Basics, GetElements)
 }
 //---------------------------------------------------------------------------------------------------
 
-
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Basics, ARange)
 {
@@ -55,7 +65,7 @@ TEST_F(Tests_Basics, ARange)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Basics, ReduceVector)
+TEST_F(Tests_Basics, Vector2DTo1D)
 {
 	std::vector<Eigen::MatrixXd> calc = Vector2DTo1D(m_dataSet);
 	bool egal = true;
