@@ -18,8 +18,6 @@
 class CMatrixClassifierFgMDM : public CMatrixClassifierMDM
 {
 public:
-	Eigen::MatrixXd m_Ref, m_Weight;
-
 	//***********************	
 	//***** Constructor *****
 	//***********************	
@@ -47,20 +45,7 @@ public:
 	/// \copydoc IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classid) override;
 
-	/// \copybrief IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&)
-	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class. 
-	///
-	/// Compute the distance between the sample and each mean matrix.\n
-	/// The class with the closest mean is the predicted class.\n
-	/// The distance is returned.\n
-	/// The probability \f$ \mathcal{P}_i \f$ to be the class \f$ i \f$ is compute as :
-	/// \f[
-	/// p_i = \frac{d_{\text{min}}}{d_i}\\
-	/// \mathcal{P}_i =  \frac{p_i}{\sum{\left(p_i\right)}}
-	/// \f]\n
-	/// <b>Remark</b> : The probability is normalized \f$ \sum{\left(\mathcal{P}_i\right)} = 1 \f$
-	///	</summary>
-	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&)
+	/// \copydoc CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classid, std::vector<double>& distance, std::vector<double>& probability) override;
 
 	//***********************
@@ -72,33 +57,9 @@ public:
 	/// \copydoc IMatrixClassifier::loadXML(const std::string&)
 	bool loadXML(const std::string& filename) override;
 
-	/// <summary>	Add the attribute on the first node.
-	///
-	/// -# The type of the classifier : FgMDM
-	/// -# The number of class : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::saveHeaderAttribute(tinyxml2::XMLElement*) const
-	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
-
-	/// <summary>	Loads the attribute on the first node.
-	///
-	/// -# Check the type : FgMDM
-	/// -# The number of class : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::loadHeaderAttribute(tinyxml2::XMLElement*)
-	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
-
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
-	/// \copydoc IMatrixClassifier::isEqual(const IMatrixClassifier&, const double) const
-	bool isEqual(const CMatrixClassifierFgMDM& obj, double precision = 1e-6) const;
-
-	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
-	void copy(const CMatrixClassifierFgMDM& obj);
-
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean with geodesic filtering. </returns>
 	std::string getType() const override { return "Minimum Distance to Mean with geodesic filtering"; }
@@ -125,4 +86,38 @@ public:
 		os << obj.print().str();
 		return os;
 	}
+
+	//***** Variables *****
+	Eigen::MatrixXd m_Ref, m_Weight;
+
+protected:
+	//***********************
+	//***** XML Manager *****
+	//***********************
+	/// <summary>	Add the attribute on the first node.
+	///
+	/// -# The type of the classifier : FgMDM
+	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The metric to use : <see cref="m_Metric"/>
+	/// </summary>
+	/// \copydetails IMatrixClassifier::saveHeaderAttribute(tinyxml2::XMLElement*) const
+	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
+
+	/// <summary>	Loads the attribute on the first node.
+	///
+	/// -# Check the type : FgMDM
+	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The metric to use : <see cref="m_Metric"/>
+	/// </summary>
+	/// \copydetails IMatrixClassifier::loadHeaderAttribute(tinyxml2::XMLElement*)
+	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
+
+	//*****************************
+	//***** Override Operator *****
+	//*****************************
+	/// \copydoc IMatrixClassifier::isEqual(const IMatrixClassifier&, const double) const
+	bool isEqual(const CMatrixClassifierFgMDM& obj, double precision = 1e-6) const;
+
+	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
+	void copy(const CMatrixClassifierFgMDM& obj);
 };

@@ -26,7 +26,7 @@ IMatrixClassifier::IMatrixClassifier(const IMatrixClassifier& obj)
 ///-------------------------------------------------------------------------------------------------
 void IMatrixClassifier::setClassCount(const size_t classcount)
 {
-	m_ClassCount = classcount;
+	m_classCount = classcount;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -79,10 +79,9 @@ bool IMatrixClassifier::loadMatrix(XMLElement* element, MatrixXd& matrix)
 //***** Override Operator *****
 //*****************************
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::isEqual(const IMatrixClassifier& obj, const double precision) const
+bool IMatrixClassifier::isEqual(const IMatrixClassifier& obj, const double /*precision*/) const
 {
-	(void)precision;	// Useless in this level
-	return m_Metric == obj.m_Metric && m_ClassCount == obj.m_ClassCount;
+	return m_Metric == obj.m_Metric && m_classCount == obj.m_classCount;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -90,6 +89,6 @@ bool IMatrixClassifier::isEqual(const IMatrixClassifier& obj, const double preci
 void IMatrixClassifier::copy(const IMatrixClassifier& obj)
 {
 	m_Metric = obj.m_Metric;
-	m_ClassCount = obj.m_ClassCount;
+	m_classCount = obj.m_classCount;
 }
 ///-------------------------------------------------------------------------------------------------

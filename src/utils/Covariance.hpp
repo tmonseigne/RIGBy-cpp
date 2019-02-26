@@ -58,9 +58,6 @@ inline std::string EstimatorToString(const EEstimator estimator)
 		default: return "Invalid";
 	}
 }
-//***************************************************
-//***************************************************
-//***************************************************
 
 //***********************************************************
 //******************** COVARIANCES BASES ********************
@@ -107,9 +104,6 @@ bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, double sh
 /// <param name="standard">		(Optional) Standardize the data (see <see cref="EStandardization"/>). </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = Estimator_COV, EStandardization standard = Standardization_Center);
-//***********************************************************
-//***********************************************************
-//***********************************************************
 
 //***********************************************************
 //******************** COVARIANCES TYPES ********************
@@ -216,6 +210,3 @@ bool CovarianceMatrixCOR(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// <param name="cov">	  	The Covariance Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool CovarianceMatrixIDE(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
-//***********************************************************
-//***********************************************************
-//***********************************************************

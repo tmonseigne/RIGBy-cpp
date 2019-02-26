@@ -19,13 +19,7 @@
 /// <summary>	Abstract class of Matrix Classifier. </summary>
 class IMatrixClassifier
 {
-public:	
-	/// <summary>	Number of class to classify. </summary>
-	size_t m_ClassCount = 2;
-
-	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetrics" />). </summary>
-	EMetrics m_Metric = Metric_Riemann;
-
+public:
 	//***********************	
 	//***** Constructor *****	
 	//***********************	
@@ -37,9 +31,9 @@ public:
 	IMatrixClassifier(const IMatrixClassifier& obj);
 
 	/// <summary>	Initializes a new instance of the <see cref="IMatrixClassifier"/> class and set members. </summary>
-	/// <param name="classcount">	The number of class. </param>
+	/// <param name="classcount">	The number of classes. </param>
 	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetrics" />). </param>
-	explicit IMatrixClassifier(size_t classcount, EMetrics metric);
+	explicit IMatrixClassifier(const size_t classcount, const EMetrics metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="IMatrixClassifier"/> class. </summary>
 	virtual ~IMatrixClassifier() = default;
@@ -49,7 +43,10 @@ public:
 	//**********************
 	/// <summary>	Sets the class count. </summary>
 	/// <param name="classcount">	The classcount. </param>
-	virtual void setClassCount(size_t classcount);
+	virtual void setClassCount(const size_t classcount);
+
+	/// <summary>	get the class count. </summary>
+	virtual size_t getClassCount() const { return m_classCount; }
 	
 	/// <summary>	Train the classifier with the dataset. \n
 	/// Each row is the trials of each class. The trainer compute the mean of each row with the <see cref="EMetrics" /> in <see cref="m_Metric"/> member.
@@ -84,42 +81,6 @@ public:
 	/// <param name="filename">	Filename. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	virtual bool loadXML(const std::string& filename) = 0;
-
-	/// <summary>	Add the attribute on the first node (general informations as classifier type). </summary>
-	/// <param name="element">	Node to modify. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool saveHeaderAttribute(tinyxml2::XMLElement* element) const = 0;
-	
-	/// <summary>	Loads the attribute on the first node (general informations as classifier type). </summary>
-	/// <param name="element">	Node to read. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool loadHeaderAttribute(tinyxml2::XMLElement* element) = 0;
-	
-	/// <summary>	Format the Matrix for XML Saving. </summary>
-	/// <param name="in">	Matrix. </param>
-	/// <param name="out">	Stringstream. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool convertMatrixToXMLFormat(const Eigen::MatrixXd& in, std::stringstream& out);
-
-	/// <summary>	Fill the Matrix From XML Format. </summary>
-	/// <param name="in">	Stringstream. </param>
-	/// <param name="out">	Matrix. </param>
-	/// <param name="rows">	Number of rows. </param>
-	/// <param name="cols">	Number of cols. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool convertXMLFormatToMatrix(std::stringstream& in, Eigen::MatrixXd& out, size_t rows, size_t cols);
-
-	/// <summary>	Saves matrix. </summary>
-	/// <param name="element">	Matrix Node. </param>
-	/// <param name="matrix">	Matrix to save. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool saveMatrix(tinyxml2::XMLElement* element, const Eigen::MatrixXd& matrix);
-
-	/// <summary>	Load matrix. </summary>
-	/// <param name="element">	Matrix Node. </param>
-	/// <param name="matrix">	Matrix to load. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixXd& matrix);
 
 
 	//*****************************
@@ -171,4 +132,52 @@ public:
 		os << obj.print().str();
 		return os;
 	}
+
+	//***** Variables *****
+	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetrics" />). </summary>
+	EMetrics m_Metric = Metric_Riemann;
+
+protected:
+	//***********************
+	//***** XML Manager *****
+	//***********************
+	/// <summary>	Add the attribute on the first node (general informations as classifier type). </summary>
+	/// <param name="element">	Node to modify. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	virtual bool saveHeaderAttribute(tinyxml2::XMLElement* element) const = 0;
+
+	/// <summary>	Loads the attribute on the first node (general informations as classifier type). </summary>
+	/// <param name="element">	Node to read. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	virtual bool loadHeaderAttribute(tinyxml2::XMLElement* element) = 0;
+
+	/// <summary>	Format the Matrix for XML Saving. </summary>
+	/// <param name="in">	Matrix. </param>
+	/// <param name="out">	Stringstream. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool convertMatrixToXMLFormat(const Eigen::MatrixXd& in, std::stringstream& out);
+
+	/// <summary>	Fill the Matrix From XML Format. </summary>
+	/// <param name="in">	Stringstream. </param>
+	/// <param name="out">	Matrix. </param>
+	/// <param name="rows">	Number of rows. </param>
+	/// <param name="cols">	Number of cols. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool convertXMLFormatToMatrix(std::stringstream& in, Eigen::MatrixXd& out, size_t rows, size_t cols);
+
+	/// <summary>	Saves matrix. </summary>
+	/// <param name="element">	Matrix Node. </param>
+	/// <param name="matrix">	Matrix to save. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool saveMatrix(tinyxml2::XMLElement* element, const Eigen::MatrixXd& matrix);
+
+	/// <summary>	Load matrix. </summary>
+	/// <param name="element">	Matrix Node. </param>
+	/// <param name="matrix">	Matrix to load. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixXd& matrix);
+
+	//***** Variables *****
+	/// <summary>	Number of classes to classify. </summary>
+	size_t m_classCount = 2;
 };

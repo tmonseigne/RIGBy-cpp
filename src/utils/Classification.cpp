@@ -45,7 +45,6 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 		if (!CovarianceMatrix(classData, classCov, Estimator_LWF)) { return false; }
 
 		// Rescale
-		//classCov = MatrixXd(scale) * classCov * MatrixXd(scale.transpose());
 		for (size_t i = 0; i < nbFeatures; ++i)
 		{
 			for (size_t j = 0; j < nbFeatures; ++j) { classCov(i, j) *= scale[i] * scale[j]; }
@@ -55,10 +54,12 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 		cov += (double(nbSample[k]) / double(totalSample)) * classCov;
 	}
 
-	// linear least squares systems solver (Sometimes solver fails)
+	// linear least squares systems solver
+	// Chosen solver with the performance table of this page : https://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html
 	weight = cov.colPivHouseholderQr().solve(mean.transpose()).transpose();
 	//weight = cov.completeOrthogonalDecomposition().solve(mean.transpose()).transpose();
 	//weight = cov.bdcSvd(ComputeThinU | ComputeThinV).solve(mean.transpose()).transpose();
+
 	// Treat binary case as a special case
 	if (nbClass == 2)
 	{

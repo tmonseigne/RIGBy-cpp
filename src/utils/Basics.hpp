@@ -30,7 +30,6 @@ enum EStandardization
 //************************************************
 //******************** Matrix ********************
 //************************************************
-
 /// <summary>	Standardize data row by row with selected method (destructive operation). </summary>
 /// <param name="matrix"> 	The matrix to standardize. </param>
 /// <param name="standard">	Standard method. </param>
@@ -93,11 +92,7 @@ std::string MatrixPrint(const Eigen::MatrixXd& matrix);
 /// <param name="matrix2">		Second Matrix. </param>
 /// <param name="precision">	Precision for matrix comparison. </param>
 /// <returns>		True if Equals, false if not. </returns>
-bool AreEquals(const Eigen::MatrixXd& matrix1, const Eigen::MatrixXd& matrix2, const double precision = 1e-6);
-
-//************************************************
-//************************************************
-//************************************************
+bool AreEquals(const Eigen::MatrixXd& matrix1, const Eigen::MatrixXd& matrix2, double precision = 1e-6);
 
 //*************************************************************
 //******************** Index Manipulations ********************
@@ -159,10 +154,6 @@ std::vector<std::vector<T>> Vector1DTo2D(const std::vector<T>& in, const std::ve
 	return result;
 }
 
-//*************************************************************
-//*************************************************************
-//*************************************************************
-
 //***************************************************
 //******************** Validates ********************
 //***************************************************
@@ -199,11 +190,6 @@ bool isSquare(const Eigen::MatrixXd& matrix);
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool areSquare(const std::vector<Eigen::MatrixXd>& matrices);
 
-//***************************************************
-//***************************************************
-//***************************************************
-
-
 //********************************************************
 //******************** CSV MANAGEMENT ********************
 //********************************************************
@@ -212,7 +198,3 @@ bool areSquare(const std::vector<Eigen::MatrixXd>& matrices);
 /// <param name="sep">	the separator string which splits.</param>
 /// <returns>	Vector of string part. </returns>
 std::vector<std::string> Split(const std::string& s, const std::string& sep);
-
-//********************************************************
-//********************************************************
-//********************************************************

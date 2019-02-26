@@ -46,8 +46,8 @@ bool MatrixCenter(const MatrixXd& in, MatrixXd& out)
 //---------------------------------------------------------------------------------------------------
 bool MatrixStandardScaler(MatrixXd& matrix)
 {
-	RowVectorXd scale;
-	return MatrixStandardScaler(matrix, scale);
+	RowVectorXd dummyScale;
+	return MatrixStandardScaler(matrix, dummyScale);
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -91,8 +91,8 @@ bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out, RowVectorXd& scale)
 //---------------------------------------------------------------------------------------------------
 bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out)
 {
-	RowVectorXd scale;
-	return MatrixStandardScaler(in, out, scale);
+	RowVectorXd dummyScale;
+	return MatrixStandardScaler(in, out, dummyScale);
 }
 //---------------------------------------------------------------------------------------------------
 

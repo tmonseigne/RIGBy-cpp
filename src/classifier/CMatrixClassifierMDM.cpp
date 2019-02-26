@@ -13,7 +13,7 @@ using namespace tinyxml2;
 ///-------------------------------------------------------------------------------------------------
 CMatrixClassifierMDM::CMatrixClassifierMDM()
 {
-	CMatrixClassifierMDM::setClassCount(m_ClassCount);
+	CMatrixClassifierMDM::setClassCount(m_classCount);
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -45,10 +45,10 @@ CMatrixClassifierMDM::~CMatrixClassifierMDM()
 ///-------------------------------------------------------------------------------------------------
 void CMatrixClassifierMDM::setClassCount(const size_t classcount)
 {
-	if (m_ClassCount != classcount || m_Means.size() != classcount)
+	if (m_classCount != classcount || m_Means.size() != classcount)
 	{
 		IMatrixClassifier::setClassCount(classcount);
-		m_Means.resize(m_ClassCount);
+		m_Means.resize(m_classCount);
 	}
 }
 ///-------------------------------------------------------------------------------------------------
@@ -56,8 +56,8 @@ void CMatrixClassifierMDM::setClassCount(const size_t classcount)
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 {
-	setClassCount(datasets.size());										// Change the number of class if needed
-	for (size_t i = 0; i < m_ClassCount; ++i)
+	setClassCount(datasets.size());										// Change the number of classes if needed
+	for (size_t i = 0; i < m_classCount; ++i)
 	{
 		if (!Mean(datasets[i], m_Means[i], m_Metric)) { return false; }	// Compute the mean of each class
 	}
@@ -80,8 +80,8 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vec
 	double distMin = std::numeric_limits<double>::max();	// Init of distance min
 
 	// Compute Distance
-	distance.resize(m_ClassCount);
-	for (size_t i = 0; i < m_ClassCount; ++i)
+	distance.resize(m_classCount);
+	for (size_t i = 0; i < m_classCount; ++i)
 	{
 		distance[i] = Distance(sample, m_Means[i], m_Metric);
 		if (distMin > distance[i])
@@ -92,9 +92,9 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vec
 	}
 
 	// Compute Probability (personnal method)
-	probability.resize(m_ClassCount);
+	probability.resize(m_classCount);
 	double sumProbability = 0.0;
-	for (size_t i = 0; i < m_ClassCount; ++i)
+	for (size_t i = 0; i < m_classCount; ++i)
 	{
 		probability[i] = distMin / distance[i];
 		sumProbability += probability[i];
@@ -121,7 +121,7 @@ bool CMatrixClassifierMDM::saveXML(const std::string& filename)
 	if (!saveHeaderAttribute(data)) { return false; }				// Save Header attribute
 
 	// Write Class
-	for (size_t k = 0; k < m_ClassCount; ++k)						// for each class
+	for (size_t k = 0; k < m_classCount; ++k)						// for each class
 	{
 		XMLElement* element = xmlDoc.NewElement("Class");			// Create class node
 		element->SetAttribute("class-id", int(k));					// Set attribute class id (0 to K)
@@ -150,7 +150,7 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 	if (!loadHeaderAttribute(data)) { return false; }				// Load Header attribute
 
 	XMLElement* element = data->FirstChildElement("Class");			// Get Fist Class Node
-	for (size_t k = 0; k < m_ClassCount; ++k)						// for each class
+	for (size_t k = 0; k < m_classCount; ++k)						// for each class
 	{
 		if (element == nullptr) { return false; }					// Check if Node Exist
 		const size_t idx = element->IntAttribute("class-id");		// Get Id (normally idx = k)
@@ -166,7 +166,7 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 bool CMatrixClassifierMDM::saveHeaderAttribute(XMLElement* element) const
 {
 	element->SetAttribute("type", "MDM");								// Set attribute classifier type
-	element->SetAttribute("class-count", int(m_ClassCount));			// Set attribute class count
+	element->SetAttribute("class-count", int(m_classCount));			// Set attribute class count
 	element->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
 	return true;
 }
@@ -178,7 +178,7 @@ bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
 	if (element == nullptr) { return false; }						// Check if Node Exist
 	const string classifierType = element->Attribute("type");		// Get type
 	if (classifierType != "MDM") { return false; }					// Check Type
-	setClassCount(element->IntAttribute("class-count"));			// Update Number of class
+	setClassCount(element->IntAttribute("class-count"));			// Update Number of classes
 	m_Metric = StringToMetric(element->Attribute("metric"));		// Update Metric
 	return true;
 }
@@ -188,7 +188,7 @@ bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
 bool CMatrixClassifierMDM::isEqual(const CMatrixClassifierMDM& obj, const double precision) const
 {
 	if (!IMatrixClassifier::isEqual(obj)) { return false; }
-	for (size_t i = 0; i < m_ClassCount; ++i)
+	for (size_t i = 0; i < m_classCount; ++i)
 	{
 		if (!AreEquals(m_Means[i], obj.m_Means[i], precision)) { return false; }
 	}
@@ -200,8 +200,8 @@ bool CMatrixClassifierMDM::isEqual(const CMatrixClassifierMDM& obj, const double
 void CMatrixClassifierMDM::copy(const CMatrixClassifierMDM& obj)
 {
 	IMatrixClassifier::copy(obj);
-	setClassCount(m_ClassCount);
-	for (size_t i = 0; i < m_ClassCount; ++i) { m_Means[i] = obj.m_Means[i]; }
+	setClassCount(m_classCount);
+	for (size_t i = 0; i < m_classCount; ++i) { m_Means[i] = obj.m_Means[i]; }
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -210,12 +210,12 @@ stringstream CMatrixClassifierMDM::print() const
 {
 	stringstream ss;
 	ss << "Metric : " << MetricToString(m_Metric) << endl;
-	ss << "Nb of Class : " << m_ClassCount << endl;
-	for (size_t i = 0; i < m_ClassCount; ++i)
+	ss << "Number of Classes : " << m_classCount << endl;
+	for (size_t i = 0; i < m_classCount; ++i)
 	{
-		ss << "Mean Class " << i << " : ";
+		ss << "Mean of class " << i << " : ";
 		if (m_Means[i].size() != 0) { ss << endl << m_Means[i] << endl; }
-		else { ss << "Not Compute" << endl; }
+		else { ss << "Not Computed" << endl; }
 	}
 	return ss;
 }

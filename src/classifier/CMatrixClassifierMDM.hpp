@@ -19,9 +19,6 @@
 class CMatrixClassifierMDM : public IMatrixClassifier
 {
 public:
-	/// <summary>	Mean Matrix of each class. </summary>
-	std::vector<Eigen::MatrixXd> m_Means;
-
 	//***********************	
 	//***** Constructor *****
 	//***********************	
@@ -71,39 +68,15 @@ public:
 	//***********************
 	//***** XML Manager *****
 	//***********************
-
 	/// \copydoc IMatrixClassifier::saveXML(const std::string&)
 	bool saveXML(const std::string& filename) override;
 
 	/// \copydoc IMatrixClassifier::loadXML(const std::string&)
 	bool loadXML(const std::string& filename) override;
 
-	/// <summary>	Add the attribute on the first node.
-	///
-	/// -# The type of the classifier : MDM
-	/// -# The number of class : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::saveHeaderAttribute(tinyxml2::XMLElement*) const
-	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
-
-	/// <summary>	Loads the attribute on the first node.
-	///
-	/// -# Check the type : MDM
-	/// -# The number of class : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::loadHeaderAttribute(tinyxml2::XMLElement*)
-	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
-
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
-	/// \copydoc IMatrixClassifier::isEqual(const IMatrixClassifier&, const double) const
-	bool isEqual(const CMatrixClassifierMDM& obj, const double precision = 1e-6) const;
-	
-	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
-	void copy(const CMatrixClassifierMDM& obj);
 
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean. </returns>
@@ -131,4 +104,39 @@ public:
 		os << obj.print().str();
 		return os;
 	}
+
+	//***** Variables *****
+	/// <summary>	Mean Matrix of each class. </summary>
+	std::vector<Eigen::MatrixXd> m_Means;
+
+protected:
+	//***********************
+	//***** XML Manager *****
+	//***********************
+	/// <summary>	Add the attribute on the first node.
+	///
+	/// -# The type of the classifier : MDM
+	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The metric to use : <see cref="m_Metric"/>
+	/// </summary>
+	/// \copydetails IMatrixClassifier::saveHeaderAttribute(tinyxml2::XMLElement*) const
+	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
+
+	/// <summary>	Loads the attribute on the first node.
+	///
+	/// -# Check the type : MDM
+	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The metric to use : <see cref="m_Metric"/>
+	/// </summary>
+	/// \copydetails IMatrixClassifier::loadHeaderAttribute(tinyxml2::XMLElement*)
+	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
+
+	//*****************************
+	//***** Override Operator *****
+	//*****************************
+	/// \copydoc IMatrixClassifier::isEqual(const IMatrixClassifier&, const double) const
+	bool isEqual(const CMatrixClassifierMDM& obj, const double precision = 1e-6) const;
+
+	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
+	void copy(const CMatrixClassifierMDM& obj);
 };

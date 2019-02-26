@@ -13,7 +13,6 @@ using namespace std;
 const double EPSILON = 0.0001;			// 10^{-4}
 const size_t ITER_MAX = 50;
 
-
 //---------------------------------------------------------------------------------------------------
 bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metric)
 {
@@ -43,9 +42,8 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double epsilon, const int maxIter)
+bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double /*epsilon*/, const int /*maxIter*/)
 {
-	(void)epsilon;	(void)maxIter;
 	MeanIdentity(covs, ajd);
 	return false;
 }
@@ -112,7 +110,7 @@ bool MeanLogDet(const vector<MatrixXd>& covs, MatrixXd& mean)
 	size_t i = 0;												// Index of Covariance Matrix		=> i
 	double crit = std::numeric_limits<double>::max();			// Current change					=> crit
 	if (!MeanEuclidian(covs, mean)) { return false; }			// Initial Mean
-	
+
 	while (i < ITER_MAX && EPSILON < crit)						// Stopping criterion
 	{
 		i++;													// Iteration Criterion

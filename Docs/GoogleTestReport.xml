@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="40" failures="3" disabled="0" errors="0" timestamp="2019-01-14T11:40:52" time="0.044" name="AllTests">
-  <testsuite name="Tests_Basics" tests="4" failures="0" disabled="0" errors="0" time="0">
-    <testcase name="MatrixCenter" status="run" time="0" classname="Tests_Basics" />
+<testsuites tests="40" failures="3" disabled="0" errors="0" timestamp="2019-02-26T13:18:07" time="0.024" name="AllTests">
+  <testsuite name="Tests_Basics" tests="4" failures="0" disabled="0" errors="0" time="0.001">
+    <testcase name="MatrixCenter" status="run" time="0.001" classname="Tests_Basics" />
     <testcase name="GetElements" status="run" time="0" classname="Tests_Basics" />
     <testcase name="ARange" status="run" time="0" classname="Tests_Basics" />
     <testcase name="Vector2DTo1D" status="run" time="0" classname="Tests_Basics" />
@@ -10,7 +10,7 @@
     <testcase name="Covariance_Matrix_COR" status="run" time="0" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_COV" status="run" time="0" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_LWF" status="run" time="0" classname="Tests_Covariances" />
-    <testcase name="Covariance_Matrix_MCD" status="run" time="0.001" classname="Tests_Covariances">
+    <testcase name="Covariance_Matrix_MCD" status="run" time="0" classname="Tests_Covariances">
       <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilscovariance.hpp:86&#x0A;Value of: false&#x0A;  Actual: false&#x0A;Expected: true&#x0A;Not implemented" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilscovariance.hpp:86
 Value of: false
   Actual: false
@@ -18,14 +18,14 @@ Expected: true
 Not implemented]]></failure>
     </testcase>
     <testcase name="Covariance_Matrix_OAS" status="run" time="0" classname="Tests_Covariances" />
-    <testcase name="Covariance_Matrix_SCM" status="run" time="0" classname="Tests_Covariances" />
+    <testcase name="Covariance_Matrix_SCM" status="run" time="0.001" classname="Tests_Covariances" />
   </testsuite>
-  <testsuite name="Tests_Means" tests="9" failures="2" disabled="0" errors="0" time="0.004">
+  <testsuite name="Tests_Means" tests="9" failures="2" disabled="0" errors="0" time="0.002">
     <testcase name="Euclidian" status="run" time="0" classname="Tests_Means" />
-    <testcase name="LogEuclidian" status="run" time="0.001" classname="Tests_Means" />
+    <testcase name="LogEuclidian" status="run" time="0" classname="Tests_Means" />
     <testcase name="Riemann" status="run" time="0.001" classname="Tests_Means" />
     <testcase name="LogDet" status="run" time="0" classname="Tests_Means" />
-    <testcase name="Kullback" status="run" time="0.001" classname="Tests_Means" />
+    <testcase name="Kullback" status="run" time="0" classname="Tests_Means" />
     <testcase name="Wasserstein" status="run" time="0.001" classname="Tests_Means">
       <failure message="c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsmean.hpp:85&#x0A;Value of: isAlmostEqual(ref, calc)&#x0A;  Actual: false&#x0A;Expected: true&#x0A;&#x0A;====================&#x0A;Mean Matrix Wasserstein : &#x0A;********** Ref **********&#x0A;  1.79644 0.0229425 0.0241814&#x0A;0.0229425   1.69012 0.0531142&#x0A;0.0241814 0.0531142  0.879272&#x0A;********** Calc **********&#x0A;  1.79532 0.0229131 0.0240602&#x0A;0.0229131   1.68891 0.0529672&#x0A;0.0240602 0.0529672  0.878498&#x0A;====================&#x0A;" type=""><![CDATA[c:\users\tmonseig\documents\riemann-geometrie\tests\test_utilsmean.hpp:85
 Value of: isAlmostEqual(ref, calc)
@@ -55,9 +55,9 @@ Not implemented]]></failure>
     <testcase name="Harmonic" status="run" time="0" classname="Tests_Means" />
     <testcase name="Identity" status="run" time="0" classname="Tests_Means" />
   </testsuite>
-  <testsuite name="Tests_Distances" tests="6" failures="0" disabled="0" errors="0" time="0.001">
+  <testsuite name="Tests_Distances" tests="6" failures="0" disabled="0" errors="0" time="0">
     <testcase name="Euclidian" status="run" time="0" classname="Tests_Distances" />
-    <testcase name="LogEuclidian" status="run" time="0.001" classname="Tests_Distances" />
+    <testcase name="LogEuclidian" status="run" time="0" classname="Tests_Distances" />
     <testcase name="Riemann" status="run" time="0" classname="Tests_Distances" />
     <testcase name="LogDet" status="run" time="0" classname="Tests_Distances" />
     <testcase name="Kullback" status="run" time="0" classname="Tests_Distances" />
@@ -68,8 +68,8 @@ Not implemented]]></failure>
     <testcase name="LogEuclidian" status="run" time="0.001" classname="Tests_Geodesic" />
     <testcase name="Riemann" status="run" time="0" classname="Tests_Geodesic" />
   </testsuite>
-  <testsuite name="Tests_Featurization" tests="4" failures="0" disabled="0" errors="0" time="0.001">
-    <testcase name="TangentSpace" status="run" time="0.001" classname="Tests_Featurization" />
+  <testsuite name="Tests_Featurization" tests="4" failures="0" disabled="0" errors="0" time="0">
+    <testcase name="TangentSpace" status="run" time="0" classname="Tests_Featurization" />
     <testcase name="UnTangentSpace" status="run" time="0" classname="Tests_Featurization" />
     <testcase name="Squeeze" status="run" time="0" classname="Tests_Featurization" />
     <testcase name="UnSqueeze" status="run" time="0" classname="Tests_Featurization" />
@@ -78,12 +78,12 @@ Not implemented]]></failure>
     <testcase name="LSQR" status="run" time="0" classname="Tests_Classifier" />
     <testcase name="FgDACompute" status="run" time="0" classname="Tests_Classifier" />
   </testsuite>
-  <testsuite name="Tests_MatrixClassifier" tests="6" failures="0" disabled="0" errors="0" time="0.035">
+  <testsuite name="Tests_MatrixClassifier" tests="6" failures="0" disabled="0" errors="0" time="0.019">
     <testcase name="MDMTrain" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="MDMClassifify" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="MDMSave" status="run" time="0.008" classname="Tests_MatrixClassifier" />
-    <testcase name="FgMDMTrain" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="FgMDMClassifify" status="run" time="0.002" classname="Tests_MatrixClassifier" />
-    <testcase name="FgMDMSave" status="run" time="0.011" classname="Tests_MatrixClassifier" />
+    <testcase name="MDMClassifify" status="run" time="0" classname="Tests_MatrixClassifier" />
+    <testcase name="MDMSave" status="run" time="0.011" classname="Tests_MatrixClassifier" />
+    <testcase name="FgMDMTrain" status="run" time="0.002" classname="Tests_MatrixClassifier" />
+    <testcase name="FgMDMClassifify" status="run" time="0.001" classname="Tests_MatrixClassifier" />
+    <testcase name="FgMDMSave" status="run" time="0.004" classname="Tests_MatrixClassifier" />
   </testsuite>
 </testsuites>

@@ -102,7 +102,7 @@ bool CMatrixClassifierFgMDM::saveXML(const string& filename)
 	data->InsertEndChild(weight);									// Add class node to data node
 
 	// Write Class
-	for (size_t k = 0; k < m_ClassCount; ++k)						// for each class
+	for (size_t k = 0; k < m_classCount; ++k)						// for each class
 	{
 		XMLElement* element = xmlDoc.NewElement("Class");			// Create class node
 		element->SetAttribute("class-id", int(k));					// Set attribute class id (0 to K)
@@ -140,7 +140,7 @@ bool CMatrixClassifierFgMDM::loadXML(const string& filename)
 
 	// Load Class
 	XMLElement* element = data->FirstChildElement("Class");			// Get Fist Class Node
-	for (size_t k = 0; k < m_ClassCount; ++k)						// for each class
+	for (size_t k = 0; k < m_classCount; ++k)						// for each class
 	{
 		if (element == nullptr) { return false; }					// Check if Node Exist
 		const size_t idx = element->IntAttribute("class-id");		// Get Id (normally idx = k)
@@ -156,7 +156,7 @@ bool CMatrixClassifierFgMDM::loadXML(const string& filename)
 bool CMatrixClassifierFgMDM::saveHeaderAttribute(XMLElement* element) const
 {
 	element->SetAttribute("type", "FgMDM");								// Set attribute classifier type
-	element->SetAttribute("class-count", int(m_ClassCount));			// Set attribute class count
+	element->SetAttribute("class-count", int(m_classCount));			// Set attribute class count
 	element->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
 	return true;
 }
@@ -168,7 +168,7 @@ bool CMatrixClassifierFgMDM::loadHeaderAttribute(XMLElement* element)
 	if (element == nullptr) { return false; }						// Check if Node Exist
 	const string classifierType = element->Attribute("type");		// Get type
 	if (classifierType != "FgMDM") { return false; }				// Check Type
-	setClassCount(element->IntAttribute("class-count"));			// Update Number of class
+	setClassCount(element->IntAttribute("class-count"));			// Update Number of classes
 	m_Metric = StringToMetric(element->Attribute("metric"));		// Update Metric
 	return true;
 }
