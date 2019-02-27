@@ -1,7 +1,7 @@
 \.vs/
 build/
 
-docs/html/
+doc/html/
 
 *.TMP
 *.DotSettings.user
