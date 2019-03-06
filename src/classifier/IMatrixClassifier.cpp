@@ -30,6 +30,14 @@ void IMatrixClassifier::setClassCount(const size_t classcount)
 }
 ///-------------------------------------------------------------------------------------------------
 
+///-------------------------------------------------------------------------------------------------
+bool IMatrixClassifier::classify(const MatrixXd& sample, size_t& classId, const EAdaptations adaptation, const size_t& realClassId)
+{
+	vector<double> distance, probability;
+	return classify(sample, classId, distance, probability, adaptation, realClassId);
+}
+///-------------------------------------------------------------------------------------------------
+
 //***********************
 //***** XML Manager *****
 //***********************

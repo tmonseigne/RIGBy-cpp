@@ -1209,13 +1209,53 @@ namespace InitMatrixClassif
 				0.258979, 1.94533383, 0.03574208,
 				0.03170221, 0.03574208, 1.13153112;
 
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
 			return result;
 		}
 
-		inline std::vector<size_t> Prediction()
+		inline CMatrixClassifierMDM AfterSupervised()
 		{
-			return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 };
+			CMatrixClassifierMDM result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1.928350313881734, -0.154041423123185, 0.010701374534393,
+				-0.154041423123186, 1.418273608417471, 0.063257455871936,
+				0.010701374534394, 0.063257455871936, 0.666184815487807;
+
+			result.m_Means[1] << 1.465233762087830, 0.258934832669209, 0.031704171892215,
+				0.258934832669209, 1.945307843854343, 0.035766052240045,
+				0.031704171892215, 0.035766052240044, 1.131554685966728;
+
+			result.m_NbTrials[0] = 2 * NB_TRIALS1;
+			result.m_NbTrials[1] = 2 * NB_TRIALS2;
+
+			return result;
 		}
+
+		inline CMatrixClassifierMDM AfterUnSupervised()
+		{
+			CMatrixClassifierMDM result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1.950943868870711, -0.167140250323899, 0.003222724880780,
+				-0.167140250323900, 1.360332213689968, 0.069395646598480,
+				0.003222724880780, 0.069395646598480, 0.612498166151011;
+
+			result.m_Means[1] << 1.512203012203314, 0.207413861919226, 0.036590552326957,
+				0.207413861919226, 1.921307138623116, 0.030422979119863,
+				0.036590552326957, 0.030422979119864, 1.127225044244057;
+
+			result.m_NbTrials[0] = 2 * NB_TRIALS1;
+			result.m_NbTrials[1] = 2 * NB_TRIALS2;
+
+			return result;
+		}
+
+		inline std::vector<size_t> Prediction() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
+		inline std::vector<size_t> PredictionSupervised() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
+		inline std::vector<size_t> PredictionUnSupervised() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
 
 		inline std::vector<std::vector<double>> PredictionDistance()
 		{
@@ -1232,6 +1272,43 @@ namespace InitMatrixClassif
 			result[9] = { 1.06734674, 0.55234461 };
 			result[10] = { 0.85650116, 0.39055362 };
 			result[11] = { 0.92153991, 0.45995369 };
+			return result;
+		}
+
+		inline std::vector<std::vector<double>> PredictionDistanceSupervised()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0] = { 1.314629453210111, 1.474855008515000 };
+			result[1] = { 0.605125609448517, 1.051817099896226 };
+			result[2] = { 0.632177503835419, 0.812445189801618 };
+			result[3] = { 1.114890656799339, 1.849548724985433 };
+			result[4] = { 0.716307916402446, 1.067153960330500 };
+			result[5] = { 0.705594944810905, 0.331147184884182 };
+			result[6] = { 0.684063787503923, 0.476499934085104 };
+			result[7] = { 0.845432339540137, 0.747547515688392 };
+			result[8] = { 0.951119668632168, 0.353451074348013 };
+			result[9] = { 1.067314379382615, 0.686650119070229 };
+			result[10] = { 0.856525175953122, 0.448063104241547 };
+			result[11] = { 0.921512070536392, 0.511024366753348 };
+			return result;
+		}
+
+		inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0] = { 1.314629453210111, 1.474855008515000 };
+			result[1] = { 0.605125609448517, 1.051817099896226 };
+			result[2] = { 0.632177503835419, 0.812445189801618 };
+			result[3] = { 1.114890656799339, 1.849548724985433 };
+			result[4] = { 0.716307916402446, 1.067153960330500 };
+			result[5] = { 0.705594944810905, 0.331147184884182 };
+			result[6] = { 0.729161284837321, 0.448637450763909 };
+			result[7] = { 0.871245756539967, 0.786138798955233 };
+			result[8] = { 1.017636018350342, 0.439519359143378 };
+			result[9] = { 1.163460730752319, 0.623259567590992 };
+			result[10] = { 0.942113031918693, 0.422541764097218 };
+			result[11] = { 1.014624974936401, 0.472684060628136 };
+
 			return result;
 		}
 	}
@@ -1268,10 +1345,7 @@ namespace InitMatrixClassif
 			return result;
 		}
 
-		inline std::vector<size_t> Prediction()
-		{
-			return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 };
-		}
+		inline std::vector<size_t> Prediction() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
 
 		inline std::vector<std::vector<double>> PredictionDistance()
 		{

@@ -24,10 +24,6 @@ public:
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
 	CMatrixClassifierFgMDM() = default;
 
-	/// <summary>	Default Copy constructor. Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
-	/// \copydetails IMatrixClassifier(const IMatrixClassifier&)
-	CMatrixClassifierFgMDM(const CMatrixClassifierFgMDM& obj);
-
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class and set base members. </summary>
 	/// \copydetails IMatrixClassifier(size_t, EMetrics)
 	explicit CMatrixClassifierFgMDM(const size_t classcount, const EMetrics metric) : CMatrixClassifierMDM(classcount, metric) { }
@@ -42,11 +38,12 @@ public:
 	/// \copydoc IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) override;
 
-	/// \copydoc IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&)
-	bool classify(const Eigen::MatrixXd& sample, size_t& classid) override;
+	/// \copydoc CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, bool)
+	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
+				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
-	/// \copydoc CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&)
-	bool classify(const Eigen::MatrixXd& sample, size_t& classid, std::vector<double>& distance, std::vector<double>& probability) override;
+	/// \copydoc CMatrixClassifierMDM::adapt(const Eigen::MatrixXd&, const EAdaptations, const size_t&)
+	bool adapt(const Eigen::MatrixXd& sample, const EAdaptations adaptation = Adaptation_None, const size_t& classId = std::numeric_limits<std::size_t>::max()) override;
 
 	//***********************
 	//***** XML Manager *****
@@ -66,26 +63,6 @@ public:
 	
 	/// \copydoc IMatrixClassifier::print()
 	std::stringstream print() const override;
-
-	/// \copydoc IMatrixClassifier::operator=(const IMatrixClassifier&)
-	CMatrixClassifierFgMDM& operator=(const CMatrixClassifierFgMDM& obj)
-	{
-		copy(obj);
-		return *this;
-	}
-
-	/// \copydoc IMatrixClassifier::operator==(const IMatrixClassifier&) const
-	bool operator==(const CMatrixClassifierFgMDM& obj) const { return isEqual(obj); }
-
-	/// \copydoc IMatrixClassifier::operator!=(const IMatrixClassifier&) const
-	bool operator!=(const CMatrixClassifierFgMDM& obj) const { return !isEqual(obj); }
-
-	/// \copydoc IMatrixClassifier::operator<<(std::ostream&, const IMatrixClassifier&)
-	friend std::ostream& operator <<(std::ostream& os, const CMatrixClassifierFgMDM& obj)
-	{
-		os << obj.print().str();
-		return os;
-	}
 
 	//***** Variables *****
 	Eigen::MatrixXd m_Ref, m_Weight;

@@ -8,12 +8,6 @@ using namespace std;
 using namespace Eigen;
 using namespace tinyxml2;
 
-///-------------------------------------------------------------------------------------------------
-CMatrixClassifierFgMDM::CMatrixClassifierFgMDM(const CMatrixClassifierFgMDM& obj)
-{
-	copy(obj);
-}
-///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
@@ -59,15 +53,8 @@ bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid)
-{
-	std::vector<double> distance, probability;
-	return classify(sample, classid, distance, probability);
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, vector<double>& distance, vector<double>& probability)
+bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance, 
+									  std::vector<double>& probability, const EAdaptations adaptation, const size_t& realClassId)
 {
 	RowVectorXd tsSample, filtered;
 	MatrixXd newSample;
@@ -75,7 +62,28 @@ bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classid, v
 	if (!TangentSpace(sample, tsSample, m_Ref)) { return false; }		// Transform to the Tangent Space
 	if (!FgDAApply(tsSample, filtered, m_Weight)) { return false; }		// Apply Filter
 	if (!UnTangentSpace(filtered, newSample, m_Ref)) { return false; }	// Return to Matrix Space
-	return CMatrixClassifierMDM::classify(newSample, classid, distance, probability);
+	CMatrixClassifierMDM::classify(newSample, classId, distance, probability/*, Adaptation_None, std::numeric_limits<std::size_t>::max()*/);
+
+	const size_t id = (adaptation == Adaptation_None || adaptation == Adaptation_Rebias_Unsupervised || adaptation == Adaptation_Unsupervised) ? classId : realClassId;
+	return adapt(sample, adaptation, id);
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierFgMDM::adapt(const MatrixXd& sample, const EAdaptations adaptation, const size_t& classId)
+{
+	(void)sample;
+	if (classId >= m_classCount) { return false; }
+	switch (adaptation)
+	{
+		case Adaptation_Supervised: break;
+		case Adaptation_Unsupervised: break;
+		case Adaptation_Rebias_Supervised: break;
+		case Adaptation_Rebias_Unsupervised: break;
+		case Adaptation_None:
+		default: return true;
+	}
+	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 

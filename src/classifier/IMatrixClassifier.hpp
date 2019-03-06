@@ -13,8 +13,24 @@
 
 #include <Eigen/Dense>
 #include <vector>
+#include <limits>
 #include "3rd-party/tinyxml2.h"
 #include "utils/Metrics.hpp"
+
+/// <summary>	Enumeration of Adaptation Methods for classifier. </summary>
+enum EAdaptations
+{
+	/// <summary>	No Adaptation. </summary>
+	Adaptation_None,
+	/// <summary>	Supervised Adaptation. </summary>
+	Adaptation_Supervised,
+	/// <summary>	Unsupervised Adaptation. </summary>
+	Adaptation_Unsupervised,
+	/// <summary>	Supervised Rebias Adaptation. </summary>
+	Adaptation_Rebias_Supervised,
+	/// <summary>	Unsupervised Rebias Adaptation. </summary>
+	Adaptation_Rebias_Unsupervised
+};
 
 /// <summary>	Abstract class of Matrix Classifier. </summary>
 class IMatrixClassifier
@@ -54,20 +70,34 @@ public:
 	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	virtual bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) = 0;
-	
+
 	/// <summary>	Classify the matrix and return the class id (override of same function with all argument). </summary>
 	/// <param name="sample">	The sample to classify. </param>
-	/// <param name="classid">	The predicted class. </param>
+	/// <param name="classId">	The predicted class. </param>
+	/// <param name="adaptation">	Adaptation method for the classfier <see cref="EAdaptations" />. </param>
+	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classid) = 0;
-	
+	/// <seealso cref="classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, EAdaptations, const size_t&)">
+	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId,
+						  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max());
+
 	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class. </summary>
-	/// <param name="sample">		The sample to classify. </param>
-	/// <param name="classid">		The predicted class. </param>
+	/// <param name="sample">	The sample to classify. </param>
+	/// <param name="classId">	The predicted class. </param>
 	/// <param name="distance">		The distance of the sample with each class. </param>
 	/// <param name="probability">	The probability of the sample with each class. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classid, std::vector<double>& distance, std::vector<double>& probability) = 0;
+	/// <param name="adaptation">	Adaptation method for the classfier <see cref="EAdaptations" />. </param>
+	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>	
+	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
+						  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) = 0;	
+
+	/// <summary>	Adapts the classifier with the specified sample.</summary>
+	/// <param name="sample">		The sample.</param>
+	/// <param name="adaptation">	The adaptation method.</param>
+	/// <param name="classId">		The identifier of the class to adapt.</param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>	
+	virtual bool adapt(const Eigen::MatrixXd& sample, const EAdaptations adaptation = Adaptation_None, const size_t& classId = std::numeric_limits<std::size_t>::max()) = 0;
 
 	//***********************
 	//***** XML Manager *****
@@ -115,12 +145,12 @@ public:
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are equals. </returns>
+	/// <returns>	True if the two <see cref="IMatrixClassifier"/> are equals. </returns>
 	bool operator==(const IMatrixClassifier& obj) const { return isEqual(obj); }
 
 	/// <summary>	Override the not egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are diffrents. </returns>
+	/// <returns>	True if the two <see cref="IMatrixClassifier"/> are diffrents. </returns>
 	bool operator!=(const IMatrixClassifier& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>

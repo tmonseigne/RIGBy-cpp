@@ -2,6 +2,7 @@
 #include "utils/Mean.hpp"
 #include "utils/Distance.hpp"
 #include "utils/Basics.hpp"
+#include "utils/Geodesic.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -26,16 +27,10 @@ CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t classcount, const EMetri
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-CMatrixClassifierMDM::CMatrixClassifierMDM(const CMatrixClassifierMDM& obj)
-{
-	copy(obj);
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
 CMatrixClassifierMDM::~CMatrixClassifierMDM()
 {
 	m_Means.clear();
+	m_NbTrials.clear();
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -45,10 +40,11 @@ CMatrixClassifierMDM::~CMatrixClassifierMDM()
 ///-------------------------------------------------------------------------------------------------
 void CMatrixClassifierMDM::setClassCount(const size_t classcount)
 {
-	if (m_classCount != classcount || m_Means.size() != classcount)
+	if (m_classCount != classcount || m_Means.size() != classcount || m_NbTrials.size() != classcount)
 	{
 		IMatrixClassifier::setClassCount(classcount);
 		m_Means.resize(m_classCount);
+		m_NbTrials.resize(classcount);
 	}
 }
 ///-------------------------------------------------------------------------------------------------
@@ -60,21 +56,15 @@ bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 	for (size_t i = 0; i < m_classCount; ++i)
 	{
 		if (!Mean(datasets[i], m_Means[i], m_Metric)) { return false; }	// Compute the mean of each class
+		m_NbTrials[i] = datasets[i].size();
 	}
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid)
-{
-	std::vector<double> distance, probability;
-	return classify(sample, classid, distance, probability);
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vector<double>& distance, vector<double>& probability)
+bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance, 
+									std::vector<double>& probability, const EAdaptations adaptation, const size_t& realClassId)
 {
 	if (!isSquare(sample)) { return false; }				// Verification if it's a square matrix 
 	double distMin = std::numeric_limits<double>::max();	// Init of distance min
@@ -86,7 +76,7 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vec
 		distance[i] = Distance(sample, m_Means[i], m_Metric);
 		if (distMin > distance[i])
 		{
-			classid = i;
+			classId = i;
 			distMin = distance[i];
 		}
 	}
@@ -101,11 +91,29 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classid, vec
 	}
 
 	for (auto& p : probability) { p /= sumProbability; }
-	return true;
+	const size_t id = (adaptation == Adaptation_None || adaptation == Adaptation_Rebias_Unsupervised || adaptation == Adaptation_Unsupervised) ? classId : realClassId;
+	return adapt(sample, adaptation, id);
+
+}
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierMDM::adapt(const MatrixXd& sample, const EAdaptations adaptation, const size_t& classId)
+{
+	if (classId >= m_classCount) { return false; }
+	switch (adaptation)
+	{
+		case Adaptation_Supervised:
+		case Adaptation_Unsupervised:
+			m_NbTrials[classId]++;
+			return Geodesic(m_Means[classId], sample, m_Means[classId], Metric_Riemann, 1.0 / m_NbTrials[classId]);
+		case Adaptation_Rebias_Supervised: break;
+		case Adaptation_Rebias_Unsupervised: break;
+		case Adaptation_None:
+		default: return true;
+	}
+	return false;
 }
 ///-------------------------------------------------------------------------------------------------
 
-//***********************
 //***** XML Manager *****
 //***********************
 ///-------------------------------------------------------------------------------------------------
@@ -125,7 +133,8 @@ bool CMatrixClassifierMDM::saveXML(const std::string& filename)
 	{
 		XMLElement* element = xmlDoc.NewElement("Class");			// Create class node
 		element->SetAttribute("class-id", int(k));					// Set attribute class id (0 to K)
-		if (!saveMatrix(element, m_Means[k])) { return false; }		// Save class
+		element->SetAttribute("nb-trials", int(m_NbTrials[k]));		// Set attribute class number of trials
+		if (!saveMatrix(element, m_Means[k])) { return false; }		// Save class Matrix Reference
 		data->InsertEndChild(element);								// Add class node to data node
 	}
 	root->InsertEndChild(data);										// Add data to root
@@ -155,6 +164,7 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 		if (element == nullptr) { return false; }					// Check if Node Exist
 		const size_t idx = element->IntAttribute("class-id");		// Get Id (normally idx = k)
 		if (idx != k) { return false; }								// Check Id
+		m_NbTrials[k] = element->IntAttribute("nb-trials");			// Get the number of Trials for this class
 		if (!loadMatrix(element, m_Means[k])) { return false; }		// Load Class Matrix
 		element = element->NextSiblingElement("Class");				// Next Class
 	}
@@ -191,6 +201,7 @@ bool CMatrixClassifierMDM::isEqual(const CMatrixClassifierMDM& obj, const double
 	for (size_t i = 0; i < m_classCount; ++i)
 	{
 		if (!AreEquals(m_Means[i], obj.m_Means[i], precision)) { return false; }
+		if (m_NbTrials[i] != obj.m_NbTrials[i]) { return false; }
 	}
 	return true;
 }
@@ -201,7 +212,11 @@ void CMatrixClassifierMDM::copy(const CMatrixClassifierMDM& obj)
 {
 	IMatrixClassifier::copy(obj);
 	setClassCount(m_classCount);
-	for (size_t i = 0; i < m_classCount; ++i) { m_Means[i] = obj.m_Means[i]; }
+	for (size_t i = 0; i < m_classCount; ++i)
+	{
+		m_Means[i] = obj.m_Means[i];
+		m_NbTrials[i] = obj.m_NbTrials[i];
+	}
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -213,7 +228,7 @@ stringstream CMatrixClassifierMDM::print() const
 	ss << "Number of Classes : " << m_classCount << endl;
 	for (size_t i = 0; i < m_classCount; ++i)
 	{
-		ss << "Mean of class " << i << " : ";
+		ss << "Mean of class " << i << " (" << m_NbTrials[i] << " trials): ";
 		if (m_Means[i].size() != 0) { ss << endl << m_Means[i] << endl; }
 		else { ss << "Not Computed" << endl; }
 	}
