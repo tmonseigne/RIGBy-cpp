@@ -85,6 +85,9 @@
     <ClInclude Include="..\tests\test_MatrixClassifier.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\classifier\CMatrixClassifierMDMRebias.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\test_main.cpp" />
@@ -126,6 +129,9 @@
     </ClCompile>
     <ClCompile Include="..\src\utils\Classification.cpp">
       <Filter>Fichiers de ressources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\classifier\CMatrixClassifierMDMRebias.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

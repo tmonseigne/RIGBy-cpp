@@ -3,6 +3,7 @@
 #include "utils/Distance.hpp"
 #include "utils/Basics.hpp"
 #include "utils/Geodesic.hpp"
+#include <unsupported/Eigen/MatrixFunctions> // SQRT of Matrix
 
 using namespace std;
 using namespace Eigen;
@@ -91,26 +92,14 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classId, std
 	}
 
 	for (auto& p : probability) { p /= sumProbability; }
-	const size_t id = (adaptation == Adaptation_None || adaptation == Adaptation_Rebias_Unsupervised || adaptation == Adaptation_Unsupervised) ? classId : realClassId;
-	return adapt(sample, adaptation, id);
 
-}
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::adapt(const MatrixXd& sample, const EAdaptations adaptation, const size_t& classId)
-{
-	if (classId >= m_classCount) { return false; }
-	switch (adaptation)
-	{
-		case Adaptation_Supervised:
-		case Adaptation_Unsupervised:
-			m_NbTrials[classId]++;
-			return Geodesic(m_Means[classId], sample, m_Means[classId], Metric_Riemann, 1.0 / m_NbTrials[classId]);
-		case Adaptation_Rebias_Supervised: break;
-		case Adaptation_Rebias_Unsupervised: break;
-		case Adaptation_None:
-		default: return true;
-	}
-	return false;
+	// Adaptation
+	if (adaptation == Adaptation_None) { return true; }
+	// Get class id for adaptation and increase number of trials, expected if supervised, predicted if unsupervised
+	const size_t id = adaptation == Adaptation_Supervised ? realClassId : classId;
+	if (id >= m_classCount) { return false; }	// Check id (if supervised and bad input)
+	m_NbTrials[id]++;							// Update number of trials for the class id
+	return Geodesic(m_Means[id], sample, m_Means[id], m_Metric, 1.0 / m_NbTrials[id]);
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -173,6 +162,23 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierMDM::saveHeader(XMLDocument* doc) const { return true; }
+///-------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierMDM::loadHeader(XMLDocument* doc) { return true; }
+///-------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierMDM::saveOptional(XMLDocument* doc) const { return true; }
+///-------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierMDM::loadOptional(XMLDocument* doc) { return true; }
+///-------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierMDM::saveClasses(XMLDocument* doc) const { return true; }
+///-------------------------------------------------------------------------------------------------
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierMDM::loadClasses(XMLDocument* doc) { return true; }
+///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::saveHeaderAttribute(XMLElement* element) const
 {
 	element->SetAttribute("type", "MDM");								// Set attribute classifier type
@@ -198,6 +204,7 @@ bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
 bool CMatrixClassifierMDM::isEqual(const CMatrixClassifierMDM& obj, const double precision) const
 {
 	if (!IMatrixClassifier::isEqual(obj)) { return false; }
+	if (m_classCount != obj.getClassCount()) { return false; }
 	for (size_t i = 0; i < m_classCount; ++i)
 	{
 		if (!AreEquals(m_Means[i], obj.m_Means[i], precision)) { return false; }
@@ -224,6 +231,7 @@ void CMatrixClassifierMDM::copy(const CMatrixClassifierMDM& obj)
 stringstream CMatrixClassifierMDM::print() const
 {
 	stringstream ss;
+	ss << getType()<< " Classifier" << endl;
 	ss << "Metric : " << MetricToString(m_Metric) << endl;
 	ss << "Number of Classes : " << m_classCount << endl;
 	for (size_t i = 0; i < m_classCount; ++i)

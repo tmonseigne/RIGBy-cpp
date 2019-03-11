@@ -7,16 +7,17 @@
 /// \date 26/10/2018.
 /// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
 /// \remarks 
-/// - For this tests I compare the results with the <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> library (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>) or <a href="http://scikit-learn.org">sklearn</a> if pyRiemman just redirect the function.
+/// - For this tests I compare the results with the <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> Python library (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>) or <a href="http://scikit-learn.org">sklearn</a> if pyRiemman just redirect the function.
+/// - For the adaptation Classification tests I compare the results with the <a href="https://github.com/alexandrebarachant/covariancetoolbox">covariancetoolbox</a> Matlab library (<a href="https://github.com/alexandrebarachant/covariancetoolbox/blob/master/COPYING">License</a>).
 /// 
 ///-------------------------------------------------------------------------------------------------
 
 #pragma once
 
 #include <vector>
-#include<Eigen/Dense>
 #include "classifier/CMatrixClassifierMDM.hpp"
 #include "classifier/CMatrixClassifierFgMDM.hpp"
+#include "classifier/CMatrixClassifierMDMRebias.hpp"
 
 #define NB_CLASS	02
 #define NB_CHAN		03
@@ -1215,6 +1216,25 @@ namespace InitMatrixClassif
 			return result;
 		}
 
+		inline CMatrixClassifierMDM ReferenceMatlab()			//The estimation method of riemann mean in matlab is different of the python and c++ method 
+		{
+			CMatrixClassifierMDM result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1.928499437649616, -0.153827038574370, 0.010747690754065,
+				-0.153827038574370, 1.418162423365369, 0.063273476393445,
+				0.010747690754065, 0.063273476393445, 0.666171737852679;
+
+			result.m_Means[1] << 1.465253745853043, 0.258978164753603, 0.031701951674564,
+				0.258978164753603, 1.945334998390171, 0.035741956583496,
+				0.031701951674564, 0.035741956583496, 1.131530964874486;
+
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
+			return result;
+		}
+
 		inline CMatrixClassifierMDM AfterSupervised()
 		{
 			CMatrixClassifierMDM result(NB_CLASS, Metric_Riemann);
@@ -1247,8 +1267,8 @@ namespace InitMatrixClassif
 				0.207413861919226, 1.921307138623116, 0.030422979119863,
 				0.036590552326957, 0.030422979119864, 1.127225044244057;
 
-			result.m_NbTrials[0] = 2 * NB_TRIALS1;
-			result.m_NbTrials[1] = 2 * NB_TRIALS2;
+			result.m_NbTrials[0] = NB_TRIALS1 + 5;
+			result.m_NbTrials[1] = NB_TRIALS2 + 7;
 
 			return result;
 		}
@@ -1260,18 +1280,18 @@ namespace InitMatrixClassif
 		inline std::vector<std::vector<double>> PredictionDistance()
 		{
 			std::vector<std::vector<double>> result(NB_TRIALS);
-			result[0] = { 1.31463344, 1.47485448 };
-			result[1] = { 0.46432719, 1.0518174 };
-			result[2] = { 0.60142988, 0.81244503 };
-			result[3] = { 1.10287315, 1.84954868 };
-			result[4] = { 0.6261118, 1.06715414 };
-			result[5] = { 0.6119972, 0.33114704 };
-			result[6] = { 0.63524993, 0.4765002 };
-			result[7] = { 0.84537755, 0.7475473 };
-			result[8] = { 0.95109119, 0.41332152 };
-			result[9] = { 1.06734674, 0.55234461 };
-			result[10] = { 0.85650116, 0.39055362 };
-			result[11] = { 0.92153991, 0.45995369 };
+			result[0] = { 1.314629453210111, 1.474855008515000 };
+			result[1] = { 0.464333729201812, 1.051817099896226 };
+			result[2] = { 0.601426917411240, 0.812445189801618 };
+			result[3] = { 1.102877219889465, 1.849548724985433 };
+			result[4] = { 0.626116626250442, 1.067153960330500 };
+			result[5] = { 0.611993241506318, 0.331147184884182 };
+			result[6] = { 0.635248202449675, 0.476499934085104 };
+			result[7] = { 0.845377609077804, 0.747547515688392 };
+			result[8] = { 0.951093615508598, 0.413321379328445 };
+			result[9] = { 1.067347359524113, 0.552344271253539 };
+			result[10] = { 0.856508614439436, 0.390553678952617 };
+			result[11] = { 0.921536704800470, 0.459953813816839 };
 			return result;
 		}
 
@@ -1342,6 +1362,9 @@ namespace InitMatrixClassif
 				0.14551225, -0.06657818, 0.01070127, -0.09818576, 0.04631716, -0.09386402,
 				-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
 
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
 			return result;
 		}
 
@@ -1362,6 +1385,170 @@ namespace InitMatrixClassif
 			result[9] = { 0.76329856, 0.07124423 };
 			result[10] = { 0.59422854, 0.09782578 };
 			result[11] = { 0.63188509, 0.06016924 };
+			return result;
+		}
+	}
+
+	namespace MDMRebias
+	{
+		inline CMatrixClassifierMDMRebias Reference()
+		{
+			CMatrixClassifierMDMRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1.129204848898484, -0.103109478655884, -0.005579207794177,
+				-0.103109478655884, 0.884890317836479, 0.015961516899074,
+				-0.005579207794177, 0.015961516899074, 0.801503003117589;
+
+			result.m_Means[1] << 0.855588028031272, 0.146119935000422, 0.004175889722330,
+				0.146119935000422, 1.212891172460091, -0.030535218161296,
+				0.004175889722330, -0.030535218161296, 1.364418888484737;
+
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
+			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
+				0.016735943232582, 1.603446473585329, 0.054241640196169,
+				0.020785623695383, 0.054241640196169, 0.830327834469631;
+
+			return result;
+		}
+
+		inline CMatrixClassifierMDMRebias After()
+		{
+			CMatrixClassifierMDMRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1.129204848898484, -0.103109478655884, -0.005579207794177,
+				-0.103109478655884, 0.884890317836479, 0.015961516899074,
+				-0.005579207794177, 0.015961516899074, 0.801503003117589;
+
+			result.m_Means[1] << 0.855588028031272, 0.146119935000422, 0.004175889722330,
+				0.146119935000422, 1.212891172460091, -0.030535218161296,
+				0.004175889722330, -0.030535218161296, 1.364418888484737;
+
+			result.m_NbTrials[0] = 2 * NB_TRIALS1;
+			result.m_NbTrials[1] = 2 * NB_TRIALS2;
+
+			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias << 1.003340094423887, 0.000077482142224, 0.000480353108091,
+				0.000077482142224, 1.001557587853756, 0.004894124795924,
+				0.000480353108091, 0.004894124795924, 0.942626991155716;
+
+			result.m_NbClassify = NB_TRIALS1 + NB_TRIALS2;
+
+			return result;
+		}
+
+		inline CMatrixClassifierMDMRebias AfterSupervised()
+		{
+			CMatrixClassifierMDMRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1.039039439987489, -0.130575593353605, -0.034772030227627,
+				-0.130575593353605, 0.916819300375363, -0.039634304927742,
+				-0.034772030227627, -0.039634304927742, 0.997866741469572;
+
+			result.m_Means[1] << 0.846770361305677, 0.168547826564264, 0.000375108847635,
+				0.168547826564264, 1.264563408821055, -0.037740559853000,
+				0.000375108847634, -0.037740559853001, 1.474449175111602;
+
+			result.m_NbTrials[0] = 2 * NB_TRIALS1;
+			result.m_NbTrials[1] = 2 * NB_TRIALS2;
+
+			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias << 1.003340094423887, 0.000077482142224, 0.000480353108091,
+				0.000077482142224, 1.001557587853756, 0.004894124795924,
+				0.000480353108091, 0.004894124795924, 0.942626991155716;
+
+			result.m_NbClassify = NB_TRIALS1 + NB_TRIALS2;
+
+			return result;
+		}
+
+		inline CMatrixClassifierMDMRebias AfterUnSupervised()
+		{
+			CMatrixClassifierMDMRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1, -1, 1,
+				-1,1 , 1,
+				1, 1, 1;
+
+			result.m_Means[1] << 1, 1,1 ,
+				1, 1, 1,
+				1, 1, 1;
+
+			result.m_NbTrials[0] = 2 * NB_TRIALS1;
+			result.m_NbTrials[1] = 2 * NB_TRIALS2;
+
+			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias << 1, 1, 1,
+				1, 1, 1,
+				1, 1, 1;
+
+			result.m_NbClassify = NB_TRIALS1 + NB_TRIALS2;
+
+			return result;
+		}
+
+		inline std::vector<size_t> Prediction() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
+		inline std::vector<size_t> PredictionSupervised() { return std::vector<size_t>{ 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 }; }
+		inline std::vector<size_t> PredictionUnSupervised() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
+
+		inline std::vector<std::vector<double>> PredictionDistance()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0] = { 1.310246932146241, 1.393915032507602 };
+			result[1] = { 1.692716255251882, 1.844938991919433 };
+			result[2] = { 0.984982952903718, 0.841862845709918 };
+			result[3] = { 0.892820115340320, 1.599546868456311 };
+			result[4] = { 0.999867970235310, 0.941917157040539 };
+			result[5] = { 1.137520649346655, 0.465641500773671 };
+			result[6] = { 1.011439482031716, 0.477762339753517 };
+			result[7] = { 1.061541067100237, 0.693703664444245 };
+			result[8] = { 1.170393469986005, 0.490847852757533 };
+			result[9] = { 1.264639451851659, 0.711390689294599 };
+			result[10] = { 0.958124191670045, 0.444112415512555 };
+			result[11] = { 0.979167569490692, 0.506483913519814 };
+			return result;
+		}
+
+		inline std::vector<std::vector<double>> PredictionDistanceSupervised()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0] = { 1.310246932146241, 1.393915032507602 };
+			result[1] = { 1.827920714172777, 1.844938991919433 };
+			result[2] = { 0.891204221836605, 0.841862845709918 };
+			result[3] = { 0.930125568690710, 1.599546868456311 };
+			result[4] = { 0.999728052594055, 0.941917157040539 };
+			result[5] = { 1.074657838523140, 0.465641500773671 };
+			result[6] = { 0.900629134017635, 0.477762339753517 };
+			result[7] = { 0.993780365239927, 0.693703664444245 };
+			result[8] = { 1.061452391277654, 0.446611088910127 };
+			result[9] = { 1.083347847138387, 0.803478748205809 };
+			result[10] = { 0.827490173985801, 0.478643339359159 };
+			result[11] = { 0.755768494905039, 0.533289793906338 };
+			return result;
+		}
+
+		inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0] = { 1.0, 1.0 };
+			result[1] = { 0.0, 1.0 };
+			result[2] = { 0.0, 0.0 };
+			result[3] = { 1.0, 1.0 };
+			result[4] = { 0.0, 1.0 };
+			result[5] = { 0.0, 0.0 };
+			result[6] = { 0.0, 0.0 };
+			result[7] = { 0.0, 0.0 };
+			result[8] = { 1.0, 0.0 };
+			result[9] = { 1.0, 0.0 };
+			result[10] = { 0.0, 0.0 };
+			result[11] = { 1.0, 0.0 };
+
 			return result;
 		}
 	}

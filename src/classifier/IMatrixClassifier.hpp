@@ -25,11 +25,7 @@ enum EAdaptations
 	/// <summary>	Supervised Adaptation. </summary>
 	Adaptation_Supervised,
 	/// <summary>	Unsupervised Adaptation. </summary>
-	Adaptation_Unsupervised,
-	/// <summary>	Supervised Rebias Adaptation. </summary>
-	Adaptation_Rebias_Supervised,
-	/// <summary>	Unsupervised Rebias Adaptation. </summary>
-	Adaptation_Rebias_Unsupervised
+	Adaptation_Unsupervised
 };
 
 /// <summary>	Abstract class of Matrix Classifier. </summary>
@@ -97,7 +93,7 @@ public:
 	/// <param name="adaptation">	The adaptation method.</param>
 	/// <param name="classId">		The identifier of the class to adapt.</param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>	
-	virtual bool adapt(const Eigen::MatrixXd& sample, const EAdaptations adaptation = Adaptation_None, const size_t& classId = std::numeric_limits<std::size_t>::max()) = 0;
+	//virtual bool adapt(const Eigen::MatrixXd& sample, const EAdaptations adaptation = Adaptation_None, const size_t& classId = std::numeric_limits<std::size_t>::max()) = 0;
 
 	//***********************
 	//***** XML Manager *****
@@ -137,11 +133,7 @@ public:
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	The copied object. </returns>
-	IMatrixClassifier& operator=(const IMatrixClassifier& obj)
-	{
-		copy(obj);
-		return *this;
-	}
+	IMatrixClassifier& operator=(const IMatrixClassifier& obj) { copy(obj);		return *this; }
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -150,18 +142,14 @@ public:
 
 	/// <summary>	Override the not egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="IMatrixClassifier"/> are diffrents. </returns>
+	/// <returns>	True if the two objects are diffrents. </returns>
 	bool operator!=(const IMatrixClassifier& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>
 	/// <param name="os">	The ostream. </param>
 	/// <param name="obj">	The object. </param>
 	/// <returns>	Return the modified ostream. </returns>
-	friend std::ostream& operator <<(std::ostream& os, const IMatrixClassifier& obj)
-	{
-		os << obj.print().str();
-		return os;
-	}
+	friend std::ostream& operator <<(std::ostream& os, const IMatrixClassifier& obj) { os << obj.print().str();		return os; }
 
 	//***** Variables *****
 	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetrics" />). </summary>
@@ -171,6 +159,16 @@ protected:
 	//***********************
 	//***** XML Manager *****
 	//***********************
+
+	virtual bool saveHeader(tinyxml2::XMLDocument* doc) const = 0;
+	virtual bool loadHeader(tinyxml2::XMLDocument* doc) = 0;
+	virtual bool saveOptional(tinyxml2::XMLDocument* doc) const = 0;
+	virtual bool loadOptional(tinyxml2::XMLDocument* doc) = 0;
+	virtual bool saveClasses(tinyxml2::XMLDocument* doc) const = 0;
+	virtual bool loadClasses(tinyxml2::XMLDocument* doc) = 0;
+
+
+
 	/// <summary>	Add the attribute on the first node (general informations as classifier type). </summary>
 	/// <param name="element">	Node to modify. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>

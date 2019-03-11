@@ -42,9 +42,6 @@ public:
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
-	/// \copydoc CMatrixClassifierMDM::adapt(const Eigen::MatrixXd&, const EAdaptations, const size_t&)
-	bool adapt(const Eigen::MatrixXd& sample, const EAdaptations adaptation = Adaptation_None, const size_t& classId = std::numeric_limits<std::size_t>::max()) override;
-
 	//***********************
 	//***** XML Manager *****
 	//***********************
