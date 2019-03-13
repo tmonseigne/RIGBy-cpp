@@ -42,14 +42,6 @@ public:
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
-	//***********************
-	//***** XML Manager *****
-	//***********************
-	/// \copydoc IMatrixClassifier::saveXML(const std::string&)
-	bool saveXML(const std::string& filename) override;
-
-	/// \copydoc IMatrixClassifier::loadXML(const std::string&)
-	bool loadXML(const std::string& filename) override;
 
 	//*****************************
 	//***** Override Operator *****
@@ -57,35 +49,11 @@ public:
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean with geodesic filtering. </returns>
 	std::string getType() const override { return "Minimum Distance to Mean with geodesic filtering"; }
-	
-	/// \copydoc IMatrixClassifier::print()
-	std::stringstream print() const override;
 
 	//***** Variables *****
 	Eigen::MatrixXd m_Ref, m_Weight;
 
 protected:
-	//***********************
-	//***** XML Manager *****
-	//***********************
-	/// <summary>	Add the attribute on the first node.
-	///
-	/// -# The type of the classifier : FgMDM
-	/// -# The number of classes : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::saveHeaderAttribute(tinyxml2::XMLElement*) const
-	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
-
-	/// <summary>	Loads the attribute on the first node.
-	///
-	/// -# Check the type : FgMDM
-	/// -# The number of classes : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::loadHeaderAttribute(tinyxml2::XMLElement*)
-	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
-
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
@@ -94,4 +62,12 @@ protected:
 
 	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
 	void copy(const CMatrixClassifierFgMDM& obj);
+
+	//***********************
+	//***** XML Manager *****
+	//***********************
+	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
+	bool loadAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) override;
+
+	std::stringstream printAdditional() const override;
 };

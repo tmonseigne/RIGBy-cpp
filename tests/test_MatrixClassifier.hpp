@@ -8,6 +8,8 @@
 /// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
 /// \remarks 
 /// - For this tests I compare the results with the <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> library (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>) or <a href="http://scikit-learn.org">sklearn</a> if pyRiemman just redirect the function.
+/// - For the adaptation Classification tests I compare the results with the <a href="https://github.com/alexandrebarachant/covariancetoolbox">covariancetoolbox</a> Matlab library (<a href="https://github.com/alexandrebarachant/covariancetoolbox/blob/master/COPYING">License</a>).
+/// - The Matlab toolbox is older and Riemannian mean estimation is différent the test are adapted to switch between the two library
 /// 
 ///-------------------------------------------------------------------------------------------------
 
@@ -18,6 +20,29 @@
 #include "test_Init.hpp"
 #include "classifier/CMatrixClassifierMDM.hpp"
 #include "classifier/CMatrixClassifierMDMRebias.hpp"
+
+//---------------------------------------------------------------------------------------------------
+static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<Eigen::MatrixXd>> &dataset, const std::vector<size_t> &refPrediction, const std::vector<std::vector<double>> &refPredictionDistance, const EAdaptations& adapt)
+{
+	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
+	size_t idx = 0;
+	for (size_t k = 0; k < dataset.size(); ++k)
+	{
+		for (size_t i = 0; i < dataset[k].size(); ++i)
+		{
+			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] are different";
+			size_t classid;
+			std::vector<double> distance, probability;
+			EXPECT_TRUE(calc.classify(dataset[k][i], classid, distance, probability, adapt, k)) << "Error during Classify : " << std::endl << calc << std::endl;
+			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
+			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
+			idx++;
+			result(k, classid)++;
+		}
+	}
+}
+//---------------------------------------------------------------------------------------------------
+
 
 //---------------------------------------------------------------------------------------------------
 class Tests_MatrixClassifier : public testing::Test
@@ -43,27 +68,9 @@ TEST_F(Tests_MatrixClassifier, MDM_Train)
 TEST_F(Tests_MatrixClassifier, MDM_Classifify)
 {
 	CMatrixClassifierMDM calc = InitMatrixClassif::MDM::ReferenceMatlab();
-
-	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	std::vector<size_t> refPrediction = InitMatrixClassif::MDM::Prediction();
-	std::vector<std::vector<double>> refPredictionDistance = InitMatrixClassif::MDM::PredictionDistance();
-
-	size_t idx = 0;
-	for (size_t k = 0; k < m_dataSet.size(); ++k)
-	{
-		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
-		{
-			size_t classid;
-			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(m_dataSet[k][i], classid, distance, probability)) << "Error during Classify : " << std::endl << calc << std::endl;
-
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] different";
-			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
-			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx],distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
-			idx++;
-			result(k, classid)++;
-		}
-	}
+	TestClassify(calc, m_dataSet, InitMatrixClassif::MDM::Prediction(), InitMatrixClassif::MDM::PredictionDistance(), Adaptation_None);
+	const CMatrixClassifierMDM ref = InitMatrixClassif::MDM::ReferenceMatlab();	// No Change
+	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Classify Change without adaptation mode", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -71,29 +78,9 @@ TEST_F(Tests_MatrixClassifier, MDM_Classifify)
 TEST_F(Tests_MatrixClassifier, MDM_Classifify_Adapt_Supervised)
 {
 	CMatrixClassifierMDM calc = InitMatrixClassif::MDM::ReferenceMatlab();
-
-	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	std::vector<size_t> refPrediction = InitMatrixClassif::MDM::PredictionSupervised();
-	std::vector<std::vector<double>> refPredictionDistance = InitMatrixClassif::MDM::PredictionDistanceSupervised();
-
-	size_t idx = 0;
-	for (size_t k = 0; k < m_dataSet.size(); ++k)
-	{
-		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
-		{
-			size_t classid;
-			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(m_dataSet[k][i], classid, distance, probability, Adaptation_Supervised, k)) << "Error during Classify : " << std::endl << calc << std::endl;
-
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] different";
-			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
-			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
-			idx++;
-			result(k, classid)++;
-		}
-	}
+	TestClassify(calc, m_dataSet, InitMatrixClassif::MDM::PredictionSupervised(), InitMatrixClassif::MDM::PredictionDistanceSupervised(), Adaptation_Supervised);
 	const CMatrixClassifierMDM ref = InitMatrixClassif::MDM::AfterSupervised();
-	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Adapt Classify after adaptation", ref, calc).str();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Adapt Classify after Supervised adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -101,29 +88,9 @@ TEST_F(Tests_MatrixClassifier, MDM_Classifify_Adapt_Supervised)
 TEST_F(Tests_MatrixClassifier, MDM_Classifify_Adapt_Unsupervised)
 {
 	CMatrixClassifierMDM calc = InitMatrixClassif::MDM::ReferenceMatlab();
-
-	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	std::vector<size_t> refPrediction = InitMatrixClassif::MDM::PredictionUnSupervised();
-	std::vector<std::vector<double>> refPredictionDistance = InitMatrixClassif::MDM::PredictionDistanceUnSupervised();
-
-	size_t idx = 0;
-	for (size_t k = 0; k < m_dataSet.size(); ++k)
-	{
-		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
-		{
-			size_t classid;
-			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(m_dataSet[k][i], classid, distance, probability, Adaptation_Unsupervised)) << "Error during Classify : " << std::endl << calc << std::endl;
-
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] different";
-			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
-			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
-			idx++;
-			result(k, classid)++;
-		}
-	}
+	TestClassify(calc, m_dataSet, InitMatrixClassif::MDM::PredictionUnSupervised(), InitMatrixClassif::MDM::PredictionDistanceUnSupervised(), Adaptation_Unsupervised);
 	const CMatrixClassifierMDM ref = InitMatrixClassif::MDM::AfterUnSupervised();
-	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Adapt Classify after adaptation", ref, calc).str();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Adapt Classify after Unsupervised adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -133,8 +100,8 @@ TEST_F(Tests_MatrixClassifier, MDM_Save)
 {
 	CMatrixClassifierMDM calc, ref;
 	EXPECT_TRUE(ref.train(m_dataSet)) << "Error during Training : " << std::endl << ref << std::endl;
-	EXPECT_TRUE(ref.saveXML("test.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
-	EXPECT_TRUE(calc.loadXML("test.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
+	EXPECT_TRUE(ref.saveXML("test_MDM_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
+	EXPECT_TRUE(calc.loadXML("test_MDM_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
 	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Save", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
@@ -153,27 +120,9 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Train)
 TEST_F(Tests_MatrixClassifier, FgMDM_Classifify)
 {
 	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::Reference();
-
-	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	std::vector<size_t> refPrediction = InitMatrixClassif::FgMDM::Prediction();
-	std::vector<std::vector<double>> refPredictionDistance = InitMatrixClassif::FgMDM::PredictionDistance();
-
-	size_t idx = 0;
-	for (size_t k = 0; k < m_dataSet.size(); ++k)
-	{
-		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
-		{
-			size_t classid;
-			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(m_dataSet[k][i], classid, distance, probability)) << "Error during Classify : " << std::endl << calc << std::endl;
-
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] different";
-			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
-			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
-			idx++;
-			result(k, classid)++;
-		}
-	}
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::Prediction(), InitMatrixClassif::FgMDM::PredictionDistance(), Adaptation_None);
+	const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::Reference();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Classify Change without adaptation mode", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -182,12 +131,11 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Save)
 {
 	CMatrixClassifierFgMDM calc, ref;
 	EXPECT_TRUE(ref.train(m_dataSet)) << "Error during Training : " << std::endl << ref << std::endl;
-	EXPECT_TRUE(ref.saveXML("test.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
-	EXPECT_TRUE(calc.loadXML("test.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
+	EXPECT_TRUE(ref.saveXML("test_FgMDM_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
+	EXPECT_TRUE(calc.loadXML("test_FgMDM_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
 	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Save", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
-
 
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_MatrixClassifier, MDM_Rebias_Train)
@@ -203,27 +151,9 @@ TEST_F(Tests_MatrixClassifier, MDM_Rebias_Train)
 TEST_F(Tests_MatrixClassifier, MDM_Rebias_Classifify)
 {
 	CMatrixClassifierMDMRebias calc = InitMatrixClassif::MDMRebias::Reference();
-
-	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	std::vector<size_t> refPrediction = InitMatrixClassif::MDMRebias::Prediction();
-	std::vector<std::vector<double>> refPredictionDistance = InitMatrixClassif::MDMRebias::PredictionDistance();
-
-	size_t idx = 0;
-	for (size_t k = 0; k < m_dataSet.size(); ++k)
-	{
-		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
-		{
-			size_t classid;
-			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(m_dataSet[k][i], classid, distance, probability)) << "Error during Classify : " << std::endl << calc << std::endl;
-
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] different";
-			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
-			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
-			idx++;
-			result(k, classid)++;
-		}
-	}
+	TestClassify(calc, m_dataSet, InitMatrixClassif::MDMRebias::Prediction(), InitMatrixClassif::MDMRebias::PredictionDistance(), Adaptation_None);
+	const CMatrixClassifierMDMRebias ref = InitMatrixClassif::MDMRebias::After();	// No Class change but Rebias yes
+	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Classify Change without adaptation mode", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -231,29 +161,9 @@ TEST_F(Tests_MatrixClassifier, MDM_Rebias_Classifify)
 TEST_F(Tests_MatrixClassifier, MDM_Rebias_Classifify_Adapt_Supervised)
 {
 	CMatrixClassifierMDMRebias calc = InitMatrixClassif::MDMRebias::Reference();
-
-	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	std::vector<size_t> refPrediction = InitMatrixClassif::MDMRebias::PredictionSupervised();
-	std::vector<std::vector<double>> refPredictionDistance = InitMatrixClassif::MDMRebias::PredictionDistanceSupervised();
-
-	size_t idx = 0;
-	for (size_t k = 0; k < m_dataSet.size(); ++k)
-	{
-		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
-		{
-			size_t classid;
-			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(m_dataSet[k][i], classid, distance, probability, Adaptation_Supervised, k)) << "Error during Classify : " << std::endl << calc << std::endl;
-
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] different";
-			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
-			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
-			idx++;
-			result(k, classid)++;
-		}
-	}
+	TestClassify(calc, m_dataSet, InitMatrixClassif::MDMRebias::PredictionSupervised(), InitMatrixClassif::MDMRebias::PredictionDistanceSupervised(), Adaptation_Supervised);
 	const CMatrixClassifierMDMRebias ref = InitMatrixClassif::MDMRebias::AfterSupervised();
-	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Adapt Classify after adaptation", ref, calc).str();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Adapt Classify after Supervised adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -261,29 +171,9 @@ TEST_F(Tests_MatrixClassifier, MDM_Rebias_Classifify_Adapt_Supervised)
 TEST_F(Tests_MatrixClassifier, MDM_Rebias_Classifify_Adapt_Unsupervised)
 {
 	CMatrixClassifierMDMRebias calc = InitMatrixClassif::MDMRebias::Reference();
-
-	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	std::vector<size_t> refPrediction = InitMatrixClassif::MDMRebias::PredictionUnSupervised();
-	std::vector<std::vector<double>> refPredictionDistance = InitMatrixClassif::MDMRebias::PredictionDistanceUnSupervised();
-
-	size_t idx = 0;
-	for (size_t k = 0; k < m_dataSet.size(); ++k)
-	{
-		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
-		{
-			size_t classid;
-			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(m_dataSet[k][i], classid, distance, probability, Adaptation_Unsupervised)) << "Error during Classify : " << std::endl << calc << std::endl;
-
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] different";
-			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
-			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
-			idx++;
-			result(k, classid)++;
-		}
-	}
+	TestClassify(calc, m_dataSet, InitMatrixClassif::MDMRebias::PredictionUnSupervised(), InitMatrixClassif::MDMRebias::PredictionDistanceUnSupervised(), Adaptation_Unsupervised);
 	const CMatrixClassifierMDMRebias ref = InitMatrixClassif::MDMRebias::AfterUnSupervised();
-	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Adapt Classify after adaptation", ref, calc).str();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Adapt Classify after Unsupervised adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -293,8 +183,8 @@ TEST_F(Tests_MatrixClassifier, MDM_Rebias_Save)
 {
 	CMatrixClassifierMDMRebias calc, ref;
 	EXPECT_TRUE(ref.train(m_dataSet)) << "Error during Training : " << std::endl << ref << std::endl;
-	EXPECT_TRUE(ref.saveXML("test.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
-	EXPECT_TRUE(calc.loadXML("test.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
+	EXPECT_TRUE(ref.saveXML("test_MDM_Rebias_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
+	EXPECT_TRUE(calc.loadXML("test_MDM_Rebias_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
 	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Save", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------

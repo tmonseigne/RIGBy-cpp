@@ -66,16 +66,6 @@ public:
 	/// <param name="classid">		The class to adapt. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 
-
-	//***********************
-	//***** XML Manager *****
-	//***********************
-	/// \copydoc CMatrixClassifierMDM::saveXML(const std::string&)
-	bool saveXML(const std::string& filename) override;
-
-	/// \copydoc CMatrixClassifierMDM::loadXML(const std::string&)
-	bool loadXML(const std::string& filename) override;
-
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
@@ -89,9 +79,6 @@ public:
 	/// \copybrief CMatrixClassifierMDM::getType()
 	/// <returns>	Minimum Distance to Mean. </returns>
 	std::string getType() const override { return "Minimum Distance to Mean REBIAS"; }
-
-	/// \copydoc IMatrixClassifier::print()
-	std::stringstream print() const override;
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -122,24 +109,10 @@ public:
 	size_t m_NbClassify = 0;
 
 protected:
-	//***********************
-	//***** XML Manager *****
-	//***********************
-	/// <summary>	Add the attribute on the first node.
-	///
-	/// -# The type of the classifier : MDM
-	/// -# The number of classes : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails CMatrixClassifierMDM::saveHeaderAttribute(tinyxml2::XMLElement*) const
-	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
 
-	/// <summary>	Loads the attribute on the first node.
-	///
-	/// -# Check the type : MDM
-	/// -# The number of classes : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails CMatrixClassifierMDM::loadHeaderAttribute(tinyxml2::XMLElement*)
-	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
+	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
+
+	bool loadAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) override;
+
+	std::stringstream printAdditional() const override;
 };

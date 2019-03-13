@@ -60,15 +60,6 @@ public:
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
-	//***********************
-	//***** XML Manager *****
-	//***********************
-	/// \copydoc IMatrixClassifier::saveXML(const std::string&)
-	bool saveXML(const std::string& filename) override;
-
-	/// \copydoc IMatrixClassifier::loadXML(const std::string&)
-	bool loadXML(const std::string& filename) override;
-
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
@@ -82,9 +73,6 @@ public:
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean. </returns>
 	std::string getType() const override { return "Minimum Distance to Mean"; }
-
-	/// \copydoc IMatrixClassifier::print()
-	std::stringstream print() const override;
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -117,33 +105,11 @@ protected:
 	//***********************
 	//***** XML Manager *****
 	//***********************
-	bool saveHeader(tinyxml2::XMLDocument* doc) const override;
-	bool loadHeader(tinyxml2::XMLDocument* doc) override;
-	bool saveOptional(tinyxml2::XMLDocument* doc) const override;
-	bool loadOptional(tinyxml2::XMLDocument* doc) override;
-	bool saveClasses(tinyxml2::XMLDocument* doc) const override;
-	bool loadClasses(tinyxml2::XMLDocument* doc) override;
-
-
-	/// <summary>	Add the attribute on the first node.
-	///
-	/// -# The type of the classifier : MDM
-	/// -# The number of classes : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::saveHeaderAttribute(tinyxml2::XMLElement*) const
-	bool saveHeaderAttribute(tinyxml2::XMLElement* element) const override;
-
-	/// <summary>	Loads the attribute on the first node.
-	///
-	/// -# Check the type : MDM
-	/// -# The number of classes : <see cref="m_ClassCount"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
-	/// </summary>
-	/// \copydetails IMatrixClassifier::loadHeaderAttribute(tinyxml2::XMLElement*)
-	bool loadHeaderAttribute(tinyxml2::XMLElement* element) override;
+	bool saveClasses(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
+	bool loadClasses(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) override;
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
+	std::stringstream printClasses() const override;
 };

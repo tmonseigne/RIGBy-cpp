@@ -36,6 +36,41 @@ bool IMatrixClassifier::classify(const MatrixXd& sample, size_t& classId, const 
 	vector<double> distance, probability;
 	return classify(sample, classId, distance, probability, adaptation, realClassId);
 }
+
+bool IMatrixClassifier::saveXML(const string& filename)
+{
+	XMLDocument xmlDoc;
+	// Create Root
+	XMLNode* root = xmlDoc.NewElement("Classifier");				// Create root node
+	xmlDoc.InsertFirstChild(root);									// Add root to XML
+
+	XMLElement* data = xmlDoc.NewElement("Classifier-data");		// Create data node
+	if (!saveHeader(xmlDoc, data)) { return false; }				// Save Header attribute
+	if (!saveAdditional(xmlDoc, data)) { return false; }				// Save Optionnal Informations
+	if (!saveClasses(xmlDoc, data)) { return false; }				// Save Classes
+
+	root->InsertEndChild(data);										// Add data to root
+	return xmlDoc.SaveFile(filename.c_str()) == 0;					// save XML (if != 0 it means error)
+}
+
+bool IMatrixClassifier::loadXML(const string& filename)
+{
+	// Load File
+	XMLDocument xmlDoc;
+	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }	// Check File Exist and Loading
+
+	// Load Root
+	XMLNode* root = xmlDoc.FirstChild();							// Get Root Node
+	if (root == nullptr) { return false; }							// Check Root Node Exist
+
+	// Load Data
+	XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
+	if (!loadHeader(xmlDoc, data)) { return false; }				// Load Header attribute
+	if (!loadAdditional(xmlDoc, data)) { return false; }				// Load Optionnal Informations
+	if (!loadClasses(xmlDoc, data)) { return false; }				// Load Classes
+
+	return true;
+}
 ///-------------------------------------------------------------------------------------------------
 
 //***********************
@@ -98,5 +133,46 @@ void IMatrixClassifier::copy(const IMatrixClassifier& obj)
 {
 	m_Metric = obj.m_Metric;
 	setClassCount(obj.getClassCount());
+}
+
+std::stringstream IMatrixClassifier::print() const
+{
+	return stringstream(printHeader().str() + printAdditional().str() + printClasses().str());
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+std::stringstream IMatrixClassifier::printHeader() const
+{
+	stringstream ss;
+	ss << getType() << " Classifier" << endl;
+	ss << "Metric : " << MetricToString(m_Metric) << endl;
+	ss << "Number of Classes : " << m_classCount << endl;
+	return ss;
+}
+///-------------------------------------------------------------------------------------------------
+
+//***********************
+//***** XML Manager *****
+//***********************
+///-------------------------------------------------------------------------------------------------
+bool IMatrixClassifier::saveHeader(XMLDocument& /*doc*/, XMLElement* data) const
+{
+	data->SetAttribute("type", getType().c_str());					// Set attribute classifier type
+	data->SetAttribute("class-count", int(m_classCount));			// Set attribute class count
+	data->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+bool IMatrixClassifier::loadHeader(XMLDocument& /*doc*/, XMLElement* data)
+{
+	if (data == nullptr) { return false; }						// Check if Node Exist
+	const string classifierType = data->Attribute("type");		// Get type
+	if (classifierType != getType()) { return false; }				// Check Type
+	setClassCount(data->IntAttribute("class-count"));			// Update Number of classes
+	m_Metric = StringToMetric(data->Attribute("metric"));		// Update Metric
+	return true;
 }
 ///-------------------------------------------------------------------------------------------------

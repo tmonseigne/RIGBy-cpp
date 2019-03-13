@@ -76,101 +76,6 @@ bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classId, s
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDM::saveXML(const string& filename)
-{
-	XMLDocument xmlDoc;
-	// Create Root
-	XMLNode* root = xmlDoc.NewElement("Classifier");				// Create root node
-	xmlDoc.InsertFirstChild(root);									// Add root to XML
-
-	// Write Header
-	XMLElement* data = xmlDoc.NewElement("Classifier-data");		// Create data node
-	if (!saveHeaderAttribute(data)) { return false; }				// Save Header attribute
-
-	// Write Reference
-	XMLElement* reference = xmlDoc.NewElement("Reference");			// Create Reference node
-	if (!saveMatrix(reference, m_Ref)) { return false; }			// Save class
-	data->InsertEndChild(reference);								// Add class node to data node
-
-	// Write Weight
-	XMLElement* weight = xmlDoc.NewElement("Weight");				// Create Reference node
-	if (!saveMatrix(weight, m_Weight)) { return false; }			// Save class
-	data->InsertEndChild(weight);									// Add class node to data node
-
-	// Write Class
-	for (size_t k = 0; k < m_classCount; ++k)						// for each class
-	{
-		XMLElement* element = xmlDoc.NewElement("Class");			// Create class node
-		element->SetAttribute("class-id", int(k));					// Set attribute class id (0 to K)
-		if (!saveMatrix(element, m_Means[k])) { return false; }		// Save class
-		data->InsertEndChild(element);								// Add class node to data node
-	}
-	root->InsertEndChild(data);										// Add data to root
-
-	return xmlDoc.SaveFile(filename.c_str()) == 0;					// save XML (if != 0 it means error)
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDM::loadXML(const string& filename)
-{
-	// Load File
-	XMLDocument xmlDoc;
-	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }	// Check File Exist and Loading
-
-	// Load Root
-	XMLNode* root = xmlDoc.FirstChild();							// Get Root Node
-	if (root == nullptr) { return false; }							// Check Root Node Exist
-
-	// Load Header
-	XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
-	if (!loadHeaderAttribute(data)) { return false; }				// Load Header attribute
-
-	// Load Reference
-	XMLElement* ref = data->FirstChildElement("Reference");			// Get Reference Node
-	if (!loadMatrix(ref, m_Ref)) { return false; }					// Load Reference Matrix
-
-	// Load Weight
-	XMLElement* weight = data->FirstChildElement("Weight");			// Get Weight Node
-	if (!loadMatrix(weight, m_Weight)) { return false; }			// Load Weight Matrix
-
-	// Load Class
-	XMLElement* element = data->FirstChildElement("Class");			// Get Fist Class Node
-	for (size_t k = 0; k < m_classCount; ++k)						// for each class
-	{
-		if (element == nullptr) { return false; }					// Check if Node Exist
-		const size_t idx = element->IntAttribute("class-id");		// Get Id (normally idx = k)
-		if (idx != k) { return false; }								// Check Id
-		if (!loadMatrix(element, m_Means[k])) { return false; }		// Load Class Matrix
-		element = element->NextSiblingElement("Class");				// Next Class
-	}
-	return true;
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDM::saveHeaderAttribute(XMLElement* element) const
-{
-	element->SetAttribute("type", "FgMDM");								// Set attribute classifier type
-	element->SetAttribute("class-count", int(m_classCount));			// Set attribute class count
-	element->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
-	return true;
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDM::loadHeaderAttribute(XMLElement* element)
-{
-	if (element == nullptr) { return false; }						// Check if Node Exist
-	const string classifierType = element->Attribute("type");		// Get type
-	if (classifierType != "FgMDM") { return false; }				// Check Type
-	setClassCount(element->IntAttribute("class-count"));			// Update Number of classes
-	m_Metric = StringToMetric(element->Attribute("metric"));		// Update Metric
-	return true;
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDM::isEqual(const CMatrixClassifierFgMDM& obj, const double precision) const
 {
 	if (!CMatrixClassifierMDM::isEqual(obj, precision)) { return false; }	// Compare base members
@@ -190,11 +95,40 @@ void CMatrixClassifierFgMDM::copy(const CMatrixClassifierFgMDM& obj)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-stringstream CMatrixClassifierFgMDM::print() const
+bool CMatrixClassifierFgMDM::saveAdditional(XMLDocument& doc, XMLElement* data) const
 {
-	stringstream ss = CMatrixClassifierMDM::print();				// Print base information
-	ss << "Reference matrix : " << endl << m_Ref << endl;			// Reference 
-	ss << "Weight matrix : " << endl << m_Weight << endl;			// Print Weight
+	// Save Reference
+	XMLElement* reference = doc.NewElement("Reference");		// Create Reference node
+	if (!saveMatrix(reference, m_Ref)) { return false; }		// Save class
+	data->InsertEndChild(reference);							// Add class node to data node
+
+	// Save Weight
+	XMLElement* weight = doc.NewElement("Weight");				// Create Reference node
+	if (!saveMatrix(weight, m_Weight)) { return false; }		// Save class
+	data->InsertEndChild(weight);								// Add class node to data node
+
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierFgMDM::loadAdditional(XMLDocument& /*doc*/, XMLElement* data)
+{
+	// Load Reference
+	XMLElement* ref = data->FirstChildElement("Reference");		// Get Reference Node
+	if (!loadMatrix(ref, m_Ref)) { return false; }				// Load Reference Matrix
+
+	// Load Weight
+	XMLElement* weight = data->FirstChildElement("Weight");		// Get Weight Node
+	return loadMatrix(weight, m_Weight);						// Load REBIAS Matrix
+}
+
+std::stringstream CMatrixClassifierFgMDM::printAdditional() const
+{
+	stringstream ss;
+	ss << "Reference matrix : " << endl << m_Ref << endl;		// Reference 
+	ss << "Weight matrix : " << endl << m_Weight << endl;		// Print Weight
 	return ss;
+
 }
 ///-------------------------------------------------------------------------------------------------

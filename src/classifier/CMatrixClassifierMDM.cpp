@@ -103,55 +103,33 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classId, std
 }
 ///-------------------------------------------------------------------------------------------------
 
+//***********************
 //***** XML Manager *****
 //***********************
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::saveXML(const std::string& filename)
+bool CMatrixClassifierMDM::saveClasses(XMLDocument& doc, XMLElement* data) const
 {
-	XMLDocument xmlDoc;
-	// Create Root
-	XMLNode* root = xmlDoc.NewElement("Classifier");				// Create root node
-	xmlDoc.InsertFirstChild(root);									// Add root to XML
-
-	// Write Header
-	XMLElement* data = xmlDoc.NewElement("Classifier-data");		// Create data node
-	if (!saveHeaderAttribute(data)) { return false; }				// Save Header attribute
-
-	// Write Class
 	for (size_t k = 0; k < m_classCount; ++k)						// for each class
 	{
-		XMLElement* element = xmlDoc.NewElement("Class");			// Create class node
+		XMLElement* element = doc.NewElement("Class");				// Create class node
 		element->SetAttribute("class-id", int(k));					// Set attribute class id (0 to K)
 		element->SetAttribute("nb-trials", int(m_NbTrials[k]));		// Set attribute class number of trials
 		if (!saveMatrix(element, m_Means[k])) { return false; }		// Save class Matrix Reference
 		data->InsertEndChild(element);								// Add class node to data node
 	}
-	root->InsertEndChild(data);										// Add data to root
-
-	return xmlDoc.SaveFile(filename.c_str()) == 0;					// save XML (if != 0 it means error)
+	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::loadXML(const std::string& filename)
+bool CMatrixClassifierMDM::loadClasses(XMLDocument& /*doc*/, XMLElement* data)
 {
-	// Load File
-	XMLDocument xmlDoc;
-	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }	// Check File Exist and Loading
-
-	// Load Root
-	XMLNode* root = xmlDoc.FirstChild();							// Get Root Node
-	if (root == nullptr) { return false; }							// Check Root Node Exist
-
-	// Load Data
-	XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
-	if (!loadHeaderAttribute(data)) { return false; }				// Load Header attribute
 
 	XMLElement* element = data->FirstChildElement("Class");			// Get Fist Class Node
 	for (size_t k = 0; k < m_classCount; ++k)						// for each class
 	{
 		if (element == nullptr) { return false; }					// Check if Node Exist
-		const size_t idx = element->IntAttribute("class-id");		// Get Id (normally idx = k)
+		const size_t idx = element->IntAttribute("class-id");		// Get Id (normally idx == k)
 		if (idx != k) { return false; }								// Check Id
 		m_NbTrials[k] = element->IntAttribute("nb-trials");			// Get the number of Trials for this class
 		if (!loadMatrix(element, m_Means[k])) { return false; }		// Load Class Matrix
@@ -162,41 +140,16 @@ bool CMatrixClassifierMDM::loadXML(const std::string& filename)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::saveHeader(XMLDocument* doc) const { return true; }
-///-------------------------------------------------------------------------------------------------
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::loadHeader(XMLDocument* doc) { return true; }
-///-------------------------------------------------------------------------------------------------
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::saveOptional(XMLDocument* doc) const { return true; }
-///-------------------------------------------------------------------------------------------------
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::loadOptional(XMLDocument* doc) { return true; }
-///-------------------------------------------------------------------------------------------------
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::saveClasses(XMLDocument* doc) const { return true; }
-///-------------------------------------------------------------------------------------------------
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::loadClasses(XMLDocument* doc) { return true; }
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::saveHeaderAttribute(XMLElement* element) const
+std::stringstream CMatrixClassifierMDM::printClasses() const
 {
-	element->SetAttribute("type", "MDM");								// Set attribute classifier type
-	element->SetAttribute("class-count", int(m_classCount));			// Set attribute class count
-	element->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
-	return true;
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::loadHeaderAttribute(XMLElement* element)
-{
-	if (element == nullptr) { return false; }						// Check if Node Exist
-	const string classifierType = element->Attribute("type");		// Get type
-	if (classifierType != "MDM") { return false; }					// Check Type
-	setClassCount(element->IntAttribute("class-count"));			// Update Number of classes
-	m_Metric = StringToMetric(element->Attribute("metric"));		// Update Metric
-	return true;
+	stringstream ss;
+	for (size_t i = 0; i < m_classCount; ++i)
+	{
+		ss << "Mean of class " << i << " (" << m_NbTrials[i] << " trials): ";
+		if (m_Means[i].size() != 0) { ss << endl << m_Means[i] << endl; }
+		else { ss << "Not Computed" << endl; }
+	}
+	return ss;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -224,22 +177,5 @@ void CMatrixClassifierMDM::copy(const CMatrixClassifierMDM& obj)
 		m_Means[i] = obj.m_Means[i];
 		m_NbTrials[i] = obj.m_NbTrials[i];
 	}
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-stringstream CMatrixClassifierMDM::print() const
-{
-	stringstream ss;
-	ss << getType()<< " Classifier" << endl;
-	ss << "Metric : " << MetricToString(m_Metric) << endl;
-	ss << "Number of Classes : " << m_classCount << endl;
-	for (size_t i = 0; i < m_classCount; ++i)
-	{
-		ss << "Mean of class " << i << " (" << m_NbTrials[i] << " trials): ";
-		if (m_Means[i].size() != 0) { ss << endl << m_Means[i] << endl; }
-		else { ss << "Not Computed" << endl; }
-	}
-	return ss;
 }
 ///-------------------------------------------------------------------------------------------------

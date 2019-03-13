@@ -67,7 +67,7 @@ bool MeanRiemann(const vector<MatrixXd>& covs, MatrixXd& mean)
 		for (const MatrixXd& cov : covs) { mJ += (isC * cov * isC).log(); }	// Sum of log(isC*Ci*isC)
 		mJ /= double(k);										// Normalization
 		crit = mJ.norm();										// Current change criterion
-		mean = sC * (nu * mJ).exp() * sC;						// Update Mean M = sC * exp(nu*J) * sC
+		mean = sC * (nu * mJ).exp() * sC;						// Update Mean		=> M = sC * exp(nu*J) * sC
 
 		const double h = nu * crit;								// Update Coefficient change
 		if (h < tau)

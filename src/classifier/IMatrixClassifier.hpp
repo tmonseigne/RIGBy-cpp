@@ -101,12 +101,12 @@ public:
 	/// <summary>	Saves the classifier information in an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool saveXML(const std::string& filename) = 0;
+	virtual bool saveXML(const std::string& filename);
 	
 	/// <summary>	Loads the classifier information from an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool loadXML(const std::string& filename) = 0;
+	virtual bool loadXML(const std::string& filename);
 
 
 	//*****************************
@@ -128,7 +128,7 @@ public:
 	
 	/// <summary>	Get the Classifier information for output. </summary>
 	/// <returns>	The Classifier print in stringstream. </returns>
-	virtual std::stringstream print() const = 0;
+	virtual std::stringstream print() const;
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -156,28 +156,38 @@ public:
 	EMetrics m_Metric = Metric_Riemann;
 
 protected:
+	virtual std::stringstream printHeader() const;
+	virtual std::stringstream printAdditional() const { return std::stringstream(); }
+	virtual std::stringstream printClasses() const { return std::stringstream(); }
+
 	//***********************
 	//***** XML Manager *****
 	//***********************
-
-	virtual bool saveHeader(tinyxml2::XMLDocument* doc) const = 0;
-	virtual bool loadHeader(tinyxml2::XMLDocument* doc) = 0;
-	virtual bool saveOptional(tinyxml2::XMLDocument* doc) const = 0;
-	virtual bool loadOptional(tinyxml2::XMLDocument* doc) = 0;
-	virtual bool saveClasses(tinyxml2::XMLDocument* doc) const = 0;
-	virtual bool loadClasses(tinyxml2::XMLDocument* doc) = 0;
-
-
-
-	/// <summary>	Add the attribute on the first node (general informations as classifier type). </summary>
-	/// <param name="element">	Node to modify. </param>
+	/// <summary>	Add the attribute on the first node (general informations as classifier type, number of class...).
+	///
+	/// -# The type of the classifier : <see cref="getType"/>
+	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The metric to use : <see cref="m_Metric"/>
+	/// </summary>
+	/// <param name="doc">	Main XML Document. </param>
+	/// <param name="data">	Node to modify. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool saveHeaderAttribute(tinyxml2::XMLElement* element) const = 0;
+	virtual bool saveHeader(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const;
 
-	/// <summary>	Loads the attribute on the first node (general informations as classifier type). </summary>
-	/// <param name="element">	Node to read. </param>
+	/// <summary>	Loads the attribute on the first node (general informations as classifier type, number of class...).
+	///
+	/// -# Check the type : <see cref="getType"/>
+	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The metric to use : <see cref="m_Metric"/>
+	/// </summary>
+	/// <param name="doc">	Main XML Document. </param>
+	/// <param name="data">	Node to read. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool loadHeaderAttribute(tinyxml2::XMLElement* element) = 0;
+	virtual bool loadHeader(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data);
+	virtual bool saveAdditional(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) const { return true; }
+	virtual bool loadAdditional(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) { return true; }
+	virtual bool saveClasses(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) const { return true; }
+	virtual bool loadClasses(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) { return true; }
 
 	/// <summary>	Format the Matrix for XML Saving. </summary>
 	/// <param name="in">	Matrix. </param>

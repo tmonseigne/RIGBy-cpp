@@ -15,7 +15,7 @@
 
 #include <vector>
 #include <type_traits>
-#include <Eigen/Dense>
+#include "classifier/IMatrixClassifier.hpp"
 
 const std::string SEP = "\n====================\n";
 
@@ -62,7 +62,7 @@ inline bool isAlmostEqual(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, co
 inline std::stringstream ErrorMsg(const std::string& name, const size_t ref, const size_t calc)
 {
 	std::stringstream ss;
-	ss << SEP << name << " : " << std::endl << "  Ref : \t" << ref << std::endl << "  Calc : \t" << calc << SEP;
+	ss << SEP << name << " : Reference : " << ref << ", \tCompute : " << calc << SEP;
 	return ss;
 }
 
@@ -71,7 +71,7 @@ inline std::stringstream ErrorMsg(const std::string& name, const size_t ref, con
 inline std::stringstream ErrorMsg(const std::string& name, const double ref, const double calc)
 {
 	std::stringstream ss;
-	ss << SEP << name << " : " << std::endl << "  Ref : \t" << ref << std::endl << "  Calc : \t" << calc << SEP;
+	ss << SEP << name << " : Reference : " << ref << ", \tCompute : " << calc << SEP;
 	return ss;
 }
 
@@ -82,17 +82,19 @@ template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::
 std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, const std::vector<T>& calc)
 {
 	std::stringstream ss;
-	ss << SEP << name << " : " << std::endl << "  Ref : \t[";
+	ss << SEP << name << " : " << std::endl << "  Reference : \t[";
 	for (const T& t : ref)
 	{
 		ss << t << ", ";
 	}
-	ss << "\b\b]" << std::endl << "  Calc : \t[";
+	if (!ref.empty()) { ss.seekp(ss.str().length() - 2); }
+	ss << "] " << std::endl << "  Compute : \t[";
 	for (const T& t : calc)
 	{
 		ss << t << ", ";
 	}
-	ss << "\b\b]" << SEP;
+	if (!ref.empty()) { ss.seekp(ss.str().length() - 2); }
+	ss << "] " << SEP;
 	return ss;
 }
 
@@ -101,7 +103,7 @@ std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, c
 inline std::stringstream ErrorMsg(const std::string& name, const Eigen::MatrixXd& ref, const Eigen::MatrixXd& calc)
 {
 	std::stringstream ss;
-	ss << SEP << name << " : " << std::endl << "********** Ref **********\n" << ref << std::endl << "********** Calc **********\n" << calc << SEP;
+	ss << SEP << name << " : " << std::endl << "********** Reference **********\n" << ref << std::endl << "********** Compute **********\n" << calc << SEP;
 	return ss;
 }
 
@@ -110,6 +112,6 @@ inline std::stringstream ErrorMsg(const std::string& name, const Eigen::MatrixXd
 inline std::stringstream ErrorMsg(const std::string& name, const IMatrixClassifier& ref, const IMatrixClassifier& calc)
 {
 	std::stringstream ss;
-	ss << SEP << name << " : " << std::endl << "********** Ref **********\n" << ref << std::endl << "********** Calc **********\n" << calc << SEP;
+	ss << SEP << name << " : " << std::endl << "********** Reference **********\n" << ref << std::endl << "********** Compute **********\n" << calc << SEP;
 	return ss;
 }
