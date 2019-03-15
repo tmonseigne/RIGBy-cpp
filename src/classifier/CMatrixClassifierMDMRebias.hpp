@@ -25,46 +25,44 @@ public:
 	/// <summary>	Default constructor. Initializes a new instance of the <see cref="CMatrixClassifierMDMRebias"/> class. </summary>
 	CMatrixClassifierMDMRebias() = default;
 
+	/// <summary>	Default Copy constructor. Initializes a new instance of the <see cref="CMatrixClassifierMDMRebias"/> class. </summary>
+	/// <param name="obj">	Initial object. </param>
+	CMatrixClassifierMDMRebias(const CMatrixClassifierMDMRebias& obj) { *this = obj; }
+
+	/// \copydoc CMatrixClassifierMDM(CMatrixClassifierMDM&&)
+	CMatrixClassifierMDMRebias(CMatrixClassifierMDMRebias&& obj) = default;
+
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDMRebias"/> class and set base members. </summary>
 	/// \copydetails CMatrixClassifierMDM(const size_t, const EMetrics)
-	explicit CMatrixClassifierMDMRebias(const size_t classcount, const EMetrics metric) : CMatrixClassifierMDM(classcount, metric) { }
+	explicit CMatrixClassifierMDMRebias(const size_t nbClass, const EMetrics metric) : CMatrixClassifierMDM(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDMRebias"/> class. </summary>
-	/// \copydetails ~CMatrixClassifierMDM()
 	virtual ~CMatrixClassifierMDMRebias() = default;
 
 	//**********************
 	//***** Classifier *****
 	//**********************
 
-	/// \copydoc CMatrixClassifierMDM::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
+	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
+	/// <summary>	
+	/// -# Compute the mean of all trials with the metric (<see cref="EMetrics" />) in <see cref="m_Metric"/> member as reference and store this in <see cref="m_Rebias"/> member.
+	/// -# Set the good number of classes
+	/// -# Apply an affine transformation on each trials with the reference : \f$ S_\text{new} = R^{-1/2} * S * {R^{-1/2}}^{\mathsf{T}} \f$
+	/// -# Compute the mean of each class (row), on transformed trials, with the metric (<see cref="EMetrics" />) in <see cref="m_Metric"/> member.
+	/// -# Set the number of trials for each class.
+	///	</summary>
+	/// \copydetails IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) override;
 
 	/// \copybrief CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
-	/// <summary>	Compute the distance between the sample and each mean matrix.\n
-	/// The class with the closest mean is the predicted class.\n
-	/// The distance is returned.\n
-	/// The probability \f$ \mathcal{P}_i \f$ to be the class \f$ i \f$ is compute as :
-	/// \f[
-	/// p_i = \frac{d_{\text{min}}}{d_i}\\
-	/// \mathcal{P}_i =  \frac{p_i}{\sum{\left(p_i\right)}}
-	/// \f]\n
-	/// <b>Remark</b> : The probability is normalized \f$ \sum{\left(\mathcal{P}_i\right)} = 1 \f$\n
-	/// If the classfier is adapted, launch adaptation method
+	/// <summary>
+	/// Apply an affine transformation on the trial (sample) with the reference : \f$ S_\text{new} = R^{-1/2} * S * {R^{-1/2}}^{\mathsf{T}} \f$ \n
+	/// Update the reference with the current sample the first time and next with the Geodesic between the reference and the current sample.\n
+	/// With \f$ \gamma_m \f$ the Geodesic (<see cref="Geodesic" />) with the metric \f$ m \f$ (<see cref="EMetrics" />) and \f$ N_c \f$ the number of classification : \f$ R = \gamma_\text{m}\left( R,S,\frac{1}{N_c} \right) \f$ \n
 	///	</summary>
-	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
+	/// \copydetails CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
-
-	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class.  
-	///
-	///  \f[ C^{k} = \gamma_\text{R}{ \left(C^{k},C_{sample},\frac{1}{N_{k}+1}\right) } \f]\n
-	/// With :  \f$ k \f$ the class id, \f$ C^{k} \f$ the mean of the class, \f$ \gamma_\text{R} \f$ the Riemann geodesic (<see cref="Geodesic"/>),
-	/// \f$ C_{sample} \f$ the current sample and \f$ N_{k} \f$ the number of trials for the class \f$k\f$
-	/// </summary>
-	/// <param name="sample">		The sample that adapts the classifier. </param>
-	/// <param name="classid">		The class to adapt. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
 
 	//*****************************
 	//***** Override Operator *****
@@ -83,7 +81,14 @@ public:
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	The copied object. </returns>
-	CMatrixClassifierMDMRebias& operator=(const CMatrixClassifierMDMRebias& obj) { copy(obj);		return *this; }
+	CMatrixClassifierMDMRebias& operator=(const CMatrixClassifierMDMRebias& obj)
+	{
+		copy(obj);		
+		return *this;
+	}
+
+	/// <summary>	Don't Override the move operator. </summary>
+	CMatrixClassifierMDMRebias& operator=(CMatrixClassifierMDMRebias&& obj) = default;
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -99,10 +104,16 @@ public:
 	/// <param name="os">	The ostream. </param>
 	/// <param name="obj">	The object. </param>
 	/// <returns>	Return the modified ostream. </returns>
-	friend std::ostream& operator <<(std::ostream& os, const CMatrixClassifierMDMRebias& obj) { os << obj.print().str();		return os; }
+	friend std::ostream& operator <<(std::ostream& os, const CMatrixClassifierMDMRebias& obj)
+	{
+		os << obj.print().str();		
+		return os;
+	}
 
 
+	//*********************
 	//***** Variables *****
+	//*********************
 	/// <summary>	Rebias Matrix. </summary>
 	Eigen::MatrixXd m_Rebias;
 	/// <summary>	Number of classify launch. </summary>
@@ -110,9 +121,15 @@ public:
 
 protected:
 
+	/// <summary>	Save Additionnal informations (reference and number of classification). </summary>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
 	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
 
-	bool loadAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) override;
+	/// <summary>	Load Additionnal informations (reference and number of classification). </summary>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	bool loadAdditional(tinyxml2::XMLElement* data) override;
 
+	/// <summary>	Prints the Additional informations (reference and number of classification). </summary>
+	/// <returns>	Additional informations in stringstream</returns>
 	std::stringstream printAdditional() const override;
 };

@@ -22,7 +22,7 @@
 #include "classifier/CMatrixClassifierMDMRebias.hpp"
 
 //---------------------------------------------------------------------------------------------------
-static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<Eigen::MatrixXd>> &dataset, const std::vector<size_t> &refPrediction, const std::vector<std::vector<double>> &refPredictionDistance, const EAdaptations& adapt)
+static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<Eigen::MatrixXd>>& dataset, const std::vector<size_t>& refPrediction, const std::vector<std::vector<double>>& refPredictionDistance, const EAdaptations& adapt)
 {
 	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
 	size_t idx = 0;
@@ -42,7 +42,6 @@ static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<
 	}
 }
 //---------------------------------------------------------------------------------------------------
-
 
 //---------------------------------------------------------------------------------------------------
 class Tests_MatrixClassifier : public testing::Test
@@ -98,8 +97,8 @@ TEST_F(Tests_MatrixClassifier, MDM_Classifify_Adapt_Unsupervised)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_MatrixClassifier, MDM_Save)
 {
-	CMatrixClassifierMDM calc, ref;
-	EXPECT_TRUE(ref.train(m_dataSet)) << "Error during Training : " << std::endl << ref << std::endl;
+	CMatrixClassifierMDM calc;
+	CMatrixClassifierMDM ref = InitMatrixClassif::MDM::Reference();
 	EXPECT_TRUE(ref.saveXML("test_MDM_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
 	EXPECT_TRUE(calc.loadXML("test_MDM_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
 	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Save", ref, calc).str();
@@ -129,8 +128,8 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Classifify)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_MatrixClassifier, FgMDM_Save)
 {
-	CMatrixClassifierFgMDM calc, ref;
-	EXPECT_TRUE(ref.train(m_dataSet)) << "Error during Training : " << std::endl << ref << std::endl;
+	CMatrixClassifierFgMDM calc;
+	CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::Reference();
 	EXPECT_TRUE(ref.saveXML("test_FgMDM_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
 	EXPECT_TRUE(calc.loadXML("test_FgMDM_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
 	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Save", ref, calc).str();
@@ -181,8 +180,8 @@ TEST_F(Tests_MatrixClassifier, MDM_Rebias_Classifify_Adapt_Unsupervised)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_MatrixClassifier, MDM_Rebias_Save)
 {
-	CMatrixClassifierMDMRebias calc, ref;
-	EXPECT_TRUE(ref.train(m_dataSet)) << "Error during Training : " << std::endl << ref << std::endl;
+	CMatrixClassifierMDMRebias calc;
+	CMatrixClassifierMDMRebias ref = InitMatrixClassif::MDMRebias::Reference();
 	EXPECT_TRUE(ref.saveXML("test_MDM_Rebias_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
 	EXPECT_TRUE(calc.loadXML("test_MDM_Rebias_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
 	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Save", ref, calc).str();

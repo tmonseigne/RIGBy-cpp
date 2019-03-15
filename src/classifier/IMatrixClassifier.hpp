@@ -40,12 +40,16 @@ public:
 
 	/// <summary>	Default Copy constructor. Initializes a new instance of the <see cref="IMatrixClassifier"/> class. </summary>
 	/// <param name="obj">	Initial object. </param>
-	IMatrixClassifier(const IMatrixClassifier& obj);
+	IMatrixClassifier(const IMatrixClassifier& obj) { *this = obj; }
+
+	/// <summary>	Don't override move constructor. </summary>
+	/// <param name="obj">	Initial object. </param>
+	IMatrixClassifier(IMatrixClassifier&& obj) = default;
 
 	/// <summary>	Initializes a new instance of the <see cref="IMatrixClassifier"/> class and set members. </summary>
-	/// <param name="classcount">	The number of classes. </param>
+	/// <param name="nbClass">	The number of classes. </param>
 	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetrics" />). </param>
-	explicit IMatrixClassifier(const size_t classcount, const EMetrics metric);
+	explicit IMatrixClassifier(const size_t nbClass, const EMetrics metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="IMatrixClassifier"/> class. </summary>
 	virtual ~IMatrixClassifier() = default;
@@ -54,32 +58,30 @@ public:
 	//***** Classifier *****
 	//**********************
 	/// <summary>	Sets the class count. </summary>
-	/// <param name="classcount">	The classcount. </param>
-	virtual void setClassCount(const size_t classcount);
+	/// <param name="nbClass">	The number of Classes. </param>
+	virtual void setClassCount(const size_t nbClass);
 
 	/// <summary>	get the class count. </summary>
-	virtual size_t getClassCount() const { return m_classCount; }
+	virtual size_t getClassCount() const { return m_nbClass; }
 	
-	/// <summary>	Train the classifier with the dataset. \n
-	/// Each row is the trials of each class. The trainer compute the mean of each row with the <see cref="EMetrics" /> in <see cref="m_Metric"/> member.
-	/// </summary>
+	/// <summary>	Train the classifier with the dataset. </summary>
 	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	virtual bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) = 0;
 
 	/// <summary>	Classify the matrix and return the class id (override of same function with all argument). </summary>
-	/// <param name="sample">	The sample to classify. </param>
-	/// <param name="classId">	The predicted class. </param>
+	/// <param name="sample">		The sample to classify. </param>
+	/// <param name="classId">		The predicted class. </param>
 	/// <param name="adaptation">	Adaptation method for the classfier <see cref="EAdaptations" />. </param>
 	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	/// <seealso cref="classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, EAdaptations, const size_t&)">
+	/// <seealso cref="classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, EAdaptations, const size_t&)"/>
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId,
 						  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max());
 
 	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class. </summary>
-	/// <param name="sample">	The sample to classify. </param>
-	/// <param name="classId">	The predicted class. </param>
+	/// <param name="sample">		The sample to classify. </param>
+	/// <param name="classId">		The predicted class. </param>
 	/// <param name="distance">		The distance of the sample with each class. </param>
 	/// <param name="probability">	The probability of the sample with each class. </param>
 	/// <param name="adaptation">	Adaptation method for the classfier <see cref="EAdaptations" />. </param>
@@ -87,13 +89,6 @@ public:
 	/// <returns>	True if it succeeds, false if it fails. </returns>	
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 						  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) = 0;	
-
-	/// <summary>	Adapts the classifier with the specified sample.</summary>
-	/// <param name="sample">		The sample.</param>
-	/// <param name="adaptation">	The adaptation method.</param>
-	/// <param name="classId">		The identifier of the class to adapt.</param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>	
-	//virtual bool adapt(const Eigen::MatrixXd& sample, const EAdaptations adaptation = Adaptation_None, const size_t& classId = std::numeric_limits<std::size_t>::max()) = 0;
 
 	//***********************
 	//***** XML Manager *****
@@ -133,7 +128,14 @@ public:
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	The copied object. </returns>
-	IMatrixClassifier& operator=(const IMatrixClassifier& obj) { copy(obj);		return *this; }
+	IMatrixClassifier& operator=(const IMatrixClassifier& obj)
+	{
+		copy(obj);		
+		return *this;
+	}
+
+	/// <summary>	Don't Override the move operator. </summary>
+	IMatrixClassifier& operator=(IMatrixClassifier&& obj) = default;
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -149,15 +151,29 @@ public:
 	/// <param name="os">	The ostream. </param>
 	/// <param name="obj">	The object. </param>
 	/// <returns>	Return the modified ostream. </returns>
-	friend std::ostream& operator <<(std::ostream& os, const IMatrixClassifier& obj) { os << obj.print().str();		return os; }
+	friend std::ostream& operator <<(std::ostream& os, const IMatrixClassifier& obj) 
+	{
+		os << obj.print().str();		
+		return os;
+	}
 
+	//*********************	
 	//***** Variables *****
+	//*********************	
 	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetrics" />). </summary>
 	EMetrics m_Metric = Metric_Riemann;
 
-protected:
+protected:	
+	/// <summary>	Prints the header informations.</summary>
+	/// <returns>	Header informations in stringstream</returns>
 	virtual std::stringstream printHeader() const;
+
+	/// <summary>	Prints the Additional informations.</summary>
+	/// <returns>	Additional informations in stringstream</returns>
 	virtual std::stringstream printAdditional() const { return std::stringstream(); }
+
+	/// <summary>	Prints the Classes informations.</summary>
+	/// <returns>	Classes informations in stringstream</returns>
 	virtual std::stringstream printClasses() const { return std::stringstream(); }
 
 	//***********************
@@ -166,28 +182,38 @@ protected:
 	/// <summary>	Add the attribute on the first node (general informations as classifier type, number of class...).
 	///
 	/// -# The type of the classifier : <see cref="getType"/>
-	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The number of classes : <see cref="m_nbClass"/>
 	/// -# The metric to use : <see cref="m_Metric"/>
 	/// </summary>
-	/// <param name="doc">	Main XML Document. </param>
 	/// <param name="data">	Node to modify. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool saveHeader(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const;
+	virtual bool saveHeader(tinyxml2::XMLElement* data) const;
 
 	/// <summary>	Loads the attribute on the first node (general informations as classifier type, number of class...).
 	///
 	/// -# Check the type : <see cref="getType"/>
-	/// -# The number of classes : <see cref="m_ClassCount"/>
+	/// -# The number of classes : <see cref="m_nbClass"/>
 	/// -# The metric to use : <see cref="m_Metric"/>
 	/// </summary>
-	/// <param name="doc">	Main XML Document. </param>
 	/// <param name="data">	Node to read. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool loadHeader(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data);
+	virtual bool loadHeader(tinyxml2::XMLElement* data);
+
+	/// <summary>	Save Additionnal informations (none at this level). </summary>
+	/// <returns>	True. </returns>
 	virtual bool saveAdditional(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) const { return true; }
-	virtual bool loadAdditional(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) { return true; }
+	
+	/// <summary>	Load Additionnal informations (none at this level). </summary>
+	/// <returns>	True. </returns>
+	virtual bool loadAdditional(tinyxml2::XMLElement* /*data*/) { return true; }
+	
+	/// <summary>	Save Classes informations (none at this level). </summary>
+	/// <returns>	True. </returns>
 	virtual bool saveClasses(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) const { return true; }
-	virtual bool loadClasses(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) { return true; }
+	
+	/// <summary>	Load Classes informations (none at this level). </summary>
+	/// <returns>	True. </returns>
+	virtual bool loadClasses(tinyxml2::XMLElement* /*data*/) { return true; }
 
 	/// <summary>	Format the Matrix for XML Saving. </summary>
 	/// <param name="in">	Matrix. </param>
@@ -215,7 +241,9 @@ protected:
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	static bool loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixXd& matrix);
 
+	//*********************	
 	//***** Variables *****
+	//*********************	
 	/// <summary>	Number of classes to classify. </summary>
-	size_t m_classCount = 2;
+	size_t m_nbClass = 2;
 };

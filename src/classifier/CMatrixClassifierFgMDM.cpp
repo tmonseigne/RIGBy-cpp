@@ -3,7 +3,6 @@
 #include "utils/Basics.hpp"
 #include "utils/Featurization.hpp"
 #include "utils/Classification.hpp"
-#include "utils/Geodesic.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -14,9 +13,7 @@ using namespace tinyxml2;
 bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
 {
 	if (datasets.empty()) { return false; }
-	// Compute Reference matrix
-	const vector<MatrixXd> data = Vector2DTo1D(datasets);		// Append datasets in one vector
-	if (!Mean(data, m_Ref, Metric_Riemann)) { return false; }
+	if (!Mean(Vector2DTo1D(datasets), m_Ref, Metric_Riemann)) { return false; }	// Compute Reference matrix
 
 	// Transform to the Tangent Space
 	const size_t nbClass = datasets.size();
@@ -44,7 +41,7 @@ bool CMatrixClassifierFgMDM::train(const vector<vector<MatrixXd>>& datasets)
 		filtered[k].resize(nbTrials);
 		for (size_t i = 0; i < nbTrials; ++i)
 		{
-			if (!FgDAApply(tsSample[k][i], filtered[k][i], m_Weight)) { return false; }	// Apply Filter
+			if (!FgDAApply(tsSample[k][i], filtered[k][i], m_Weight)) { return false; }			// Apply Filter
 			if (!UnTangentSpace(filtered[k][i], newDatasets[k][i], m_Ref)) { return false; }	// Return to Matrix Space
 		}
 	}
@@ -63,15 +60,8 @@ bool CMatrixClassifierFgMDM::classify(const MatrixXd& sample, size_t& classId, s
 	if (!TangentSpace(sample, tsSample, m_Ref)) { return false; }		// Transform to the Tangent Space
 	if (!FgDAApply(tsSample, filtered, m_Weight)) { return false; }		// Apply Filter
 	if (!UnTangentSpace(filtered, newSample, m_Ref)) { return false; }	// Return to Matrix Space
-	CMatrixClassifierMDM::classify(newSample, classId, distance, probability/*, Adaptation_None, std::numeric_limits<std::size_t>::max()*/);
 
-	// Adaptation
-	if (adaptation == Adaptation_None) { return true; }
-	// Get class id for adaptation and increase number of trials, expected if supervised, predicted if unsupervised
-	const size_t id = adaptation == Adaptation_Supervised ? realClassId : classId;
-	if (id >= m_classCount) { return false; }	// Check id (if supervised and bad input)
-	m_NbTrials[id]++;							// Update number of trials for the class id
-	return Geodesic(m_Means[id], sample, m_Means[id], m_Metric, 1.0 / m_NbTrials[id]);
+	return CMatrixClassifierMDM::classify(newSample, classId, distance, probability, adaptation, realClassId);
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -103,7 +93,7 @@ bool CMatrixClassifierFgMDM::saveAdditional(XMLDocument& doc, XMLElement* data) 
 	data->InsertEndChild(reference);							// Add class node to data node
 
 	// Save Weight
-	XMLElement* weight = doc.NewElement("Weight");				// Create Reference node
+	XMLElement* weight = doc.NewElement("Weight");				// Create LDA Weight node
 	if (!saveMatrix(weight, m_Weight)) { return false; }		// Save class
 	data->InsertEndChild(weight);								// Add class node to data node
 
@@ -112,15 +102,15 @@ bool CMatrixClassifierFgMDM::saveAdditional(XMLDocument& doc, XMLElement* data) 
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDM::loadAdditional(XMLDocument& /*doc*/, XMLElement* data)
+bool CMatrixClassifierFgMDM::loadAdditional(XMLElement* data)
 {
 	// Load Reference
 	XMLElement* ref = data->FirstChildElement("Reference");		// Get Reference Node
 	if (!loadMatrix(ref, m_Ref)) { return false; }				// Load Reference Matrix
 
 	// Load Weight
-	XMLElement* weight = data->FirstChildElement("Weight");		// Get Weight Node
-	return loadMatrix(weight, m_Weight);						// Load REBIAS Matrix
+	XMLElement* weight = data->FirstChildElement("Weight");		// Get LDA Weight Node
+	return loadMatrix(weight, m_Weight);						// Load LDA Weight Matrix
 }
 
 std::stringstream CMatrixClassifierFgMDM::printAdditional() const
@@ -129,6 +119,5 @@ std::stringstream CMatrixClassifierFgMDM::printAdditional() const
 	ss << "Reference matrix : " << endl << m_Ref << endl;		// Reference 
 	ss << "Weight matrix : " << endl << m_Weight << endl;		// Print Weight
 	return ss;
-
 }
 ///-------------------------------------------------------------------------------------------------

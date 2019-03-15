@@ -30,6 +30,18 @@ enum EStandardization
 //************************************************
 //******************** Matrix ********************
 //************************************************
+
+/// <summary>	Apply an affine transformation and return the result (The last transpose is useless if matrix is SPD).
+/// \f[
+/// B = R^{-1/2} * A * {R^{-1/2}}^{\mathsf{T}}
+/// \f]\n
+/// </summary>
+/// <param name="ref"> 	The reference matrix which transforms. </param>
+/// <param name="matrix">	the matrix to transform. </param>
+/// <returns>	The transformed matrix </returns>
+Eigen::MatrixXd AffineTransformation(const Eigen::MatrixXd& ref, const Eigen::MatrixXd& matrix);
+
+
 /// <summary>	Standardize data row by row with selected method (destructive operation). </summary>
 /// <param name="matrix"> 	The matrix to standardize. </param>
 /// <param name="standard">	Standard method. </param>

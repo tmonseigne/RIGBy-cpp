@@ -1,11 +1,21 @@
 #include "Basics.hpp"
+#include <unsupported/Eigen/MatrixFunctions> // SQRT of Matrix
 
 using namespace Eigen;
 using namespace std;
 
+
 //************************************************
 //******************** Matrix ********************
 //************************************************
+//---------------------------------------------------------------------------------------------------
+MatrixXd AffineTransformation(const MatrixXd& ref, const MatrixXd& matrix)
+{
+	const MatrixXd isR = ref.sqrt().inverse();	// Inverse Square root of Reference matrix => isR
+	return isR * matrix * isR.transpose();		// Affine transformation : isR * sample * isR^T
+}
+//---------------------------------------------------------------------------------------------------
+
 //---------------------------------------------------------------------------------------------------
 bool MatrixStandardization(MatrixXd& matrix, const EStandardization standard)
 {
