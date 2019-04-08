@@ -14,6 +14,8 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <limits>
+#include <string>
+#include <sstream>
 #include "3rd-party/tinyxml2.h"
 #include "utils/Metrics.hpp"
 
