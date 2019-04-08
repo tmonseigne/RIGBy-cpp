@@ -14,8 +14,6 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <limits>
-#include <string>
-#include <sstream>
 #include "3rd-party/tinyxml2.h"
 #include "utils/Metrics.hpp"
 
@@ -172,11 +170,19 @@ protected:
 
 	/// <summary>	Prints the Additional informations.</summary>
 	/// <returns>	Additional informations in stringstream</returns>
-	virtual std::stringstream printAdditional() const { return std::stringstream(); }
+	virtual std::stringstream printAdditional() const
+	{
+		std::stringstream ss; 
+		return ss;
+	}
 
 	/// <summary>	Prints the Classes informations.</summary>
 	/// <returns>	Classes informations in stringstream</returns>
-	virtual std::stringstream printClasses() const { return std::stringstream(); }
+	virtual std::stringstream printClasses() const 
+	{
+		std::stringstream ss;
+		return ss;
+	}
 
 	//***********************
 	//***** XML Manager *****
