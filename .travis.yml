@@ -22,6 +22,12 @@ addons:
       - doxygen-latex
       - doxygen-gui
       - graphviz
+      # Build
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-6
+      - g++-6
 
 before_install:
   ############################################################################
