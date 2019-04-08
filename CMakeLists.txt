@@ -27,10 +27,11 @@ message(STATUS "
 \tBuild Directory: ${CMAKE_INSTALL_PREFIX}
 \tDependencies list : ${DEPENDENCIES_LIST}")
 
-FILE(GLOB_RECURSE SRC_FILES src/* tests/*)
+FILE(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/* ${CMAKE_SOURCE_DIR}/tests/*)
 MESSAGE(SRC_FILES)
+MESSAGE(${SRC_FILES})
 
-add_executable(GoogleTest SRC_FILES)
+add_executable(GoogleTest ${SRC_FILES})
 
 # Additional include directories
 set_property(TARGET GoogleTest
