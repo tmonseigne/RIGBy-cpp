@@ -1,8 +1,17 @@
 sudo: false
+language: cpp
 
 branches:
   only:
     - master
+
+git:
+  submodules:
+    true
+
+os: 
+  - linux
+
 
 addons:
   apt:
@@ -12,10 +21,46 @@ addons:
       - doxygen-latex
       - doxygen-gui
       - graphviz
-      
+
+before_install:
+  ############################################################################
+  # Install a recent CMake
+  ############################################################################
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      CMAKE_INSTALLER=install-cmake.sh && \
+        curl -sSL https://github.com/Kitware/CMake/releases/download/v3.13.0/cmake-3.13.0-Linux-x86_64.sh -o ${CMAKE_INSTALLER} && \
+        chmod +x ${CMAKE_INSTALLER} && \
+        sudo ./${CMAKE_INSTALLER} --prefix=/usr/local --skip-license
+    fi
+  - alias cmake=/usr/local/bin/cmake
+  - export PATH=/usr/local/bin/cmake/bin:/usr/local/bin:${PATH}
+  - |
+    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      echo "need cmake 3.12" && \
+        brew update && \
+        brew install ccache && \
+        brew upgrade cmake && \
+        export PATH="/usr/local/opt/ccache/libexec:$PATH"
+    fi
+
+#install:
+
 script:
+  # Docs
   - cd docs
   - doxygen Doxyfile
+  - cd ..
+  # Building
+  - $CXX --version
+  - cmake --version
+  - mkdir -p build && cd build
+  - cmake ..
+  - make
+  # Code Coverage
+  # Tests
+  # Valgrind
+
 
 deploy:
   provider: pages
@@ -24,3 +69,8 @@ deploy:
   github_token: $GH_REPO_TOKEN
   on:
     branch: master
+
+    
+notifications:
+  email: false
+
