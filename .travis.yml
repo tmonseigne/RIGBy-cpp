@@ -22,8 +22,6 @@ addons:
       - doxygen-latex
       - doxygen-gui
       - graphviz
-      # Building
-      - libeigen3-dev
 
 before_install:
   ############################################################################
@@ -46,6 +44,9 @@ before_install:
         brew upgrade cmake && \
         export PATH="/usr/local/opt/ccache/libexec:$PATH"
     fi
+    - wget http://bitbucket.org/eigen/eigen/get/3.3.5.zip -O eigen.zip
+    - unzip eigen.zip -d dependencies
+    - mv dependencies\eig* dependencies\eigen
 
 #install:
 
