@@ -47,7 +47,7 @@ before_install:
   # Install Eigen
   - wget http://bitbucket.org/eigen/eigen/get/3.3.5.zip -O eigen.zip
   - unzip eigen.zip -d dependencies
-  - mv dependencies\eig* dependencies\eigen
+  - mv dependencies/eig* dependencies/eigen
 
 #install:
 
