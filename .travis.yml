@@ -1,9 +1,9 @@
 sudo: false
 language: cpp
 
-branches:
-  only:
-    - master
+#branches:
+#  only:
+#    - master
 
 git:
   submodules:
