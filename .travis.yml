@@ -16,11 +16,14 @@ os:
 addons:
   apt:
     packages:
+      # Docs
       - doxygen
       - doxygen-doc
       - doxygen-latex
       - doxygen-gui
       - graphviz
+      # Building
+      - libeigen3-dev
 
 before_install:
   ############################################################################
