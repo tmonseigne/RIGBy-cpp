@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <vector>
 #include <type_traits>
 #include "classifier/IMatrixClassifier.hpp"
