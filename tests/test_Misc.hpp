@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <vector>
 #include <type_traits>
 #include "classifier/IMatrixClassifier.hpp"
@@ -29,7 +30,7 @@ const std::string SEP = "\n====================\n";
 /// <returns>	True if almost equal, false if not. </returns>
 inline bool isAlmostEqual(const double x, const double y, const double epsilon = 0.0001)
 {
-	return abs(x - y) < epsilon;
+	return std::abs(x - y) < epsilon;
 }
 
 /// <summary>	Check if sum of two vectors are almost equal. </summary>
