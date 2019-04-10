@@ -1,3 +1,6 @@
 [submodule "dependencies/googletest"]
 	path = dependencies/googletest
 	url = https://github.com/abseil/googletest.git
+[submodule "dependencies/eigen"]
+	path = dependencies/eigen
+	url = https://github.com/eigenteam/eigen-git-mirror.git
