@@ -70,11 +70,13 @@ script:
   - mkdir -p build && cd build
   - cmake -DCODE_COVERAGE=ON ..
   - cmake --build . 
+  # Tests
+  #- ctest # useless to run two times this tests 
+  - ./Riemann-Geometrie --gtest_output="xml:../docs/GoogleTestReport.xml"
   # Code Coverage
   - lcov --directory . --capture --output-file coverage.info
   - lcov --remove coverage.info 'eigen/*' 'googletest/*' '/usr/include/*' '/usr/lib/*' 'src/3rd-party/*' '/usr/include/*' '/usr/lib/*' -o coverage.info
   - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
-  # Tests
   # Valgrind
 
 deploy:

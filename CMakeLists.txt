@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 3.12)
 
+include(GoogleTest)
+include(ProcessorCount)
+
 project (Riemann-Geometrie
 		VERSION 1.0
 		DESCRIPTION "Riemann-Geometrie"
@@ -11,7 +14,6 @@ set(CMAKE_BUILD_TYPE Release)	# Default Build
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/build")
 
 # multiproc
-include(ProcessorCount)
 ProcessorCount(N)
 if(NOT N EQUAL 0)
   set(CTEST_BUILD_FLAGS -j${N})
@@ -108,7 +110,9 @@ set_property(TARGET ${PROJECT_NAME}
 		${GMockSrc}/include
 )
 
-add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 # link
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 target_link_libraries(${PROJECT_NAME} PUBLIC coverage_config)
+
+enable_testing()
+gtest_discover_tests(${PROJECT_NAME})
