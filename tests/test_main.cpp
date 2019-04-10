@@ -15,6 +15,17 @@
 
 int main(int argc, char** argv)
 {
+	//Code coverage tips (this function is used only if tests failed)
+	const size_t dumS = 0;
+	const double dumD = 0;
+	const Eigen::MatrixXd dumM = Eigen::MatrixXd::Identity(2, 2);
+	const std::vector<int> dumV = { 0, 0 };
+	const CMatrixClassifierMDM dumC;
+	ErrorMsg("", dumS, dumS);
+	ErrorMsg("", dumD, dumD);
+	ErrorMsg("", dumM, dumM);
+	ErrorMsg("", dumV, dumV);
+	ErrorMsg("", dumC, dumC);
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
