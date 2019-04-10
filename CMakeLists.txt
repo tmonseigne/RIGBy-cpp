@@ -10,25 +10,25 @@ set(CMAKE_CXX_STANDARD 11)		# Standard
 set(CMAKE_BUILD_TYPE Release)	# Default Build
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/build")
 
-# Dependencies List
-FILE(GLOB children RELATIVE ${CMAKE_SOURCE_DIR}/dependencies/ ${CMAKE_SOURCE_DIR}/dependencies/*)
-SET(DEPENDENCIES_LIST "")
-FOREACH(child ${children})
-	IF(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${child})
-		LIST(APPEND DEPENDENCIES_LIST ${child})
-	ENDIF()
-ENDFOREACH()
+# multiproc
+include(ProcessorCount)
+ProcessorCount(N)
+if(NOT N EQUAL 0)
+  set(CTEST_BUILD_FLAGS -j${N})
+  set(ctest_test_args ${ctest_test_args} PARALLEL_LEVEL ${N})
+endif()
 
-message(STATUS "
-\tProject Name : ${PROJECT_NAME} ${VERSION}
-\tCmake Version : ${CMAKE_VERSION}
-\tStandard : ${CMAKE_CXX_STANDARD}
-\tBuild Type: ${CMAKE_BUILD_TYPE}
-\tBuild Directo${PROJECT_NAME}: ${CMAKE_INSTALL_PREFIX}
-\tDependencies ${PROJECT_NAME}st : ${DEPENDENCIES_LIST}")
+# Dependencies List
+file(GLOB children RELATIVE ${CMAKE_SOURCE_DIR}/dependencies/ ${CMAKE_SOURCE_DIR}/dependencies/*)
+set(DEPENDENCIES_LIST "")
+foreach(child ${children})
+	if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/dependencies/${child})
+		list(APPEND DEPENDENCIES_LIST ${child})
+	endif()
+endforeach()
 
 # Basic sources
-FILE(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/* ${CMAKE_SOURCE_DIR}/tests/*)
+file(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/* ${CMAKE_SOURCE_DIR}/tests/*)
 
 #################################################
 ########## Code Coverage Configuration ##########
@@ -37,18 +37,18 @@ add_library(coverage_config INTERFACE)
 
 option(CODE_COVERAGE "Enable coverage reporting" OFF)
 if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  # Add required flags (GCC & LLVM/Clang)
-  target_compile_options(coverage_config INTERFACE
-    -O0        # no optimization
-    -g         # generate debug info
-    --coverage # sets all required flags
-  )
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
-    target_link_options(coverage_config INTERFACE --coverage)
-  else()
-    target_link_libraries(coverage_config INTERFACE --coverage)
-  endif()
-endif(CODE_COVERAGE)
+	# Add required flags (GCC & LLVM/Clang)
+	target_compile_options(coverage_config INTERFACE
+		-O0        # no optimization
+		-g         # generate debug info
+		--coverage # sets all required flags
+	)
+	if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+		target_link_options(coverage_config INTERFACE --coverage)
+	else()
+		target_link_libraries(coverage_config INTERFACE --coverage)
+	endif()
+endif()
 
 ################################################
 ########## Google tests Configuration ##########
@@ -57,17 +57,31 @@ add_definitions(-DGTEST_LANGUAGE_CXX11)
 
 find_package(Threads REQUIRED)
 
-if ($ENV{GOOGLETEST_DIR})
-	SET(GOOGLETEST_DIR $ENV{GOOGLETEST_DIR})
+if($ENV{GOOGLETEST_DIR})
+	set(GOOGLETEST_DIR $ENV{GOOGLETEST_DIR})
 else ()
-	SET(GOOGLETEST_DIR "${CMAKE_SOURCE_DIR}/dependencies/googletest")
+	set(GOOGLETEST_DIR "${CMAKE_SOURCE_DIR}/dependencies/googletest")
 endif ()
-if (EXISTS ${GOOGLETEST_DIR})
-	SET(GTestSrc ${GOOGLETEST_DIR}/googletest)
-	SET(GMockSrc ${GOOGLETEST_DIR}/googlemock)
+if(EXISTS ${GOOGLETEST_DIR})
+	set(GTestSrc ${GOOGLETEST_DIR}/googletest)
+	set(GMockSrc ${GOOGLETEST_DIR}/googlemock)
 else ()
 	message( FATAL_ERROR "No googletest src dir found - set GOOGLETEST_DIR to enable!")
-endif ()
+endif()
+
+####################################
+########## Message Status ##########
+####################################
+message(STATUS "
+\tProject Name : ${PROJECT_NAME} ${VERSION}
+\tProcessor Count : ${N}
+\tCmake Version : ${CMAKE_VERSION}
+\tStandard : ${CMAKE_CXX_STANDARD}
+\tCommpiler : ${CMAKE_CXX_COMPILER}
+\tBuild Type: ${CMAKE_BUILD_TYPE}
+\tBuild Directoies : ${CMAKE_INSTALL_PREFIX}
+\tDependencies : ${DEPENDENCIES_LIST}
+\tCode coverage : ${CODE_COVERAGE}")
 
 ################################
 ########## Executable ##########
