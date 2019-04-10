@@ -41,8 +41,7 @@ bool CMatrixClassifierMDMRebias::classify(const MatrixXd& sample, size_t& classI
 	m_NbClassify++;												// Update number of classify
 	// Change sample
 	const MatrixXd newSample = AffineTransformation(m_Rebias, sample);	// Affine transformation : isR * sample * isR^T
-
-
+	
 	// Modify rebias for the next step
 	if (m_NbClassify == 1) { m_Rebias = sample; }				// At the first pass
 	else { Geodesic(m_Rebias, sample, m_Rebias, m_Metric, 1.0 / m_NbClassify); }
