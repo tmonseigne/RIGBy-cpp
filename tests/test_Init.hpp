@@ -192,6 +192,82 @@ namespace InitBasics
 			return result;
 		}
 	}
+
+	namespace StandardScaler
+	{
+		inline std::vector<Eigen::MatrixXd> FirstClassReference()
+		{
+			std::vector<Eigen::MatrixXd> result(NB_TRIALS1);
+			for (auto& m : result) { m.resize(NB_CHAN, NB_SAMPLE); }
+
+			result[0] << -3, -4, -5, -4, -6, -1, -4, -1, -3, -1,
+				0, -3, -3, 1, -2, 1, -2, 1, -1, -1,
+				1, 0, 0, 1, 0, 1, 0, 1, 1, 1;
+
+			result[1] << -1, -4, -5, -4, -6, -6, -3, -3, -6, -4,
+				-3, -1, 0, -3, 0, 0, -2, -2, -3, -3,
+				0, 1, 1, 0, 0, 0, 0, 0, 1, 0;
+
+			result[2] << -4, -2, -4, -5, -3, -1, -6, -3, -3, -4,
+				0, -3, -2, -2, -3, 0, -1, -2, -1, -2,
+				1, 1, 1, 1, 1, 1, 1, 1, 1, 0;
+
+			result[3] << -5, -3, -1, -1, -2, -4, -1, -6, -4, -4,
+				0, 0, -2, -2, -2, 0, 0, -1, 0, 0,
+				1, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+
+			result[4] << -2, -1, -5, -2, -6, -5, -6, -4, -6, -6,
+				-1, -3, -2, -3, -1, -1, 1, 0, 0, -3,
+				0, 1, 1, 0, 0, 1, 1, 0, 0, 1;
+
+			result[5] << -5, -3, -4, -1, -3, -6, -5, -3, -2, -5,
+				-2, -3, 1, -3, -1, -2, 0, -1, 1, -2,
+				0, 0, 1, 1, 0, 1, 1, 1, 1, 0;
+
+			result[6] << -3, -3, -1, -4, -1, -6, -2, -5, -3, -3,
+				-1, -3, -2, 1, 0, 0, -3, -3, -3, 1,
+				0, 1, 1, 1, 0, 0, 1, 0, 0, 0;
+
+			return result;
+		}
+
+		inline std::vector<Eigen::MatrixXd> SecondClassReference()
+		{
+			std::vector<Eigen::MatrixXd> result(NB_TRIALS2);
+			for (auto& m : result) { m.resize(NB_CHAN, NB_SAMPLE); }
+
+			result[0] << 0, 3, 1, 1, 2, 3, 1, 3, 3, 2,
+				0, 1, 1, -1, -2, 0, -2, 1, 2, 0,
+				4, 3, 3, 3, 4, 4, 4, 5, 4, 3;
+
+			result[1] << 3, 2, 1, 2, 1, 2, 3, 3, 1, 4,
+				-2, -2, -1, 0, 0, -1, 3, 0, -1, 3,
+				4, 4, 3, 4, 3, 5, 5, 4, 5, 4;
+
+			result[2] << 3, 2, 3, 3, 0, 0, 0, 1, 2, 3,
+				3, 2, 0, 3, 3, -2, 3, 3, -2, 2,
+				5, 3, 4, 4, 5, 4, 3, 3, 5, 4;
+
+			result[3] << 0, 3, 1, 4, 3, 1, 2, 3, 0, 0,
+				-2, 1, 1, 0, 2, -1, 3, -1, 2, -2,
+				3, 3, 5, 4, 4, 4, 5, 4, 5, 5;
+
+			result[4] << 1, 2, 1, 2, 2, 0, 0, 0, 0, 4,
+				1, 3, 0, -2, 1, 0, 0, 2, -2, 2,
+				5, 3, 5, 5, 5, 3, 4, 4, 3, 3;
+
+			return result;
+		}
+
+		inline std::vector<std::vector<Eigen::MatrixXd>> Reference()
+		{
+			std::vector<std::vector<Eigen::MatrixXd>> result;
+			result.resize(2);
+			result[0] = FirstClassReference();
+			result[1] = SecondClassReference();
+			return result;
+		}
+	}
 }
 
 //*********************************************************************
@@ -1173,7 +1249,7 @@ namespace InitClassif
 	//**********************************
 	//********** FgDA Compute **********
 	//**********************************
-	namespace FgDACompute 
+	namespace FgDACompute
 	{
 		inline Eigen::MatrixXd Reference()
 		{
@@ -1550,7 +1626,7 @@ namespace InitMatrixClassif
 		}
 
 		inline std::vector<std::vector<double>> PredictionDistanceSupervised()
-		{	
+		{
 			std::vector<std::vector<double>> result(NB_TRIALS);
 			result[0] = { 1.314629453210112, 1.474855008515001 };
 			result[1] = { 1.855966579223177, 1.841285722807642 };

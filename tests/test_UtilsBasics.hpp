@@ -27,18 +27,23 @@ protected:
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Basics, MatrixCenter)
+TEST_F(Tests_Basics, MatrixStandardization)
 {
-	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitBasics::Center::Reference();
-	calc.resize(m_dataSet.size());
+	std::vector<std::vector<Eigen::MatrixXd>> calcC, refC = InitBasics::Center::Reference();
+	std::vector<std::vector<Eigen::MatrixXd>> calcS, refS = InitBasics::StandardScaler::Reference();
+	calcC.resize(m_dataSet.size());
+	calcS.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
 	{
-		calc[k].resize(m_dataSet[k].size());
+		calcC[k].resize(m_dataSet[k].size());
+		calcS[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			MatrixCenter(m_dataSet[k][i], calc[k][i]);
+			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcC[k][i], Standardization_Center)) << "Error During Centerization" << std::endl;
+			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcS[k][i], Standardization_StandardScale)) << "Error During Standard Scaler" << std::endl;
 			const std::string title = "Matrix Center Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(refC[k][i], calcC[k][i])) << ErrorMsg(title, refC[k][i], calcC[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(refS[k][i], calcS[k][i])) << ErrorMsg(title, refS[k][i], calcS[k][i]).str();
 		}
 	}
 }
