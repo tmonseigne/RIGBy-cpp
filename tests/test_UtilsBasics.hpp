@@ -15,6 +15,7 @@
 #include "test_Init.hpp"
 #include "test_Misc.hpp"
 #include "utils/Basics.hpp"
+#include "utils/Metrics.hpp"
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Basics : public testing::Test
@@ -83,5 +84,30 @@ TEST_F(Tests_Basics, Vector2DTo1D)
 		}
 	}
 	EXPECT_TRUE(egal) << "Vector2DTo1D fail";
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Basics, Metrics)
+{
+	EXPECT_TRUE(MetricToString(Metric_Riemann) == "Riemann");
+	EXPECT_TRUE(MetricToString(Metric_Euclidian) == "Euclidian");
+	EXPECT_TRUE(MetricToString(Metric_LogEuclidian) == "Log Euclidian");
+	EXPECT_TRUE(MetricToString(Metric_LogDet) == "Log Determinant");
+	EXPECT_TRUE(MetricToString(Metric_Kullback) == "Kullback");
+	EXPECT_TRUE(MetricToString(Metric_ALE) == "AJD-based log-Euclidean");
+	EXPECT_TRUE(MetricToString(Metric_Harmonic) == "Harmonic");
+	EXPECT_TRUE(MetricToString(Metric_Wasserstein) == "Wasserstein");
+	EXPECT_TRUE(MetricToString(Metric_Identity) == "Identity");
+	EXPECT_TRUE(StringToMetric("Riemann") == Metric_Riemann);
+	EXPECT_TRUE(StringToMetric("Euclidian") == Metric_Euclidian);
+	EXPECT_TRUE(StringToMetric("Log Euclidian") == Metric_LogEuclidian);
+	EXPECT_TRUE(StringToMetric("Log Determinant") == Metric_LogDet);
+	EXPECT_TRUE(StringToMetric("Kullback") == Metric_Kullback);
+	EXPECT_TRUE(StringToMetric("AJD-based log-Euclidean") == Metric_ALE);
+	EXPECT_TRUE(StringToMetric("Harmonic") == Metric_Harmonic);
+	EXPECT_TRUE(StringToMetric("Wasserstein") == Metric_Wasserstein);
+	EXPECT_TRUE(StringToMetric("Identity") == Metric_Identity);
+	EXPECT_TRUE(StringToMetric("") == Metric_Identity);
 }
 //---------------------------------------------------------------------------------------------------
