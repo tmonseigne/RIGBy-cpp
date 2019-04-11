@@ -30,10 +30,10 @@ static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<
 	{
 		for (size_t i = 0; i < dataset[k].size(); ++i)
 		{
-			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "] are different";
+			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			size_t classid;
 			std::vector<double> distance, probability;
-			EXPECT_TRUE(calc.classify(dataset[k][i], classid, distance, probability, adapt, k)) << "Error during Classify : " << std::endl << calc << std::endl;
+			EXPECT_TRUE(calc.classify(dataset[k][i], classid, distance, probability, adapt, k)) << "Error during Classify " << text;
 			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
 			EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
 			idx++;

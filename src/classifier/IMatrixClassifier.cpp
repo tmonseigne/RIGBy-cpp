@@ -43,7 +43,7 @@ bool IMatrixClassifier::saveXML(const string& filename)
 	xmlDoc.InsertFirstChild(root);									// Add root to XML
 
 	XMLElement* data = xmlDoc.NewElement("Classifier-data");		// Create data node
-	if (!saveHeader(data)) { return false; }				// Save Header attribute
+	if (!saveHeader(data)) { return false; }						// Save Header attribute
 	if (!saveAdditional(xmlDoc, data)) { return false; }			// Save Optionnal Informations
 	if (!saveClasses(xmlDoc, data)) { return false; }				// Save Classes
 
@@ -65,9 +65,9 @@ bool IMatrixClassifier::loadXML(const string& filename)
 
 	// Load Data
 	XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
-	if (!loadHeader(data)) { return false; }				// Load Header attribute
-	if (!loadAdditional(data)) { return false; }			// Load Optionnal Informations
-	if (!loadClasses(data)) { return false; }				// Load Classes
+	if (!loadHeader(data)) { return false; }						// Load Header attribute
+	if (!loadAdditional(data)) { return false; }					// Load Optionnal Informations
+	if (!loadClasses(data)) { return false; }						// Load Classes
 
 	return true;
 }

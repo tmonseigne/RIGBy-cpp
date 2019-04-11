@@ -74,8 +74,8 @@ public:
 	/// \copydoc CMatrixClassifierMDM::copy(const CMatrixClassifierMDM&)
 	void copy(const CMatrixClassifierMDMRebias& obj);
 
-	/// \copybrief CMatrixClassifierMDM::getType()
-	/// <returns>	Minimum Distance to Mean. </returns>
+	/// \copybrief IMatrixClassifier::getType()
+	/// <returns>	Minimum Distance to Mean REBIAS. </returns>
 	std::string getType() const override { return "Minimum Distance to Mean REBIAS"; }
 
 	/// <summary>	Override the affectation operator. </summary>
@@ -110,13 +110,12 @@ public:
 		return os;
 	}
 
-
 	//*********************
 	//***** Variables *****
 	//*********************
 	/// <summary>	Rebias Matrix. </summary>
 	Eigen::MatrixXd m_Rebias;
-	/// <summary>	Number of classify launch. </summary>
+	/// <summary>	Number of classification launched. </summary>
 	size_t m_NbClassify = 0;
 
 protected:
