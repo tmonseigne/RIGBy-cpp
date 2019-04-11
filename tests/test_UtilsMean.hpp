@@ -93,25 +93,21 @@ TEST_F(Tests_Means, Kullback)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Means, Wasserstein)
 {
-	std::cout << "Precision Error";
+	std::cout << "Precision Error" << std::endl;
 	const Eigen::MatrixXd ref = InitMeans::Wasserstein::Reference();
 	Eigen::MatrixXd calc;
 	Mean(m_dataSet, calc, Metric_Wasserstein);
-	/*
-	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Matrix Wasserstein", ref, calc).str();
-	*/
+	//EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Matrix Wasserstein", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Means, ALE)
 {
-	std::cout << "Not implemented";
+	std::cout << "Not implemented" << std::endl;
 	Eigen::MatrixXd calc, ref = InitMeans::ALE::Reference();
 	Mean(m_dataSet, calc, Metric_ALE);
-	/*
-	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Matrix ALE", ref, calc).str();
-	*/
+	//EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Matrix ALE", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
 

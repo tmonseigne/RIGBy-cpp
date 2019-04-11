@@ -106,3 +106,15 @@ TEST_F(Tests_Distances, Wasserstein)
 	}
 }
 //---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Distances, Identity)
+{
+	const Eigen::MatrixXd mean = InitMeans::Wasserstein::Reference();
+	for (size_t i = 0; i < m_dataSet.size(); ++i)
+	{
+		const double calc = Distance(mean, m_dataSet[i], Metric_Identity);
+		EXPECT_TRUE(isAlmostEqual(1, calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", 1, calc).str();
+	}
+}
+//---------------------------------------------------------------------------------------------------

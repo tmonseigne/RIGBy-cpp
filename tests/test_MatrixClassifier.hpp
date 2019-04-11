@@ -40,8 +40,7 @@ static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<
 			result(k, classid)++;
 		}
 	}
-	std::stringstream ss;	// Call Classifier ostream operator after classification
-	ss << "***** Classifier : *****" << std::endl << calc << std::endl << "***** Result : *****" << std::endl << result << std::endl;
+	std::cout << "***** Classifier : *****" << std::endl << calc << std::endl << "***** Result : *****" << std::endl << result << std::endl;
 }
 //---------------------------------------------------------------------------------------------------
 

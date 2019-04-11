@@ -83,7 +83,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 {
-	std::cout << "Not implemented";
+	std::cout << "Not implemented" << std::endl;
 	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::MCD::Reference();
 	calc.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
@@ -93,9 +93,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_MCD, Standardization_Center);
 			const std::string title = "Covariance Matrix MCD Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			/*
-					EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
-			*/
+			//EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
 		}
 	}
 }
