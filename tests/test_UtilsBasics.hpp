@@ -111,3 +111,41 @@ TEST_F(Tests_Basics, Metrics)
 	EXPECT_TRUE(StringToMetric("") == Metric_Identity);
 }
 //---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Basics, Validation)
+{
+	const Eigen::MatrixXd m1 = Eigen::MatrixXd::Zero(2, 2),
+						  m2 = Eigen::MatrixXd::Zero(1, 2),
+						  m3;
+	std::vector<Eigen::MatrixXd> v;
+
+	EXPECT_TRUE(inRange(1, 0, 2));
+	EXPECT_FALSE(inRange(2, 0, 1));
+
+	EXPECT_FALSE(areNotEmpty(v));
+	v.push_back(m3);
+	EXPECT_FALSE(areNotEmpty(v));
+	v.push_back(m1);
+	EXPECT_FALSE(areNotEmpty(v));
+	v.clear();
+	v.push_back(m1);
+	v.push_back(m2);
+	EXPECT_TRUE(areNotEmpty(v));
+
+	EXPECT_TRUE(haveSameSize(m1, m1));
+	EXPECT_FALSE(haveSameSize(m3, m3) && haveSameSize(m1, m2) && haveSameSize(m1, m3));
+
+	EXPECT_FALSE(haveSameSize(v) && areSquare(v));
+	v.clear();
+	v.push_back(m1);
+	v.push_back(m1);
+	EXPECT_TRUE(haveSameSize(v) && areSquare(v));
+
+	MatrixPrint(m1);
+	MatrixPrint(m3);
+
+	std::vector<std::string> vs = Split("0,1,2,3.a\n", ",");
+	EXPECT_TRUE(vs.size() == 4 && vs[0] == "0" && vs[1] == "1" && vs[2] == "2" && vs[3] == "3.a") << vs.size() << " " << vs[0] << " " << vs[1] << " " << vs[2] << " " << vs[3] << std::endl;
+}
+//---------------------------------------------------------------------------------------------------

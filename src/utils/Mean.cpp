@@ -20,14 +20,14 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 	if (covs.size() == 1) { mean = covs[0];		return true; }	// If just one matrix in vector
 	if (!haveSameSize(covs))
 	{
-		cerr << "Matrices haven't same size." << endl;
+		cout << "Matrices haven't same size." << endl;
 		return false;
 	}
 
 	// Force Square Matrix for non Euclidian and non Identity metric
 	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
 	{
-		cerr << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
+		cout << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
 		return false;
 	}
 

@@ -83,9 +83,8 @@ TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 {
-	EXPECT_TRUE(true) << "Not implemented";
-	/*
-	vector<vector<MatrixXd>> calc, ref = InitCovariance::MCD::Reference();
+	std::cout << "Not implemented";
+	std::vector<std::vector<Eigen::MatrixXd>> calc, ref = InitCovariance::MCD::Reference();
 	calc.resize(m_dataSet.size());
 	for (size_t k = 0; k < m_dataSet.size(); ++k)
 	{
@@ -94,10 +93,11 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_MCD, Standardization_Center);
 			const std::string title = "Covariance Matrix MCD Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			/*
+					EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			*/
 		}
 	}
-	*/
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -132,6 +132,25 @@ TEST_F(Tests_Covariances, Covariance_Matrix_SCM)
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_SCM, Standardization_None);
 			const std::string title = "Covariance Matrix SCM Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+		}
+	}
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Covariances, Covariance_Matrix_IDE)
+{
+	std::vector<std::vector<Eigen::MatrixXd>> calc;
+	const Eigen::MatrixXd ref = Eigen::MatrixXd::Identity(NB_CHAN, NB_CHAN);
+	calc.resize(m_dataSet.size());
+	for (size_t k = 0; k < m_dataSet.size(); ++k)
+	{
+		calc[k].resize(m_dataSet[k].size());
+		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
+		{
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_IDE, Standardization_None);
+			const std::string title = "Covariance Matrix IDE Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
+			EXPECT_TRUE(isAlmostEqual(ref, calc[k][i])) << ErrorMsg(title, ref, calc[k][i]).str();
 		}
 	}
 }
