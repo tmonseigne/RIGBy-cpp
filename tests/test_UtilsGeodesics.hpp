@@ -67,3 +67,16 @@ TEST_F(Tests_Geodesic, Riemann)
 	}
 }
 //---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Geodesic, Identity)
+{
+	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference(), ref = Eigen::MatrixXd::Identity(NB_CHAN, NB_CHAN);
+	for (size_t i = 0; i < m_dataSet.size(); ++i)
+	{
+		Eigen::MatrixXd calc;
+		Geodesic(mean, m_dataSet[i], calc, Metric_Identity, 0.5);
+		EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Geodesic Identity Sample [" + std::to_string(i) + "]", ref, calc).str();
+	}
+}
+//---------------------------------------------------------------------------------------------------

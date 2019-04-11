@@ -51,7 +51,7 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 bool AJDPham(const std::vector<MatrixXd>& covs, MatrixXd& ajd, double /*epsilon*/, const int /*maxIter*/)
 {
 	MeanIdentity(covs, ajd);
-	return false;
+	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
