@@ -33,6 +33,7 @@ TEST_F(Tests_Means, BadInput)
 	Eigen::MatrixXd calc;
 	EXPECT_FALSE(Mean(bad, calc, Metric_Riemann));
 	bad.emplace_back(Eigen::MatrixXd::Zero(1, 2));
+	bad.emplace_back(Eigen::MatrixXd::Zero(1, 2));
 	EXPECT_FALSE(Mean(bad, calc, Metric_Riemann));
 	bad.emplace_back(Eigen::MatrixXd::Zero(2, 2));
 	EXPECT_FALSE(Mean(bad, calc, Metric_Riemann));
