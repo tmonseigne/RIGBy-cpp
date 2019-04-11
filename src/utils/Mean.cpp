@@ -17,13 +17,19 @@ const size_t ITER_MAX = 50;
 bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metric)
 {
 	if (covs.empty()) { return false; }							// If no matrix in vector
+	if (covs.size() == 1) { mean = covs[0];		return true; }	// If just one matrix in vector
+	if (!haveSameSize(covs))
+	{
+		cerr << "Matrices haven't same size." << endl;
+		return false;
+	}
+
 	// Force Square Matrix for non Euclidian and non Identity metric
 	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
 	{
 		cerr << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
 		return false;
 	}
-	if (covs.size() == 1) { mean = covs[0];		return true; }	// If just one matrix in vector
 
 	switch (metric)												// Switch method
 	{

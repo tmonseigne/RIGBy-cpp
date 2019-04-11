@@ -27,6 +27,19 @@ protected:
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Means, BadInput)
+{
+	std::vector<Eigen::MatrixXd> bad;
+	Eigen::MatrixXd calc;
+	EXPECT_FALSE(Mean(bad, calc, Metric_Riemann));
+	bad.emplace_back(Eigen::MatrixXd::Zero(1, 2));
+	EXPECT_FALSE(Mean(bad, calc, Metric_Riemann));
+	bad.emplace_back(Eigen::MatrixXd::Zero(2, 2));
+	EXPECT_FALSE(Mean(bad, calc, Metric_Riemann));
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Means, Euclidian)
 {
 	const Eigen::MatrixXd ref = InitMeans::Euclidian::Reference();
@@ -80,10 +93,10 @@ TEST_F(Tests_Means, Kullback)
 TEST_F(Tests_Means, Wasserstein)
 {
 	EXPECT_TRUE(true) << "Precision Error";
-	/*
 	const Eigen::MatrixXd ref = InitMeans::Wasserstein::Reference();
 	Eigen::MatrixXd calc;
 	Mean(m_dataSet, calc, Metric_Wasserstein);
+	/*
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Matrix Wasserstein", ref, calc).str();
 	*/
 }
@@ -93,9 +106,9 @@ TEST_F(Tests_Means, Wasserstein)
 TEST_F(Tests_Means, ALE)
 {
 	EXPECT_TRUE(true) << "Not implemented";
-	/*
 	Eigen::MatrixXd calc, ref = InitMeans::ALE::Reference();
 	Mean(m_dataSet, calc, Metric_ALE);
+	/*
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Mean Matrix ALE", ref, calc).str();
 	*/
 }

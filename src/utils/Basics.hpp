@@ -202,6 +202,11 @@ bool isSquare(const Eigen::MatrixXd& matrix);
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool areSquare(const std::vector<Eigen::MatrixXd>& matrices);
 
+/// <summary>	Validate if the vector is not empty and the matrices have same size. </summary>
+/// <param name="matrices">	Vector of Matrix. </param>
+/// <returns>	True if it succeeds, false if it fails. </returns>
+bool haveSameSize(const std::vector<Eigen::MatrixXd>& matrices);
+
 //********************************************************
 //******************** CSV MANAGEMENT ********************
 //********************************************************

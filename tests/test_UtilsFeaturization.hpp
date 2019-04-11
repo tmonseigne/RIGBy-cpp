@@ -34,7 +34,7 @@ TEST_F(Tests_Featurization, TangentSpace)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::RowVectorXd calc;
-		Featurization(m_dataSet[i], calc, true, mean);
+		EXPECT_TRUE(Featurization(m_dataSet[i], calc, true, mean)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("TangentSpace Sample [" + std::to_string(i) + "]", ref[i], calc).str();
 	}
 }
@@ -48,7 +48,7 @@ TEST_F(Tests_Featurization, UnTangentSpace)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		UnFeaturization(ref[i], calc, true, mean);
+		EXPECT_TRUE(UnFeaturization(ref[i], calc, true, mean)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnTangentSpace Sample [" + std::to_string(i) + "]", m_dataSet[i], calc).str();
 	}
 }
@@ -58,12 +58,15 @@ TEST_F(Tests_Featurization, UnTangentSpace)
 TEST_F(Tests_Featurization, Squeeze)
 {
 	const std::vector<Eigen::RowVectorXd> ref = InitFeaturization::Squeeze::Reference();
+	const std::vector<Eigen::RowVectorXd> refDiag = InitFeaturization::SqueezeDiag::Reference();
 	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::RowVectorXd calc;
-		Featurization(m_dataSet[i], calc, false, mean);
+		EXPECT_TRUE(Featurization(m_dataSet[i], calc, false, mean)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(SqueezeUpperTriangle(m_dataSet[i], calc, false)) << "Error During Processing";
+		EXPECT_TRUE(isAlmostEqual(refDiag[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", refDiag[i], calc).str();
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -72,11 +75,14 @@ TEST_F(Tests_Featurization, Squeeze)
 TEST_F(Tests_Featurization, UnSqueeze)
 {
 	const std::vector<Eigen::RowVectorXd> ref = InitFeaturization::Squeeze::Reference();
+	const std::vector<Eigen::RowVectorXd> refDiag = InitFeaturization::SqueezeDiag::Reference();
 	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		UnFeaturization(ref[i], calc, false, mean);
+		EXPECT_TRUE(UnFeaturization(ref[i], calc, false, mean)) << "Error During Processing";
+		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc).str();
+		EXPECT_TRUE(UnSqueezeUpperTriangle(refDiag[i], calc, false)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc).str();
 	}
 }
