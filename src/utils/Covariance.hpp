@@ -141,7 +141,7 @@ bool CovarianceMatrixSCM(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// Ledoit and Wolf Shrinkage (from <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html">Sklearn LedoitWolf Estimator</a>) 
 /// described in "A Well-Conditioned Estimator for Large-Dimensional Covariance Matrices", Ledoit and Wolf, Journal of Multivariate Analysis, Volume 88, Issue 2, February 2004, pages 365-411. : \n
 /// \f[ 
-///		\begin{align}
+///		\begin{aligned}
 ///			\vec{X}^2 &= \begin{pmatrix}x_{0,0}^2 & \cdots & x_{0,S}^2 \\ \vdots & \ddots &\vdots \\ x_{N,0}^2 & \cdots & x_{N,S}^2\end{pmatrix} \quad \text{with } x_{i,j} \in \vec{X}\\
 ///			M_{\mu} &= \mu\times I_N =  \begin{pmatrix} \mu & 0 & \cdots & 0 \\ 0 & \ddots &\ddots & \vdots \\ \vdots & \ddots &\ddots & 0 \\ 0 & \cdots & 0 & \mu\end{pmatrix} 
 /// 													\quad \text{with } \mu = \frac{\operatorname{trace}(M_{\operatorname{Cov}})}{N}\\
@@ -149,7 +149,7 @@ bool CovarianceMatrixSCM(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// 		 M_{\delta}^2 &= M_{\delta} * M_{\delta}\\
 /// 		 M_{\beta} &= \frac{1}{S} \times \left(\vec{X}^2 * \vec{X}^{2\mathsf{T}}\right) - M_{Cov} * M_{Cov}\\
 /// 		 \Sigma\left( M \right) &=\text{ the sum of the elements of the matrix } M\\
-/// 	\end{align}
+/// 	\end{aligned}
 /// \f]
 /// \f[ \text{Shrinkage}_\text{LWF} = \frac{\beta}{\delta} \quad \text{with } \delta = \frac{\Sigma\left( M_{\delta}^2 \right)}{N} \quad\text{and}\quad 
 /// 																				  \beta = \operatorname{min}\left(\frac{\Sigma\left( M_{\beta}^2 \right)}{N \times S},~ \delta\right)\f]
@@ -167,13 +167,13 @@ bool CovarianceMatrixLWF(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// Oracle Approximating Shrinkage (from <a href="http://scikit-learn.org/stable/modules/generated/sklearn.covariance.OAS.html">Sklearn Oracle Approximating Shrinkage Estimator</a>) 
 /// describe in "Shrinkage Algorithms for MMSE Covariance Estimation" Chen et al., IEEE Trans. on Sign. Proc., Volume 58, Issue 10, October 2010. : \n
 /// \f[ 
-///		\begin{align}
+///		\begin{aligned}
 ///			\mu &= \frac{\operatorname{trace}(M_{\operatorname{Cov}})}{N}\\
 ///			\mu \left( M \right) &=\text{ the mean of the elements of the matrix } M\\
 ///			\alpha &= \mu \left( M_{\operatorname{Cov}} * M_{\operatorname{Cov}} \right)\\
 ///			\text{num} &= \alpha + \mu^2\\
 ///			\text{den} &= (S + 1) \times \frac{\alpha - \mu^2}{N}\\
-///		\end{align}
+///		\end{aligned}
 /// \f]
 /// \f[
 ///		\text{Shrinkage}_\text{OAS} =	\begin{cases}

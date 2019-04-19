@@ -56,11 +56,17 @@ public:
 
 	/// \copybrief CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	/// <summary>
-	/// Transform the sample to the Tangent Space.\n
-	/// Apply the FgDA weight.\n
-	/// Return to the original Manifold.\n
+	/// -# Transform the sample to the Tangent Space.\n
+	/// -# Apply the FgDA weight.\n
+	/// -# Return to the original Manifold.\n
+	/// -# Apply the MDM classify (<see cref="CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)"/>).
 	///	</summary>
-	/// \copydetails CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
+	/// <remarks>
+	/// <b>Remark</b> : We use the MDM classification whatever the adaptation method chosen. 
+	/// Thus the MDM part evolves but the geodesic filtering does not evolve to keep an execution online. 
+	///	A version allowing the adaptation of the Filter will be implemented for offline execution.
+	/// </remarks>
+	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 

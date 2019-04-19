@@ -31,7 +31,7 @@ static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<
 		for (size_t i = 0; i < dataset[k].size(); ++i)
 		{
 			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			size_t classid;
+			size_t classid = 0;
 			std::vector<double> distance, probability;
 			EXPECT_TRUE(calc.classify(dataset[k][i], classid, distance, probability, adapt, k)) << "Error during Classify " << text;
 			EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
@@ -94,7 +94,6 @@ TEST_F(Tests_MatrixClassifier, MDM_Classifify_Adapt_Unsupervised)
 }
 //---------------------------------------------------------------------------------------------------
 
-
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_MatrixClassifier, MDM_Save)
 {
@@ -125,7 +124,47 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Classifify)
 	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Classify Change without adaptation mode", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
+/*
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Supervised)
+{
+	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::ReferenceMatlab();
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionSupervised(), InitMatrixClassif::FgMDM::PredictionDistanceSupervised(), Adaptation_Supervised);
+	const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterSupervised();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Supervised adaptation", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Unsupervised)
+{
+	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::ReferenceMatlab();
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionUnSupervised(), InitMatrixClassif::FgMDM::PredictionDistanceUnSupervised(), Adaptation_Unsupervised);
+	const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterUnSupervised();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Unsupervised adaptation", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify_Adapt_Supervised)
+{
+	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::ReferenceMatlab();
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionSupervisedRT(), InitMatrixClassif::FgMDM::PredictionDistanceSupervisedRT(), Adaptation_Supervised);
+	const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterSupervisedRT();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Supervised RT adaptation", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify_Adapt_Unsupervised)
+{
+	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::ReferenceMatlab();
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionUnSupervisedRT(), InitMatrixClassif::FgMDM::PredictionDistanceUnSupervisedRT(), Adaptation_Unsupervised);
+	const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterUnSupervisedRT();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Unsupervised RT adaptation", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
+*/
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_MatrixClassifier, FgMDM_Save)
 {

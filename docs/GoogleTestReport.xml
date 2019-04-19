@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="52" failures="0" disabled="0" errors="0" timestamp="2019-04-11T13:51:05" time="0.059" name="AllTests">
+<testsuites tests="53" failures="0" disabled="0" errors="0" timestamp="2019-04-19T14:27:00" time="0.163" name="AllTests">
   <testsuite name="Tests_Basics" tests="6" failures="0" disabled="0" errors="0" time="0">
     <testcase name="MatrixStandardization" status="run" time="0" classname="Tests_Basics" />
     <testcase name="GetElements" status="run" time="0" classname="Tests_Basics" />
@@ -13,39 +13,40 @@
     <testcase name="Covariance_Matrix_COV" status="run" time="0" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_LWF" status="run" time="0" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_MCD" status="run" time="0" classname="Tests_Covariances" />
-    <testcase name="Covariance_Matrix_OAS" status="run" time="0.001" classname="Tests_Covariances" />
+    <testcase name="Covariance_Matrix_OAS" status="run" time="0" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_SCM" status="run" time="0" classname="Tests_Covariances" />
     <testcase name="Covariance_Matrix_IDE" status="run" time="0" classname="Tests_Covariances" />
   </testsuite>
-  <testsuite name="Tests_Means" tests="10" failures="0" disabled="0" errors="0" time="0.003">
+  <testsuite name="Tests_Means" tests="10" failures="0" disabled="0" errors="0" time="0.007">
     <testcase name="BadInput" status="run" time="0" classname="Tests_Means" />
     <testcase name="Euclidian" status="run" time="0" classname="Tests_Means" />
-    <testcase name="LogEuclidian" status="run" time="0" classname="Tests_Means" />
-    <testcase name="Riemann" status="run" time="0" classname="Tests_Means" />
+    <testcase name="LogEuclidian" status="run" time="0.001" classname="Tests_Means" />
+    <testcase name="Riemann" status="run" time="0.001" classname="Tests_Means" />
     <testcase name="LogDet" status="run" time="0.001" classname="Tests_Means" />
     <testcase name="Kullback" status="run" time="0" classname="Tests_Means" />
-    <testcase name="Wasserstein" status="run" time="0.001" classname="Tests_Means" />
-    <testcase name="ALE" status="run" time="0" classname="Tests_Means" />
+    <testcase name="Wasserstein" status="run" time="0.002" classname="Tests_Means" />
+    <testcase name="ALE" status="run" time="0.001" classname="Tests_Means" />
     <testcase name="Harmonic" status="run" time="0" classname="Tests_Means" />
     <testcase name="Identity" status="run" time="0" classname="Tests_Means" />
   </testsuite>
-  <testsuite name="Tests_Distances" tests="6" failures="0" disabled="0" errors="0" time="0.001">
+  <testsuite name="Tests_Distances" tests="7" failures="0" disabled="0" errors="0" time="0">
     <testcase name="Euclidian" status="run" time="0" classname="Tests_Distances" />
-    <testcase name="LogEuclidian" status="run" time="0.001" classname="Tests_Distances" />
+    <testcase name="LogEuclidian" status="run" time="0" classname="Tests_Distances" />
     <testcase name="Riemann" status="run" time="0" classname="Tests_Distances" />
     <testcase name="LogDet" status="run" time="0" classname="Tests_Distances" />
     <testcase name="Kullback" status="run" time="0" classname="Tests_Distances" />
     <testcase name="Wasserstein" status="run" time="0" classname="Tests_Distances" />
+    <testcase name="Identity" status="run" time="0" classname="Tests_Distances" />
   </testsuite>
   <testsuite name="Tests_Geodesic" tests="4" failures="0" disabled="0" errors="0" time="0.001">
     <testcase name="Euclidian" status="run" time="0" classname="Tests_Geodesic" />
-    <testcase name="LogEuclidian" status="run" time="0" classname="Tests_Geodesic" />
-    <testcase name="Riemann" status="run" time="0.001" classname="Tests_Geodesic" />
+    <testcase name="LogEuclidian" status="run" time="0.001" classname="Tests_Geodesic" />
+    <testcase name="Riemann" status="run" time="0" classname="Tests_Geodesic" />
     <testcase name="Identity" status="run" time="0" classname="Tests_Geodesic" />
   </testsuite>
-  <testsuite name="Tests_Featurization" tests="4" failures="0" disabled="0" errors="0" time="0">
+  <testsuite name="Tests_Featurization" tests="4" failures="0" disabled="0" errors="0" time="0.001">
     <testcase name="TangentSpace" status="run" time="0" classname="Tests_Featurization" />
-    <testcase name="UnTangentSpace" status="run" time="0" classname="Tests_Featurization" />
+    <testcase name="UnTangentSpace" status="run" time="0.001" classname="Tests_Featurization" />
     <testcase name="Squeeze" status="run" time="0" classname="Tests_Featurization" />
     <testcase name="UnSqueeze" status="run" time="0" classname="Tests_Featurization" />
   </testsuite>
@@ -53,19 +54,19 @@
     <testcase name="LSQR" status="run" time="0" classname="Tests_Classifier" />
     <testcase name="FgDACompute" status="run" time="0" classname="Tests_Classifier" />
   </testsuite>
-  <testsuite name="Tests_MatrixClassifier" tests="13" failures="0" disabled="0" errors="0" time="0.037">
+  <testsuite name="Tests_MatrixClassifier" tests="13" failures="0" disabled="0" errors="0" time="0.153">
     <testcase name="MDM_Train" status="run" time="0.001" classname="Tests_MatrixClassifier" />
     <testcase name="MDM_Classifify" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="MDM_Classifify_Adapt_Supervised" status="run" time="0" classname="Tests_MatrixClassifier" />
+    <testcase name="MDM_Classifify_Adapt_Supervised" status="run" time="0.001" classname="Tests_MatrixClassifier" />
     <testcase name="MDM_Classifify_Adapt_Unsupervised" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="MDM_Save" status="run" time="0.01" classname="Tests_MatrixClassifier" />
-    <testcase name="FgMDM_Train" status="run" time="0.002" classname="Tests_MatrixClassifier" />
-    <testcase name="FgMDM_Classifify" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="FgMDM_Save" status="run" time="0.006" classname="Tests_MatrixClassifier" />
-    <testcase name="MDM_Rebias_Train" status="run" time="0.002" classname="Tests_MatrixClassifier" />
+    <testcase name="MDM_Save" status="run" time="0.014" classname="Tests_MatrixClassifier" />
+    <testcase name="FgMDM_Train" status="run" time="0.003" classname="Tests_MatrixClassifier" />
+    <testcase name="FgMDM_Classifify" status="run" time="0.004" classname="Tests_MatrixClassifier" />
+    <testcase name="FgMDM_Save" status="run" time="0.012" classname="Tests_MatrixClassifier" />
+    <testcase name="MDM_Rebias_Train" status="run" time="0.001" classname="Tests_MatrixClassifier" />
     <testcase name="MDM_Rebias_Classifify" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="MDM_Rebias_Classifify_Adapt_Supervised" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="MDM_Rebias_Classifify_Adapt_Unsupervised" status="run" time="0.001" classname="Tests_MatrixClassifier" />
-    <testcase name="MDM_Rebias_Save" status="run" time="0.01" classname="Tests_MatrixClassifier" />
+    <testcase name="MDM_Rebias_Classifify_Adapt_Supervised" status="run" time="0.002" classname="Tests_MatrixClassifier" />
+    <testcase name="MDM_Rebias_Classifify_Adapt_Unsupervised" status="run" time="0.002" classname="Tests_MatrixClassifier" />
+    <testcase name="MDM_Rebias_Save" status="run" time="0.008" classname="Tests_MatrixClassifier" />
   </testsuite>
 </testsuites>

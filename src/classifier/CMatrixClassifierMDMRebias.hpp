@@ -1,7 +1,7 @@
 ///-------------------------------------------------------------------------------------------------
 /// 
-/// \file CMatrixClassifierMDM.hpp
-/// \brief Class of Minimum Distance to Mean (MDM) Classifier
+/// \file CMatrixClassifierMDMRebias.hpp
+/// \brief Class of Minimum Distance to Mean (MDM) Classifier with Rebias.
 /// \author Thibaut Monseigne (Inria).
 /// \version 1.0.
 /// \date 10/12/2018.
@@ -14,7 +14,7 @@
 #include "CMatrixClassifierMDM.hpp"
 #include "utils/Metrics.hpp"
 
-/// <summary>	Class of Minimum Distance to Mean (MDM) Classifier. </summary>
+/// <summary>	Class of Minimum Distance to Mean (MDM) Classifier with Rebias. </summary>
 /// <seealso cref="IMatrixClassifier" />
 class CMatrixClassifierMDMRebias : public CMatrixClassifierMDM
 {
