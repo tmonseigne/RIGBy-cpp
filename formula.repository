@@ -1,0 +1,85 @@
+\form#0:$ \mathcal{P}_i $
+\form#1:$ i $
+\form#2:\[ p_i = \frac{d_{\text{min}}}{d_i}\\ \mathcal{P}_i = \frac{p_i}{\sum{\left(p_i\right)}} \]
+\form#3:$ \sum{\left(\mathcal{P}_i\right)} = 1 $
+\form#4:$ C_k $
+\form#5:$ k $
+\form#6:$ \gamma_m $
+\form#7:$ m $
+\form#8:$ S $
+\form#9:$ N_k $
+\form#10:\[ C_k = \gamma_m\left( C_k,S,\frac{1}{N_k}\right) \]
+\form#11:$ S_\text{new} = R^{-1/2} * S * {R^{-1/2}}^{\mathsf{T}} $
+\form#12:$ N_c $
+\form#13:$ R = \gamma_\text{m}\left( R,S,\frac{1}{N_c} \right) $
+\form#14:\[ B = R^{-1/2} * A * {R^{-1/2}}^{\mathsf{T}} \]
+\form#15:\[ W_{\text{FgDA}} = W^{\mathsf{T}} \times (W \times W^{\mathsf{T}})^{-1} \times W \]
+\form#16:$\vec{X}$
+\form#17:\[ V(X) = \left(\frac{1}{n} \sum_{i=1}^{N}x_{i}^{2}\right) - \mu^{2} \quad \text{with}~ \mu = \frac{1}{n} \sum_{i=1}^{N}x_{i} \]
+\form#18:$ N $
+\form#19:$\vec{Y}$
+\form#20:\[ \operatorname{Cov}\left(x,y\right) = \frac{\sum_{i=1}^{N}{x_{i}y_{i}} - \left(\sum_{i=1}^{N}{x_{i}}\sum_{i=1}^{N}{y_{i}}\right)/N}{N}\]
+\form#21:$ M $
+\form#22:\[ (1 - \text{shrinkage}) \times M_{\operatorname{Cov}} + \frac{\text{shrinkage} \times \operatorname{trace}(M_{Cov})}{N} \times I_N \]
+\form#23:$ 0\leq \text{shrinkage} \leq 1$
+\form#24:\[ M_{\operatorname{Cov}} = \begin{pmatrix} V\left(x_1\right) & \operatorname{Cov}\left(x_1,x_2\right) &\cdots & \operatorname{Cov}\left(x_1,x_N\right)\\ \operatorname{Cov}\left(x_2,x_1\right) &\ddots & \cdots & \vdots \\ \vdots & \vdots & \ddots & \vdots \\ \operatorname{Cov}\left(x_N,x_1\right) &\cdots & \cdots & V\left(x_N\right) \end{pmatrix} \quad \text{with } x_i \text{ the row } i \]
+\form#25:\[ M_{\operatorname{Cov_{SCM}}} = \frac{XX^{\mathsf{T}}}{\operatorname{trace}{\left(XX^{\mathsf{T}}\right)}} \]
+\form#26:$ M_{\operatorname{Cov}} $
+\form#27:\[ \begin{aligned} \vec{X}^2 &= \begin{pmatrix}x_{0,0}^2 & \cdots & x_{0,S}^2 \\ \vdots & \ddots &\vdots \\ x_{N,0}^2 & \cdots & x_{N,S}^2\end{pmatrix} \quad \text{with } x_{i,j} \in \vec{X}\\ M_{\mu} &= \mu\times I_N = \begin{pmatrix} \mu & 0 & \cdots & 0 \\ 0 & \ddots &\ddots & \vdots \\ \vdots & \ddots &\ddots & 0 \\ 0 & \cdots & 0 & \mu\end{pmatrix} \quad \text{with } \mu = \frac{\operatorname{trace}(M_{\operatorname{Cov}})}{N}\\ M_{\delta} &= M_{\operatorname{Cov}}-M_{\mu}\\ M_{\delta}^2 &= M_{\delta} * M_{\delta}\\ M_{\beta} &= \frac{1}{S} \times \left(\vec{X}^2 * \vec{X}^{2\mathsf{T}}\right) - M_{Cov} * M_{Cov}\\ \Sigma\left( M \right) &=\text{ the sum of the elements of the matrix } M\\ \end{aligned} \]
+\form#28:\[ \text{Shrinkage}_\text{LWF} = \frac{\beta}{\delta} \quad \text{with } \delta = \frac{\Sigma\left( M_{\delta}^2 \right)}{N} \quad\text{and}\quad \beta = \operatorname{min}\left(\frac{\Sigma\left( M_{\beta}^2 \right)}{N \times S},~ \delta\right)\]
+\form#29:\[ \begin{aligned} \mu &= \frac{\operatorname{trace}(M_{\operatorname{Cov}})}{N}\\ \mu \left( M \right) &=\text{ the mean of the elements of the matrix } M\\ \alpha &= \mu \left( M_{\operatorname{Cov}} * M_{\operatorname{Cov}} \right)\\ \text{num} &= \alpha + \mu^2\\ \text{den} &= (S + 1) \times \frac{\alpha - \mu^2}{N}\\ \end{aligned} \]
+\form#30:\[ \text{Shrinkage}_\text{OAS} = \begin{cases} 1, & \text{if}\ \text{den} = 0 \text{ or num} > \text{den} \\ \frac{\text{num}}{\text{den}}, & \text{otherwise} \end{cases} \]
+\form#31:\[ M_{\operatorname{Cov_{COR}}}\left(i,j\right) = \frac{ M_{\operatorname{Cov}}\left(i,j\right) } { \sqrt{ M_{\operatorname{Cov}}\left(i,i\right) * M_{\operatorname{Cov}}\left(j,j\right) } } \]
+\form#32:$ I_N $
+\form#33:\[ d_{\text{R}}(A,B) = \sqrt{\left( \sum_i \log\left(\lambda_i\right)^2 \right)} \]
+\form#34:$\lambda_i$
+\form#35:$A$
+\form#36:$B$
+\form#37:\[ d_{\text{E}}(A,B) = \left\lVert B - A \right\rVert\]
+\form#38:\[ d_{\text{lE}}(A,B) = \left\lVert \log\left(B\right) - \log\left(A\right) \right\rVert\]
+\form#39:\[ d_{\text{lD}}(A,B) = \sqrt{\log\left(\left\lvert\frac{A + B}{2}\right\rvert\right) - 0.5 \times \log\left( \left\lvert A \right\rvert \times \left\lvert B \right\rvert \right)} \]
+\form#40:$\left\lvert A \right\rvert$
+\form#41:\[ d_{\text{K}}(A,B) = 0.5 \times \left( \operatorname{trace}\left(B^{-1} ~ A\right) - N + \log\left( \frac{\left\lvert B \right\rvert }{\left\lvert A \right\rvert} \right) \right) \]
+\form#42:\[ d_{\text{sK}}(A,B) = d_\text{K}(A, B) + d_\text{K}(B, A) \]
+\form#43:\[ d_{\text{W}}(A,B) = \sqrt{ \operatorname{trace}\left(A + B - 2 \times \left(A^{1/2} ~ B ~ A^{1/2}\right)^{1/2}\right) } \]
+\form#44:\[ \begin{pmatrix} a&b&c\\d&e&f\\g&h&i \end{pmatrix} \Rightarrow \begin{pmatrix} a&b&c\\0&e&f\\0&0&i \end{pmatrix} \]
+\form#45:\[ \begin{pmatrix} a&b&c\\d&e&f\\g&h&i \end{pmatrix} \Rightarrow \begin{pmatrix} a&b&c&e&f&i \end{pmatrix} \]
+\form#46:\[\begin{pmatrix} a&b&c\\d&e&f\\g&h&i \end{pmatrix} \Rightarrow \begin{pmatrix} a&e&i&b&f&c \end{pmatrix} \]
+\form#47:\[ \begin{pmatrix} a&b&c&d&e&f \end{pmatrix} \Rightarrow \begin{pmatrix} a&b&c\\0&d&e\\0&0&f \end{pmatrix} \]
+\form#48:\[ \begin{pmatrix} a&b&c&d&e&f \end{pmatrix} \Rightarrow \begin{pmatrix} a&d&f\\0&b&e\\0&0&c \end{pmatrix} \]
+\form#49:\[ \begin{aligned} J &= \log{\left(M_\text{Ref}^{-1/2} ~ M ~ M_\text{Ref}^{-1/2}\right)} \\ M_\text{Coeffs} &= \begin{pmatrix} 1 & \sqrt{2} & \cdots & \sqrt{2} \\ 0 & 1 & \ddots & \sqrt{2} \\ \vdots & \ddots & \ddots & \vdots\\ 0 & \cdots & \cdots & 1 \end{pmatrix} \end{aligned} \\ \text{With : } V_J = \operatorname{SqueezeUpperTriangle}(J) \quad \text{ and } \quad V_\text{Coeffs} = \operatorname{SqueezeUpperTriangle}(M_\text{Coeffs})\\ \Rightarrow V_\text{Ts} = V_J \odot V_\text{Coeffs} \]
+\form#50:\[ \begin{aligned} \text{With : } M_\text{Ts} &= \operatorname{UnSqueezeUpperTriangle}(V_\text{Ts}) \quad \text{ and } \quad \mathsf{U}_{M}\text{ the upper triangular matrix.}\\ M_\text{Coeffs} &= \operatorname{diag}\left(M_\text{Ts}\right) + \frac{\mathsf{U}_{M_\text{Ts}} + \mathsf{U}_{M_\text{Ts}}^{\mathsf{T}}}{\sqrt{2}}\\ \Rightarrow M &= M_\text{Ref}^{1/2} ~ \exp{\left(M_\text{Coeffs}\right)} ~ M_\text{Ref}^{1/2} \end{aligned} \]
+\form#51:$ 0\leq \text{alpha} \leq 1$
+\form#52:\[ \gamma_\text{R} = A^{1/2} ~ \left( A^{-1/2} ~ B ~ A^{-1/2} \right)^\alpha ~ A^{1/2} \]
+\form#53:\[ \gamma_\text{E} = \left(1 - \alpha \right) \times A + \alpha \times B \]
+\form#54:\[ \gamma_\text{lE} = \exp\left(\left(1 - \alpha \right) \times \log\left(A\right) + \alpha \times \log\left(B\right) \right)\]
+\form#55:\[ \gamma_\text{I} = I_N \]
+\form#56:$10^{-3}$
+\form#57:\[ C_\text{AJD} = \cdots \]
+\form#58:$ C_{\mu_\text{E}} $
+\form#59:$ 10^{-4}$
+\form#60:\[ C_{\mu_\text{R}} = C_{\mu_\text{E}} \\ \nu=1.0 \\ \tau=+\infty \]
+\form#61:$J$
+\form#62:$ \text{iteration} < 50 $
+\form#63:$ 10^{-4} < \left\lVert J \right\rVert $
+\form#64:$ 10^{-4} < \nu $
+\form#65:\[ \begin{aligned} J &= \frac{1}{N} \sum_i \log\left(C_{\mu_\text{R}}^{-1/2} + C_i ~ C_{\mu_\text{R}}^{-1/2}\right)\\ C_{\mu_\text{R}} &= C_{\mu_\text{R}}^{1/2} ~ \exp(\nu \times J) ~ C_{\mu_\text{R}}^{1/2}\\ \end{aligned} \]
+\form#66:\[ \begin{cases} \text{if } \nu \times \left\lVert J \right\rVert < \tau & \nu = 0.95 \times \nu,~\tau = \nu \times \left\lVert J \right\rVert\\ \text{otherwise } & \nu = 0.5 \times \nu \end{cases} \]
+\form#67:\[ C_{\mu_\text{E}} =\frac{1}{N} \sum_i{C_i}\]
+\form#68:\[ C_{\mu_\text{lE}} =\exp\left(\frac{1}{N} \sum_i{\log\left(C_i\right)}\right)\]
+\form#69:\[ C_{\mu_\text{lD}} = C_{\mu_\text{E}}\]
+\form#70:$ 10^{-4} < \left\lVert J-C_\mu \right\rVert $
+\form#71:\[ \begin{aligned} J &= \left(\frac{1}{N} \sum_i \left( 0.5 \times\left(C_{\mu_\text{lD}} + C_i \right)\right)^{-1} \right)^{-1}\\ C_{\mu_\text{lD}} &= J \end{aligned}\]
+\form#72:\[ C_{\mu_\text{K}} = \gamma \left( C_{\mu_{\text{E}}}, C_{\mu_{\text{H}}} \right) \]
+\form#73:\[ C_{\mu_\text{W}} = C_{\mu_{\text{E}}}\]
+\form#74:$ 10^{-4} < \left\lVert J-J_{-1} \right\rVert $
+\form#75:\[ \begin{aligned} J &= C_{\mu_\text{W}}^{1/2}\\ J &= \left(\frac{1}{N} \sum_i \left( J C_i J \right)^{1/2} \right)^{1/2}\\ \end{aligned}\]
+\form#76:$ C_{\mu_\text{W}} = J*J $
+\form#77:$ C_\text{AJD} $
+\form#78:\[ C_{\mu_\text{ALE}} = C_\text{AJD}\]
+\form#79:$U = \operatorname{diag}(\operatorname{diag}(\exp(J))$
+\form#80:$ 10^{-4} < d_\text{R}(I_N,U) $
+\form#81:\[ \begin{aligned} J &= \frac{1}{N} \log\left(\sum_i \left( C_{\mu_\text{ALE}}^{\mathsf{T}} C_i C_{\mu_\text{ALE}} \right) \right)\\ U &= \operatorname{diag}(\operatorname{diag}(\exp(J))\\ C_{\mu_\text{ALE}} &= C_{\mu_\text{ALE}} * U^{-1/2}\\ \end{aligned}\]
+\form#82:\[ \begin{aligned} J &= \frac{1}{N} \log\left(\sum_i \left( C_{\mu_\text{ALE}}^{\mathsf{T}} C_i C_{\mu_\text{ALE}} \right) \right)\\ C_{\mu_\text{ALE}} &= \left(C_{\mu_\text{ALE}}^{-1}\right)^{\mathsf{T}} ~ \exp(J) ~ C_{\mu_\text{ALE}}^{-1} \end{aligned}\]
+\form#83:\[ C_{\mu_\text{H}} = (\frac{1}{N} \sum_i{C_i}^{-1})^{-1} \]
+\form#84:\[ C_{\mu_\text{I}} = I_N \]
