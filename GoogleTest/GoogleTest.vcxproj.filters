@@ -22,9 +22,6 @@
     <ClInclude Include="..\tests\test_Misc.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
@@ -91,12 +88,12 @@
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRT.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\test_main.cpp" />
-    <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp">
-      <Filter>Fichiers de ressources\Classifier</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
@@ -137,6 +134,9 @@
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDMRT.cpp">
+      <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
   </ItemGroup>

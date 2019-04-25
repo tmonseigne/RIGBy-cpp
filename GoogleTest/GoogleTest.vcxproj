@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,8 +146,8 @@
     <ClCompile Include="..\dependencies\googletest\googlemock\src\gmock-all.cc" />
     <ClCompile Include="..\dependencies\googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="..\src\3rd-party\tinyxml2.cpp" />
-    <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDMRT.cpp" />
+    <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDMRebias.cpp" />
     <ClCompile Include="..\src\classifier\IMatrixClassifier.cpp" />
@@ -161,8 +162,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\3rd-party\tinyxml2.h" />
-    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRT.hpp" />
+    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDMRebias.hpp" />
     <ClInclude Include="..\src\classifier\IMatrixClassifier.hpp" />

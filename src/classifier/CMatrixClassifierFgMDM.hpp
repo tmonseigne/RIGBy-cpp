@@ -1,7 +1,7 @@
 ///-------------------------------------------------------------------------------------------------
 /// 
 /// \file CMatrixClassifierFgMDM.hpp
-/// \brief Class of Minimum Distance to Mean with geodesic filtering (FgMDM) Classifier
+/// \brief Class of Minimum Distance to Mean with geodesic filtering (FgMDM) Classifier.
 /// \author Thibaut Monseigne (Inria).
 /// \version 1.0.
 /// \date 10/12/2018.
@@ -11,11 +11,11 @@
 
 #pragma once
 
-#include "CMatrixClassifierMDM.hpp"
+#include "CMatrixClassifierFgMDMRT.hpp"
 
 /// <summary>	Class of Minimum Distance to Mean with geodesic filtering (FgMDM) Classifier. </summary>
 /// <seealso cref="CMatrixClassifierMDM" />
-class CMatrixClassifierFgMDM : public CMatrixClassifierMDM
+class CMatrixClassifierFgMDM : public CMatrixClassifierFgMDMRT
 {
 public:
 	//***********************	
@@ -28,45 +28,30 @@ public:
 	/// <param name="obj">	Initial object. </param>
 	CMatrixClassifierFgMDM(const CMatrixClassifierFgMDM& obj) { *this = obj; }
 
-	/// \copydoc CMatrixClassifierMDM(CMatrixClassifierMDM&&)
+	/// <summary>	Copy constructor with parent class. Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
+	/// <param name="obj">	Initial object. </param>
+	explicit CMatrixClassifierFgMDM(const CMatrixClassifierFgMDMRT& obj) { copy(obj); }
+
+	/// \copydoc CMatrixClassifierFgMDMRT(CMatrixClassifierFgMDMRT&&)
 	CMatrixClassifierFgMDM(CMatrixClassifierFgMDM&& obj) = default;
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class and set base members. </summary>
-	/// \copydetails CMatrixClassifierMDM(size_t, EMetrics)
-	explicit CMatrixClassifierFgMDM(const size_t nbClass, const EMetrics metric) : CMatrixClassifierMDM(nbClass, metric) { }
+	/// \copydetails CMatrixClassifierFgMDMRT(size_t, EMetrics)
+	explicit CMatrixClassifierFgMDM(const size_t nbClass, const EMetrics metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
-	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
-	~CMatrixClassifierFgMDM() override = default;
+	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix and the <see cref="m_Datasets"/> member. </remarks>
+	virtual ~CMatrixClassifierFgMDM();
 
 	//**********************
 	//***** Classifier *****
 	//**********************
-	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
-	/// <summary>	
-	/// -# Compute the Riemann mean of all trials as reference and store this in <see cref="m_Ref"/> member.
-	/// -# Set the good number of classes
-	/// -# Trasnform data to the Tangent Space with the reference
-	/// -# Compute the FgDA Weight (<see cref="FgDACompute" />).
-	/// -# Apply the FgDA Weight and return to Original Manifold.
-	/// -# Apply the MDM train (<see cref=" CMatrixClassifierMDM::train(const std::vector<std::vector<Eigen::MatrixXd>>&)" />).
-	///	</summary>
-	/// \copydetails IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
+	/// \copydoc CMatrixClassifierFgMDMRT::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
+	/// <remarks>	the datasets is saved. </remarks>
 	bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) override;
 
-	/// \copybrief CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
-	/// <summary>
-	/// -# Transform the sample to the Tangent Space.\n
-	/// -# Apply the FgDA weight.\n
-	/// -# Return to the original Manifold.\n
-	/// -# Apply the MDM classify (<see cref="CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)"/>).
-	///	</summary>
-	/// <remarks>
-	/// <b>Remark</b> : We use the MDM classification whatever the adaptation method chosen. 
-	/// Thus the MDM part evolves but the geodesic filtering does not evolve to keep an execution online. 
-	///	A version allowing the adaptation of the Filter will be implemented for offline execution.
-	/// </remarks>
-	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
+	/// \copydoc CMatrixClassifierFgMDMRT::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
+	/// <remarks>	The classifier is train with the new sample. </remarks>
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
@@ -74,11 +59,6 @@ public:
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
-	/// \copydoc CMatrixClassifierMDM::isEqual(const CMatrixClassifierMDM&, const double) const
-	bool isEqual(const CMatrixClassifierFgMDM& obj, double precision = 1e-6) const;
-
-	/// \copydoc CMatrixClassifierMDM::copy(const CMatrixClassifierMDM&)
-	void copy(const CMatrixClassifierFgMDM& obj);
 	
 	/// \copybrief CMatrixClassifierMDM::getType()
 	/// <returns>	Minimum Distance to Mean with geodesic filtering. </returns>
@@ -92,19 +72,9 @@ public:
 		copy(obj);
 		return *this;
 	}
-
+	
 	/// <summary>	Don't Override the move operator. </summary>
 	CMatrixClassifierFgMDM& operator=(CMatrixClassifierFgMDM&& obj) = default;
-
-	/// <summary>	Override the egal operator. </summary>
-	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierFgMDM"/> are equals. </returns>
-	bool operator==(const CMatrixClassifierFgMDM& obj) const { return isEqual(obj); }
-
-	/// <summary>	Override the not egal operator. </summary>
-	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierFgMDM"/> are diffrents. </returns>
-	bool operator!=(const CMatrixClassifierFgMDM& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>
 	/// <param name="os">	The ostream. </param>
@@ -119,21 +89,10 @@ public:
 	//*********************
 	//***** Variables *****
 	//*********************
-	Eigen::MatrixXd m_Ref, m_Weight;
+	///<summary> Data set for train and adaptation (it can quickly rise). </summary>
+	std::vector<std::vector<Eigen::MatrixXd>> m_Datasets;
 
-protected:
-	//***********************
-	//***** XML Manager *****
-	//***********************
-	/// <summary>	Save Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
-
-	/// <summary>	Load Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	bool loadAdditional(tinyxml2::XMLElement* data) override;
-
-	/// <summary>	Prints the Additional informations (Reference and LDA Weight). </summary>
-	/// <returns>	Additional informations in stringstream</returns>
-	std::stringstream printAdditional() const override;
+private:
+	///<summary> train with the actual datasets (<see cref="m_Datasets"/>). </summary>
+	bool train() { return CMatrixClassifierFgMDMRT::train(m_Datasets); }
 };
