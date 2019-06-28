@@ -23,6 +23,7 @@ distribution.
 
 #include "tinyxml2.h"
 
+#include <new>
 #include <cstddef>
 #include <cstdarg>
 
@@ -98,10 +99,6 @@ namespace tinyxml2
 		{ "lt", 2, '<' },
 		{ "gt", 2, '>' }
 	};
-
-
-	StrPair::~StrPair() { Reset(); }
-
 
 	void StrPair::TransferTo(StrPair* other)
 	{
@@ -1333,10 +1330,7 @@ namespace tinyxml2
 
 
 	// --------- XMLElement ---------- //
-	XMLElement::XMLElement(XMLDocument* doc) : XMLNode(doc),
-											   _closingType(OPEN),
-											   _rootAttribute(nullptr) { }
-
+	XMLElement::XMLElement(XMLDocument* doc) : XMLNode(doc) { }
 
 	XMLElement::~XMLElement()
 	{
@@ -1823,9 +1817,7 @@ namespace tinyxml2
 
 
 	XMLDocument::XMLDocument(bool processEntities, Whitespace whitespaceMode)
-		: XMLNode(nullptr), _writeBOM(false), _processEntities(processEntities), _errorID(XML_SUCCESS),
-		  _whitespaceMode(whitespaceMode), _errorLineNum(0), _charBuffer(nullptr),
-		  _parseCurLineNum(0), _parsingDepth(0)
+		: XMLNode(nullptr), _processEntities(processEntities), _whitespaceMode(whitespaceMode)
 	{
 		// avoid VC++ C4355 warning about 'this' in initializer list (C4355 is off by default in VS2012+)
 		_document = this;
@@ -2186,9 +2178,7 @@ namespace tinyxml2
 	}
 
 	XMLPrinter::XMLPrinter(FILE* file, const bool compact, const int depth)
-		: _elementJustOpened(false), _firstElement(true),
-		  _fp(file), _depth(depth), _textDepth(-1),
-		  _processEntities(true), _compactMode(compact)
+		: _fp(file), _depth(depth), _compactMode(compact)
 	{
 		for (int i = 0; i < ENTITY_RANGE; ++i)
 		{

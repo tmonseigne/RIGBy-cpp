@@ -113,8 +113,8 @@ namespace tinyxml2
 			COMMENT = NEEDS_NEWLINE_NORMALIZATION
 		};
 
-		StrPair() : _flags(0), _start(nullptr), _end(nullptr) {}
-		~StrPair();
+		StrPair() = default;
+		~StrPair() { Reset(); }
 
 		void Set(char* start, char* end, const int flags)
 		{
@@ -156,9 +156,9 @@ namespace tinyxml2
 			NEEDS_DELETE = 0x200
 		};
 
-		int _flags;
-		char* _start;
-		char* _end;
+		int _flags = 0;
+		char* _start = nullptr;
+		char* _end = nullptr;
 	};
 
 
@@ -172,7 +172,6 @@ namespace tinyxml2
 	{
 	public:
 		DynArray() : _mem(_pool) { }
-
 		~DynArray() { if (_mem != _pool) { delete[] _mem; } }
 
 		void Clear() { _size = 0; }
@@ -311,7 +310,7 @@ namespace tinyxml2
 	class MemPoolT : public MemPool
 	{
 	public:
-		MemPoolT() : _blockPtrs(), _root(nullptr), _currentAllocs(0), _nAllocs(0), _maxAllocs(0), _nUntracked(0) {}
+		MemPoolT() : _blockPtrs(), _root(nullptr) {}
 		~MemPoolT() { Clear(); }
 
 		void Clear()
@@ -405,12 +404,12 @@ namespace tinyxml2
 		};
 
 		DynArray<Block*, 10> _blockPtrs;
-		Item* _root;
+		Item* _root = nullptr;
 
-		int _currentAllocs;
-		int _nAllocs;
-		int _maxAllocs;
-		int _nUntracked;
+		int _currentAllocs = 0;
+		int _nAllocs = 0;
+		int _maxAllocs = 0;
+		int _nUntracked = 0;
 	};
 
 
@@ -1462,11 +1461,11 @@ namespace tinyxml2
 
 		enum { BUF_SIZE = 200 };
 
-		ElementClosingType _closingType;
+		ElementClosingType _closingType = OPEN;
 		// The attribute list is ordered; there is no 'lastAttribute'
 		// because the list needs to be scanned for dupes before adding
 		// a new attribute.
-		XMLAttribute* _rootAttribute;
+		XMLAttribute* _rootAttribute = nullptr;
 	};
 
 
@@ -1679,15 +1678,15 @@ namespace tinyxml2
 		void operator=(const XMLDocument&) = delete;	// not supported
 
 	private:
-		bool _writeBOM;
-		bool _processEntities;
-		XMLError _errorID;
-		Whitespace _whitespaceMode;
+		bool _writeBOM = false;
+		bool _processEntities = true;
+		XMLError _errorID = XML_SUCCESS;
+		Whitespace _whitespaceMode = PRESERVE_WHITESPACE;
 		mutable StrPair _errorStr;
-		int _errorLineNum;
-		char* _charBuffer;
-		int _parseCurLineNum;
-		int _parsingDepth;
+		int _errorLineNum = 0;
+		char* _charBuffer = nullptr;
+		int _parseCurLineNum = 0;
+		int _parsingDepth = 0;
 		// Memory tracking does add some overhead.
 		// However, the code assumes that you don't
 		// have a bunch of unlinked nodes around.
@@ -2019,18 +2018,18 @@ namespace tinyxml2
 		void Putc(char ch);
 
 		void SealElementIfJustOpened();
-		bool _elementJustOpened;
+		bool _elementJustOpened = false;
 		DynArray<const char*, 10> _stack;
 
 	private:
 		void PrintString(const char*, bool restricted);	// prints out, after detecting entities.
 
-		bool _firstElement;
+		bool _firstElement = true;
 		FILE* _fp;
-		int _depth;
-		int _textDepth;
-		bool _processEntities;
-		bool _compactMode;
+		int _depth = 0;
+		int _textDepth = -1;
+		bool _processEntities = true;
+		bool _compactMode = false;
 
 		enum
 		{
@@ -2038,8 +2037,8 @@ namespace tinyxml2
 			BUF_SIZE = 200
 		};
 
-		bool _entityFlag[ENTITY_RANGE]{};
-		bool _restrictedEntityFlag[ENTITY_RANGE]{};
+		bool _entityFlag[ENTITY_RANGE]{ false };
+		bool _restrictedEntityFlag[ENTITY_RANGE]{ false };
 
 		DynArray<char, 20> _buffer;
 	};
