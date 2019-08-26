@@ -52,7 +52,7 @@ bool CMatrixClassifierFgMDMRT::train(const vector<vector<MatrixXd>>& datasets)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDMRT::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance, 
+bool CMatrixClassifierFgMDMRT::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance,
 										std::vector<double>& probability, const EAdaptations adaptation, const size_t& realClassId)
 {
 	RowVectorXd tsSample, filtered;
@@ -79,7 +79,7 @@ bool CMatrixClassifierFgMDMRT::isEqual(const CMatrixClassifierFgMDMRT& obj, cons
 void CMatrixClassifierFgMDMRT::copy(const CMatrixClassifierFgMDMRT& obj)
 {
 	CMatrixClassifierMDM::copy(obj);
-	m_Ref = obj.m_Ref;
+	m_Ref    = obj.m_Ref;
 	m_Weight = obj.m_Weight;
 }
 ///-------------------------------------------------------------------------------------------------

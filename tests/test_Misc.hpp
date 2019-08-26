@@ -84,16 +84,10 @@ std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, c
 {
 	std::stringstream ss;
 	ss << SEP << name << " : " << std::endl << "  Reference : \t[";
-	for (const T& t : ref)
-	{
-		ss << t << ", ";
-	}
+	for (const T& t : ref) { ss << t << ", "; }
 	if (!ref.empty()) { ss.seekp(ss.str().length() - 2); }
 	ss << "] " << std::endl << "  Compute : \t[";
-	for (const T& t : calc)
-	{
-		ss << t << ", ";
-	}
+	for (const T& t : calc) { ss << t << ", "; }
 	if (!ref.empty()) { ss.seekp(ss.str().length() - 2); }
 	ss << "] " << SEP;
 	return ss;

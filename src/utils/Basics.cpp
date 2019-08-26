@@ -81,10 +81,7 @@ bool MatrixStandardScaler(MatrixXd& matrix, RowVectorXd& scale)
 		sigma[i] = sigma[i] / double(c) - mu[i] * mu[i];
 		scale[i] = sigma[i] == 0 ? 1 : sqrt(sigma[i]);
 
-		for (size_t j = 0; j < c; ++j)
-		{
-			matrix(i, j) = (matrix(i, j) - mu[i]) / scale[i];
-		}
+		for (size_t j = 0; j < c; ++j) { matrix(i, j) = (matrix(i, j) - mu[i]) / scale[i]; }
 	}
 	return true;
 }
@@ -210,7 +207,7 @@ bool haveSameSize(const std::vector<MatrixXd>& matrices)
 vector<string> Split(const string& s, const string& sep)
 {
 	vector<string> result;
-	string::size_type i = 0, j;
+	string::size_type i       = 0, j;
 	const string::size_type n = sep.size();
 
 	while ((j = s.find(sep, i)) != string::npos)

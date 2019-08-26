@@ -64,7 +64,7 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 	if (nbClass == 2)
 	{
 		const MatrixXd tmp = weight.row(1) - weight.row(0);	// Need to use a tmp variable otherwise sometimes error
-		weight = tmp;
+		weight             = tmp;
 	}
 	return true;
 }
@@ -80,7 +80,7 @@ bool FgDACompute(const vector<vector<RowVectorXd>>& datasets, MatrixXd& weight)
 
 	// Transform to FgDA Weight
 	const MatrixXd wT = w.transpose();
-	weight = (wT * (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass))) * w;
+	weight            = (wT * (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass))) * w;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------

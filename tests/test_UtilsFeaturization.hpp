@@ -30,7 +30,7 @@ protected:
 TEST_F(Tests_Featurization, TangentSpace)
 {
 	const std::vector<Eigen::RowVectorXd> ref = InitFeaturization::TangentSpace::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
+	const Eigen::MatrixXd mean                = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::RowVectorXd calc;
@@ -44,7 +44,7 @@ TEST_F(Tests_Featurization, TangentSpace)
 TEST_F(Tests_Featurization, UnTangentSpace)
 {
 	const std::vector<Eigen::RowVectorXd> ref = InitFeaturization::TangentSpace::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
+	const Eigen::MatrixXd mean                = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
@@ -57,9 +57,9 @@ TEST_F(Tests_Featurization, UnTangentSpace)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Featurization, Squeeze)
 {
-	const std::vector<Eigen::RowVectorXd> ref = InitFeaturization::Squeeze::Reference();
+	const std::vector<Eigen::RowVectorXd> ref     = InitFeaturization::Squeeze::Reference();
 	const std::vector<Eigen::RowVectorXd> refDiag = InitFeaturization::SqueezeDiag::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
+	const Eigen::MatrixXd mean                    = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::RowVectorXd calc;
@@ -74,9 +74,9 @@ TEST_F(Tests_Featurization, Squeeze)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Featurization, UnSqueeze)
 {
-	const std::vector<Eigen::RowVectorXd> ref = InitFeaturization::Squeeze::Reference();
+	const std::vector<Eigen::RowVectorXd> ref     = InitFeaturization::Squeeze::Reference();
 	const std::vector<Eigen::RowVectorXd> refDiag = InitFeaturization::SqueezeDiag::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
+	const Eigen::MatrixXd mean                    = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;

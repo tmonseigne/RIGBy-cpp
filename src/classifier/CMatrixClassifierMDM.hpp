@@ -29,12 +29,9 @@ public:
 	/// <param name="obj">	Initial object. </param>
 	CMatrixClassifierMDM(const CMatrixClassifierMDM& obj) { *this = obj; }
 
-	/// \copydoc IMatrixClassifier(IMatrixClassifier&&)
-	CMatrixClassifierMDM(CMatrixClassifierMDM&& obj) = default;
-
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class and set base members. </summary>
 	/// \copydetails IMatrixClassifier(const size_t, const EMetrics)
-	explicit CMatrixClassifierMDM(const size_t nbClass, const EMetrics metric);
+	explicit CMatrixClassifierMDM(size_t nbClass, EMetrics metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
 	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
@@ -45,7 +42,7 @@ public:
 	//**********************
 	/// \copydoc IMatrixClassifier::setClassCount(const size_t)
 	/// <remarks>	resize the <see cref="m_Means"/> vector of Matrix. </remarks>
-	void setClassCount(const size_t nbClass) override;
+	void setClassCount(size_t nbClass) override;
 
 	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	/// <summary>	
@@ -75,33 +72,30 @@ public:
 	///	</summary>
 	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
+				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
 
 	/// \copydoc IMatrixClassifier::isEqual(const IMatrixClassifier&, const double) const
-	bool isEqual(const CMatrixClassifierMDM& obj, const double precision = 1e-6) const;
+	bool isEqual(const CMatrixClassifierMDM& obj, double precision = 1e-6) const;
 
 	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
 	void copy(const CMatrixClassifierMDM& obj);
 
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean. </returns>
-	std::string getType() const override { return "Minimum Distance to Mean"; }
+	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_MDM); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	The copied object. </returns>
 	CMatrixClassifierMDM& operator=(const CMatrixClassifierMDM& obj)
 	{
-		copy(obj);		
+		copy(obj);
 		return *this;
 	}
-
-	/// <summary>	Don't Override the move operator. </summary>
-	CMatrixClassifierMDM& operator=(CMatrixClassifierMDM&& obj) = default;
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -119,7 +113,7 @@ public:
 	/// <returns>	Return the modified ostream. </returns>
 	friend std::ostream& operator <<(std::ostream& os, const CMatrixClassifierMDM& obj)
 	{
-		os << obj.print().str();		
+		os << obj.print().str();
 		return os;
 	}
 	   	 

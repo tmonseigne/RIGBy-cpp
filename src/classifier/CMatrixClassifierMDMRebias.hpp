@@ -29,15 +29,12 @@ public:
 	/// <param name="obj">	Initial object. </param>
 	CMatrixClassifierMDMRebias(const CMatrixClassifierMDMRebias& obj) { *this = obj; }
 
-	/// \copydoc CMatrixClassifierMDM(CMatrixClassifierMDM&&)
-	CMatrixClassifierMDMRebias(CMatrixClassifierMDMRebias&& obj) = default;
-
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDMRebias"/> class and set base members. </summary>
 	/// \copydetails CMatrixClassifierMDM(const size_t, const EMetrics)
 	explicit CMatrixClassifierMDMRebias(const size_t nbClass, const EMetrics metric) : CMatrixClassifierMDM(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDMRebias"/> class. </summary>
-	virtual ~CMatrixClassifierMDMRebias() = default;
+	~CMatrixClassifierMDMRebias() override = default;
 
 	//**********************
 	//***** Classifier *****
@@ -62,33 +59,30 @@ public:
 	///	</summary>
 	/// \copydetails CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
+				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
 
 	/// \copydoc CMatrixClassifierMDM::isEqual(const CMatrixClassifierMDM&, const double) const
-	bool isEqual(const CMatrixClassifierMDMRebias& obj, const double precision = 1e-6) const;
+	bool isEqual(const CMatrixClassifierMDMRebias& obj, double precision = 1e-6) const;
 
 	/// \copydoc CMatrixClassifierMDM::copy(const CMatrixClassifierMDM&)
 	void copy(const CMatrixClassifierMDMRebias& obj);
 
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean REBIAS. </returns>
-	std::string getType() const override { return "Minimum Distance to Mean REBIAS"; }
+	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_MDM_Rebias); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	The copied object. </returns>
 	CMatrixClassifierMDMRebias& operator=(const CMatrixClassifierMDMRebias& obj)
 	{
-		copy(obj);		
+		copy(obj);
 		return *this;
 	}
-
-	/// <summary>	Don't Override the move operator. </summary>
-	CMatrixClassifierMDMRebias& operator=(CMatrixClassifierMDMRebias&& obj) = default;
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -106,7 +100,7 @@ public:
 	/// <returns>	Return the modified ostream. </returns>
 	friend std::ostream& operator <<(std::ostream& os, const CMatrixClassifierMDMRebias& obj)
 	{
-		os << obj.print().str();		
+		os << obj.print().str();
 		return os;
 	}
 

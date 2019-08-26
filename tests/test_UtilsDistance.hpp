@@ -33,7 +33,7 @@ protected:
 TEST_F(Tests_Distances, Euclidian)
 {
 	const std::vector<double> ref = InitDistance::Euclidian::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Euclidian::Reference();
+	const Eigen::MatrixXd mean    = InitMeans::Euclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Euclidian);
@@ -46,7 +46,7 @@ TEST_F(Tests_Distances, Euclidian)
 TEST_F(Tests_Distances, LogEuclidian)
 {
 	const std::vector<double> ref = InitDistance::LogEuclidian::Reference();
-	const Eigen::MatrixXd mean = InitMeans::LogEuclidian::Reference();
+	const Eigen::MatrixXd mean    = InitMeans::LogEuclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_LogEuclidian);
@@ -59,7 +59,7 @@ TEST_F(Tests_Distances, LogEuclidian)
 TEST_F(Tests_Distances, Riemann)
 {
 	const std::vector<double> ref = InitDistance::Riemann::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
+	const Eigen::MatrixXd mean    = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Riemann);
@@ -72,7 +72,7 @@ TEST_F(Tests_Distances, Riemann)
 TEST_F(Tests_Distances, LogDet)
 {
 	const std::vector<double> ref = InitDistance::LogDeterminant::Reference();
-	const Eigen::MatrixXd mean = InitMeans::LogDeterminant::Reference();
+	const Eigen::MatrixXd mean    = InitMeans::LogDeterminant::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_LogDet);
@@ -85,7 +85,7 @@ TEST_F(Tests_Distances, LogDet)
 TEST_F(Tests_Distances, Kullback)
 {
 	const std::vector<double> ref = InitDistance::Kullback::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Kullback::Reference();
+	const Eigen::MatrixXd mean    = InitMeans::Kullback::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Kullback);
@@ -98,7 +98,7 @@ TEST_F(Tests_Distances, Kullback)
 TEST_F(Tests_Distances, Wasserstein)
 {
 	const std::vector<double> ref = InitDistance::Wasserstein::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Wasserstein::Reference();
+	const Eigen::MatrixXd mean    = InitMeans::Wasserstein::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], Metric_Wasserstein);

@@ -34,7 +34,7 @@ bool ShrunkCovariance(MatrixXd& cov, const double shrinkage)
 	const size_t n = cov.rows();							// Number of Features				=> N
 
 	const double coef = shrinkage * cov.trace() / n;		// Diagonal Coefficient
-	cov = (1 - shrinkage) * cov;							// Shrinkage
+	cov               = (1 - shrinkage) * cov;				// Shrinkage
 	for (size_t i = 0; i < n; ++i) { cov(i, i) += coef; }	// Add Diagonal Coefficient
 
 	return true;
@@ -84,12 +84,12 @@ bool CovarianceMatrixCOV(const MatrixXd& samples, MatrixXd& cov)
 	for (size_t i = 0; i < n; ++i)
 	{
 		const RowVectorXd ri = samples.row(i);
-		cov(i, i) = Variance(ri);							// Diagonal Value
+		cov(i, i)            = Variance(ri);				// Diagonal Value
 
 		for (size_t j = i + 1; j < n; ++j)
 		{
 			const RowVectorXd rj = samples.row(j);
-			cov(i, j) = cov(j, i) = Covariance(ri, rj);		// Symetric covariance
+			cov(i, j)            = cov(j, i) = Covariance(ri, rj);		// Symetric covariance
 		}
 	}
 	return true;
@@ -114,11 +114,11 @@ bool CovarianceMatrixLWF(const MatrixXd& samples, MatrixXd& cov)
 	const double mu = cov.trace() / n;
 	MatrixXd mDelta = cov;									// mDelta = cov - mu * I_n
 	for (size_t i = 0; i < n; ++i) { mDelta(i, i) -= mu; }
-	const MatrixXd x2 = samples.cwiseProduct(samples),		// Squared each sample				=> X^2
+	const MatrixXd x2   = samples.cwiseProduct(samples),	// Squared each sample				=> X^2
 				   cov2 = cov.cwiseProduct(cov);			// Squared each element of Cov		=> Cov^2
 
-	const double delta = mDelta.cwiseProduct(mDelta).sum() / n,
-				 beta = 1. / double(n * S) * (x2 * x2.transpose() / double(S) - cov2).sum(),
+	const double delta     = mDelta.cwiseProduct(mDelta).sum() / n,
+				 beta      = 1. / double(n * S) * (x2 * x2.transpose() / double(S) - cov2).sum(),
 				 shrinkage = min(beta, delta) / delta;		// Assure shrinkage <= 1
 
 	return ShrunkCovariance(cov, shrinkage);				// Shrinkage of the matrix
@@ -132,11 +132,11 @@ bool CovarianceMatrixOAS(const MatrixXd& samples, MatrixXd& cov)
 	CovarianceMatrixCOV(samples, cov);						// Initial Covariance Matrix		=> Cov
 
 	// Compute Shrinkage : Formula from Chen et al.'s
-	const double mu = cov.trace() / n,
-				 mu2 = mu * mu,
-				 alpha = cov.cwiseProduct(cov).mean(),
-				 num = alpha + mu2,
-				 den = (S + 1) * (alpha - mu2 / n),
+	const double mu        = cov.trace() / n,
+				 mu2       = mu * mu,
+				 alpha     = cov.cwiseProduct(cov).mean(),
+				 num       = alpha + mu2,
+				 den       = (S + 1) * (alpha - mu2 / n),
 				 shrinkage = (den == 0) ? 1.0 : min(num / den, 1.0);
 
 	return ShrunkCovariance(cov, shrinkage);				// Shrinkage of the matrix

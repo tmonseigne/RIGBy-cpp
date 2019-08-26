@@ -13,10 +13,7 @@ using namespace tinyxml2;
 //***** Constructor *****	
 //***********************
 ///-------------------------------------------------------------------------------------------------
-CMatrixClassifierMDM::CMatrixClassifierMDM()
-{
-	CMatrixClassifierMDM::setClassCount(m_nbClass);
-}
+CMatrixClassifierMDM::CMatrixClassifierMDM() { CMatrixClassifierMDM::setClassCount(m_nbClass); }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
@@ -65,7 +62,7 @@ bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance, 
+bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance,
 									std::vector<double>& probability, const EAdaptations adaptation, const size_t& realClassId)
 {
 	if (!isSquare(sample)) { return false; }				// Verification if it's a square matrix 
@@ -177,7 +174,7 @@ void CMatrixClassifierMDM::copy(const CMatrixClassifierMDM& obj)
 	setClassCount(m_nbClass);
 	for (size_t i = 0; i < m_nbClass; ++i)
 	{
-		m_Means[i] = obj.m_Means[i];
+		m_Means[i]    = obj.m_Means[i];
 		m_NbTrials[i] = obj.m_NbTrials[i];
 	}
 }

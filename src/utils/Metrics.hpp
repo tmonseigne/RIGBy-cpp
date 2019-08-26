@@ -52,7 +52,7 @@ inline std::string MetricToString(const EMetrics metric)
 		case Metric_ALE: return "AJD-based log-Euclidean";
 		case Metric_Harmonic: return "Harmonic";
 		case Metric_Wasserstein: return "Wasserstein";
-		case Metric_Identity: 
+		case Metric_Identity:
 		default: return "Identity";
 	}
 }

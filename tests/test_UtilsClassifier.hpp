@@ -24,7 +24,7 @@ protected:
 	void SetUp() override
 	{
 		const std::vector<Eigen::RowVectorXd> tmp = InitFeaturization::TangentSpace::Reference();
-		m_dataSet = Vector1DTo2D(tmp, { NB_TRIALS1, NB_TRIALS2 });
+		m_dataSet                                 = Vector1DTo2D(tmp, { NB_TRIALS1, NB_TRIALS2 });
 	}
 };
 //---------------------------------------------------------------------------------------------------

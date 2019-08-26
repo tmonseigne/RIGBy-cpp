@@ -26,20 +26,20 @@
 static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<Eigen::MatrixXd>>& dataset, const std::vector<size_t>& refPrediction, const std::vector<std::vector<double>>& refPredictionDistance, const EAdaptations& adapt)
 {
 	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
-	size_t idx = 0;
+	size_t idx             = 0;
 	for (size_t k = 0; k < dataset.size(); ++k)
 	{
 		for (size_t i = 0; i < dataset[k].size(); ++i)
 		{
 			const std::string text = "sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			size_t classid = 0;
+			size_t classid         = 0;
 			std::vector<double> distance, probability;
 			EXPECT_TRUE(calc.classify(dataset[k][i], classid, distance, probability, adapt, k)) << "Error during Classify " << text;
-			if (idx < refPrediction.size()) 
+			if (idx < refPrediction.size())
 			{
 				EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid).str();
 			}
-			if (idx < refPredictionDistance.size()) 
+			if (idx < refPredictionDistance.size())
 			{
 				EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx], distance).str();
 			}
@@ -138,7 +138,7 @@ TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify_Adapt_Supervised)
 	CMatrixClassifierFgMDMRT calc = InitMatrixClassif::FgMDMRT::Reference();
 	const std::vector<std::vector<double>> emptydist;
 	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRT::PredictionSupervised(), emptydist, Adaptation_Supervised);
-	const CMatrixClassifierFgMDMRT ref = InitMatrixClassif::FgMDMRT::AfterSupervised();
+	//const CMatrixClassifierFgMDMRT ref = InitMatrixClassif::FgMDMRT::AfterSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Supervised RT adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify_Adapt_Unsupervised)
 	CMatrixClassifierFgMDMRT calc(InitMatrixClassif::FgMDMRT::Reference());
 	const std::vector<std::vector<double>> emptydist;
 	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRT::PredictionUnSupervised(), emptydist, Adaptation_Unsupervised);
-	const CMatrixClassifierFgMDMRT ref = InitMatrixClassif::FgMDMRT::AfterUnSupervised();
+	//const CMatrixClassifierFgMDMRT ref = InitMatrixClassif::FgMDMRT::AfterUnSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Unsupervised RT adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Supervised)
 	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::Reference();
 	const std::vector<std::vector<double>> emptydist;
 	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionSupervised(), emptydist, Adaptation_Supervised);
-	const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterSupervised();
+	//const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Supervised adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Unsupervised)
 	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::Reference();
 	const std::vector<std::vector<double>> emptydist;
 	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionUnSupervised(), emptydist, Adaptation_Unsupervised);
-	const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterUnSupervised();
+	//const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterUnSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Unsupervised adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------
@@ -190,9 +190,9 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Unsupervised)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_MatrixClassifier, MDM_Rebias_Train)
 {
-	const CMatrixClassifierMDMRebias ref = InitMatrixClassif::MDMRebias::Reference();
 	CMatrixClassifierMDMRebias calc;
 	EXPECT_TRUE(calc.train(m_dataSet)) << "Error during Training : " << std::endl << calc << std::endl;
+	//const CMatrixClassifierMDMRebias ref = InitMatrixClassif::MDMRebias::Reference();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Train", ref, calc).str(); // The mean method is different in matlab toolbox and python toolbox
 }
 //---------------------------------------------------------------------------------------------------

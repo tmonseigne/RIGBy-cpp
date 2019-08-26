@@ -74,8 +74,8 @@ TEST_F(Tests_Basics, ARange)
 TEST_F(Tests_Basics, Vector2DTo1D)
 {
 	std::vector<Eigen::MatrixXd> calc = Vector2DTo1D(m_dataSet);
-	bool egal = true;
-	size_t idx = 0;
+	bool egal                         = true;
+	size_t idx                        = 0;
 	for (auto& set : m_dataSet)
 	{
 		for (const auto& data : set)

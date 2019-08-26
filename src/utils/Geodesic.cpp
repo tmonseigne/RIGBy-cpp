@@ -25,7 +25,7 @@ bool Geodesic(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const EMetrics 
 bool GeodesicRiemann(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const double alpha)
 {
 	const MatrixXd sA = a.sqrt(), isA = sA.inverse();
-	g = sA * (isA * b * isA).pow(alpha) * sA;
+	g                 = sA * (isA * b * isA).pow(alpha) * sA;
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

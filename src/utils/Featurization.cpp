@@ -55,7 +55,7 @@ bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const 
 bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, const bool rowMajor)
 {
 	const size_t nR = rowVector.size(),							// Size of Row					=> Nr
-				 n = int((sqrt(1 + 8 * nR) - 1) / 2);			// Number of Features			=> N
+				 n  = int((sqrt(1 + 8 * nR) - 1) / 2);			// Number of Features			=> N
 	if (n == 0) { return false; }								// Verification
 	matrix.setZero(n, n);										// Init
 
@@ -84,9 +84,9 @@ bool TangentSpace(const MatrixXd& matrix, RowVectorXd& rowVector, const MatrixXd
 	if (!isSquare(matrix)) { return false; }					// Verification
 	const size_t n = matrix.rows();								// Number of Features			=> N
 
-	const MatrixXd sC = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
-				   isC = sC.inverse(),							// Inverse Square root of ref	=> isC
-				   mJ = (isC * matrix * isC).log(),				// Transformation Matrix		=> mJ
+	const MatrixXd sC      = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
+				   isC     = sC.inverse(),						// Inverse Square root of ref	=> isC
+				   mJ      = (isC * matrix * isC).log(),		// Transformation Matrix		=> mJ
 				   mCoeffs = M_SQRT2 * MatrixXd(MatrixXd::Ones(n, n).triangularView<StrictlyUpper>()) + MatrixXd::Identity(n, n);
 
 	RowVectorXd vJ, vCoeffs;
@@ -103,7 +103,7 @@ bool UnTangentSpace(const RowVectorXd& rowVector, MatrixXd& matrix, const Matrix
 	const size_t n = matrix.rows();								// Number of Features			=> N
 	if (!UnSqueezeUpperTriangle(rowVector, matrix)) { return false; }
 
-	const MatrixXd sC = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
+	const MatrixXd sC     = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
 				   coeffs = MatrixXd(matrix.triangularView<StrictlyUpper>()) / M_SQRT2;
 
 	matrix = sC * (MatrixXd(matrix.diagonal().asDiagonal()) + coeffs + coeffs.transpose()).exp() * sC;

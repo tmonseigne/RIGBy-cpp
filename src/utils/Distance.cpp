@@ -26,17 +26,14 @@ double Distance(const MatrixXd& a, const MatrixXd& b, const EMetrics metric)
 //---------------------------------------------------------------------------------------------------
 double DistanceRiemann(const MatrixXd& a, const MatrixXd& b)
 {
-	GeneralizedSelfAdjointEigenSolver<MatrixXd> es(a, b);
+	const GeneralizedSelfAdjointEigenSolver<MatrixXd> es(a, b);
 	const ArrayXd result = es.eigenvalues();
 	return sqrt(result.log().square().sum());
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-double DistanceEuclidian(const MatrixXd& a, const MatrixXd& b)
-{
-	return (b - a).norm();
-}
+double DistanceEuclidian(const MatrixXd& a, const MatrixXd& b) { return (b - a).norm(); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------

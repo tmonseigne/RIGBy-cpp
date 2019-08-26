@@ -28,10 +28,47 @@ enum EAdaptations
 	Adaptation_Unsupervised
 };
 
+/// <summary>	Enumeration of Matrix Classifiers. </summary>
+enum EMatrixClassifiers
+{
+	/// <summary>	Minimum Distance To Mean Classifier. </summary>
+	Matrix_Classifier_MDM,
+	/// <summary>	Minimum Distance To Mean REBIAS Classifier. </summary>
+	Matrix_Classifier_MDM_Rebias,
+	/// <summary>	Minimum Distance to Mean with geodesic filtering Real Time assumed. </summary>
+	Matrix_Classifier_FgMDM_RT,
+	/// <summary>	Minimum Distance to Mean with geodesic filtering. </summary>
+	Matrix_Classifier_FgMDM
+};
+
 /// <summary>	Abstract class of Matrix Classifier. </summary>
 class IMatrixClassifier
 {
 public:
+
+	static std::string getType(const EMatrixClassifiers type)
+	{
+		switch (type)
+		{
+			case Matrix_Classifier_MDM: return "Minimum Distance to Mean";
+			case Matrix_Classifier_MDM_Rebias: return "Minimum Distance to Mean REBIAS";
+			case Matrix_Classifier_FgMDM_RT: return "Minimum Distance to Mean with geodesic filtering Real Time assumed";
+			case Matrix_Classifier_FgMDM: return "Minimum Distance to Mean with geodesic filtering";
+			default: return "Invalid";
+		}
+	}
+
+	static std::string getAdaptation(const EAdaptations type)
+	{
+		switch (type)
+		{
+			case Adaptation_None: return "No";
+			case Adaptation_Supervised: return "Supervised";
+			case Adaptation_Unsupervised: return "Unsupervised";
+			default: return "Invalid";
+		}
+	}
+
 	//***********************	
 	//***** Constructor *****	
 	//***********************	
@@ -42,14 +79,10 @@ public:
 	/// <param name="obj">	Initial object. </param>
 	IMatrixClassifier(const IMatrixClassifier& obj) { *this = obj; }
 
-	/// <summary>	Don't override move constructor. </summary>
-	/// <param name="obj">	Initial object. </param>
-	IMatrixClassifier(IMatrixClassifier&& obj) = default;
-
 	/// <summary>	Initializes a new instance of the <see cref="IMatrixClassifier"/> class and set members. </summary>
 	/// <param name="nbClass">	The number of classes. </param>
 	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetrics" />). </param>
-	explicit IMatrixClassifier(const size_t nbClass, const EMetrics metric);
+	explicit IMatrixClassifier(size_t nbClass, EMetrics metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="IMatrixClassifier"/> class. </summary>
 	virtual ~IMatrixClassifier() = default;
@@ -59,7 +92,7 @@ public:
 	//**********************
 	/// <summary>	Sets the class count. </summary>
 	/// <param name="nbClass">	The number of Classes. </param>
-	virtual void setClassCount(const size_t nbClass);
+	virtual void setClassCount(size_t nbClass);
 
 	/// <summary>	get the class count. </summary>
 	virtual size_t getClassCount() const { return m_nbClass; }
@@ -77,7 +110,7 @@ public:
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	/// <seealso cref="classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, EAdaptations, const size_t&)"/>
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId,
-						  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max());
+						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max());
 
 	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class. </summary>
 	/// <param name="sample">		The sample to classify. </param>
@@ -88,7 +121,7 @@ public:
 	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>	
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-						  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) = 0;	
+						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) = 0;	
 
 	//***********************
 	//***** XML Manager *****
@@ -111,7 +144,7 @@ public:
 	/// <param name="obj">			The second object. </param>
 	/// <param name="precision">	Precision for matrix comparison. </param>
 	/// <returns>	True if the two elements are equals (with a precision tolerance). </returns>
-	bool isEqual(const IMatrixClassifier& obj, const double precision = 1e-6) const;
+	bool isEqual(const IMatrixClassifier& obj, double precision = 1e-6) const;
 
 	/// <summary>	Copy object value. </summary>
 	/// <param name="obj">	The object to copy. </param>
@@ -130,12 +163,9 @@ public:
 	/// <returns>	The copied object. </returns>
 	IMatrixClassifier& operator=(const IMatrixClassifier& obj)
 	{
-		copy(obj);		
+		copy(obj);
 		return *this;
 	}
-
-	/// <summary>	Don't Override the move operator. </summary>
-	IMatrixClassifier& operator=(IMatrixClassifier&& obj) = default;
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -151,9 +181,9 @@ public:
 	/// <param name="os">	The ostream. </param>
 	/// <param name="obj">	The object. </param>
 	/// <returns>	Return the modified ostream. </returns>
-	friend std::ostream& operator <<(std::ostream& os, const IMatrixClassifier& obj) 
+	friend std::ostream& operator <<(std::ostream& os, const IMatrixClassifier& obj)
 	{
-		os << obj.print().str();		
+		os << obj.print().str();
 		return os;
 	}
 

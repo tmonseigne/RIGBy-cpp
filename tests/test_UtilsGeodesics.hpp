@@ -30,7 +30,7 @@ protected:
 TEST_F(Tests_Geodesic, Euclidian)
 {
 	const std::vector<Eigen::MatrixXd> ref = InitGeodesics::Euclidian::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Euclidian::Reference();
+	const Eigen::MatrixXd mean             = InitMeans::Euclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
@@ -44,7 +44,7 @@ TEST_F(Tests_Geodesic, Euclidian)
 TEST_F(Tests_Geodesic, LogEuclidian)
 {
 	const std::vector<Eigen::MatrixXd> ref = InitGeodesics::LogEuclidian::Reference();
-	const Eigen::MatrixXd mean = InitMeans::LogEuclidian::Reference();
+	const Eigen::MatrixXd mean             = InitMeans::LogEuclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
@@ -58,7 +58,7 @@ TEST_F(Tests_Geodesic, LogEuclidian)
 TEST_F(Tests_Geodesic, Riemann)
 {
 	const std::vector<Eigen::MatrixXd> ref = InitGeodesics::Riemann::Reference();
-	const Eigen::MatrixXd mean = InitMeans::Riemann::Reference();
+	const Eigen::MatrixXd mean             = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;

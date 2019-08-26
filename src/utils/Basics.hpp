@@ -126,8 +126,7 @@ std::vector<T> ARange(const T start, const T stop, const T step = 1)
 {
 	std::vector<T> result;
 	result.reserve(size_t(ceil(1.0 * (stop - start) / step)));
-	for (T i = start; i < stop; i += step)
-		result.push_back(i);
+	for (T i = start; i < stop; i += step) { result.push_back(i); }
 	return result;
 }
 

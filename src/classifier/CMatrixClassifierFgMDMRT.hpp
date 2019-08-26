@@ -28,9 +28,6 @@ public:
 	/// <param name="obj">	Initial object. </param>
 	CMatrixClassifierFgMDMRT(const CMatrixClassifierFgMDMRT& obj) { *this = obj; }
 
-	/// \copydoc CMatrixClassifierMDM(CMatrixClassifierMDM&&)
-	CMatrixClassifierFgMDMRT(CMatrixClassifierFgMDMRT&& obj) = default;
-
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDMRT"/> class and set base members. </summary>
 	/// \copydetails CMatrixClassifierMDM(size_t, EMetrics)
 	explicit CMatrixClassifierFgMDMRT(const size_t nbClass, const EMetrics metric) : CMatrixClassifierMDM(nbClass, metric) { }
@@ -68,7 +65,7 @@ public:
 	/// </remarks>
 	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
+				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
 
 	//*****************************
@@ -82,7 +79,7 @@ public:
 	
 	/// \copybrief CMatrixClassifierMDM::getType()
 	/// <returns>	Minimum Distance to Mean with geodesic filtering. </returns>
-	std::string getType() const override { return "Minimum Distance to Mean with geodesic filtering Real Time assumed"; }
+	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_FgMDM_RT); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -92,9 +89,6 @@ public:
 		copy(obj);
 		return *this;
 	}
-
-	/// <summary>	Don't Override the move operator. </summary>
-	CMatrixClassifierFgMDMRT& operator=(CMatrixClassifierFgMDMRT&& obj) = default;
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>

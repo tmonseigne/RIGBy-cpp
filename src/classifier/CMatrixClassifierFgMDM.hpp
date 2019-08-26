@@ -32,16 +32,13 @@ public:
 	/// <param name="obj">	Initial object. </param>
 	explicit CMatrixClassifierFgMDM(const CMatrixClassifierFgMDMRT& obj) { copy(obj); }
 
-	/// \copydoc CMatrixClassifierFgMDMRT(CMatrixClassifierFgMDMRT&&)
-	CMatrixClassifierFgMDM(CMatrixClassifierFgMDM&& obj) = default;
-
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class and set base members. </summary>
 	/// \copydetails CMatrixClassifierFgMDMRT(size_t, EMetrics)
 	explicit CMatrixClassifierFgMDM(const size_t nbClass, const EMetrics metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
 	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix and the <see cref="m_Datasets"/> member. </remarks>
-	virtual ~CMatrixClassifierFgMDM();
+	~CMatrixClassifierFgMDM() override;
 
 	//**********************
 	//***** Classifier *****
@@ -53,16 +50,16 @@ public:
 	/// \copydoc CMatrixClassifierFgMDMRT::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	/// <remarks>	The classifier is train with the new sample. </remarks>
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  const EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
+				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
 
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
-	
+
 	/// \copybrief CMatrixClassifierMDM::getType()
 	/// <returns>	Minimum Distance to Mean with geodesic filtering. </returns>
-	std::string getType() const override { return "Minimum Distance to Mean with geodesic filtering"; }
+	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_FgMDM); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -72,9 +69,6 @@ public:
 		copy(obj);
 		return *this;
 	}
-	
-	/// <summary>	Don't Override the move operator. </summary>
-	CMatrixClassifierFgMDM& operator=(CMatrixClassifierFgMDM&& obj) = default;
 
 	/// <summary>	Override the ostream operator. </summary>
 	/// <param name="os">	The ostream. </param>
