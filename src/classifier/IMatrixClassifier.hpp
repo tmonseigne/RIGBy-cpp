@@ -38,14 +38,19 @@ enum EMatrixClassifiers
 	/// <summary>	Minimum Distance to Mean with geodesic filtering Real Time assumed. </summary>
 	Matrix_Classifier_FgMDM_RT,
 	/// <summary>	Minimum Distance to Mean with geodesic filtering. </summary>
-	Matrix_Classifier_FgMDM
+	Matrix_Classifier_FgMDM,
+	/// <summary>	Minimum Distance to Mean with geodesic filtering & Rebias adaptation Real Time assumed. </summary>
+	Matrix_Classifier_FgMDM_RT_Rebias,	
+	/// <summary>	Minimum Distance to Mean with geodesic filtering & Rebias adaptation. </summary>
+	Matrix_Classifier_FgMDM_Rebias,
 };
+
+const Eigen::IOFormat MATRIX_FORMAT = Eigen::IOFormat(-2, 0, " ", "\n", "", "", "", "");
 
 /// <summary>	Abstract class of Matrix Classifier. </summary>
 class IMatrixClassifier
 {
 public:
-
 	static std::string getType(const EMatrixClassifiers type)
 	{
 		switch (type)
@@ -276,4 +281,5 @@ protected:
 	//*********************	
 	/// <summary>	Number of classes to classify. </summary>
 	size_t m_nbClass = 2;
+
 };

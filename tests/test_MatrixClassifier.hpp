@@ -21,6 +21,10 @@
 #include "classifier/CMatrixClassifierMDM.hpp"
 #include "classifier/CMatrixClassifierMDMRebias.hpp"
 #include "classifier/CMatrixClassifierFgMDM.hpp"
+#include "classifier/CMatrixClassifierFgMDMRT.hpp"
+#include "classifier/CMatrixClassifierFgMDMRTRebias.hpp"
+
+static const std::vector<std::vector<double>> EMPTY_DIST;
 
 //---------------------------------------------------------------------------------------------------
 static void TestClassify(IMatrixClassifier& calc, const std::vector<std::vector<Eigen::MatrixXd>>& dataset, const std::vector<size_t>& refPrediction, const std::vector<std::vector<double>>& refPredictionDistance, const EAdaptations& adapt)
@@ -136,8 +140,7 @@ TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify)
 TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify_Adapt_Supervised)
 {
 	CMatrixClassifierFgMDMRT calc = InitMatrixClassif::FgMDMRT::Reference();
-	const std::vector<std::vector<double>> emptydist;
-	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRT::PredictionSupervised(), emptydist, Adaptation_Supervised);
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRT::PredictionSupervised(), EMPTY_DIST, Adaptation_Supervised);
 	//const CMatrixClassifierFgMDMRT ref = InitMatrixClassif::FgMDMRT::AfterSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Supervised RT adaptation", ref, calc).str();
 }
@@ -147,8 +150,7 @@ TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify_Adapt_Supervised)
 TEST_F(Tests_MatrixClassifier, FgMDMRT_Classifify_Adapt_Unsupervised)
 {
 	CMatrixClassifierFgMDMRT calc(InitMatrixClassif::FgMDMRT::Reference());
-	const std::vector<std::vector<double>> emptydist;
-	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRT::PredictionUnSupervised(), emptydist, Adaptation_Unsupervised);
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRT::PredictionUnSupervised(), EMPTY_DIST, Adaptation_Unsupervised);
 	//const CMatrixClassifierFgMDMRT ref = InitMatrixClassif::FgMDMRT::AfterUnSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Unsupervised RT adaptation", ref, calc).str();
 }
@@ -169,8 +171,7 @@ TEST_F(Tests_MatrixClassifier, FgMDMRT_Save)
 TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Supervised)
 {
 	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::Reference();
-	const std::vector<std::vector<double>> emptydist;
-	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionSupervised(), emptydist, Adaptation_Supervised);
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionSupervised(), EMPTY_DIST, Adaptation_Supervised);
 	//const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Supervised adaptation", ref, calc).str();
 }
@@ -180,8 +181,7 @@ TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Supervised)
 TEST_F(Tests_MatrixClassifier, FgMDM_Classifify_Adapt_Unsupervised)
 {
 	CMatrixClassifierFgMDM calc = InitMatrixClassif::FgMDM::Reference();
-	const std::vector<std::vector<double>> emptydist;
-	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionUnSupervised(), emptydist, Adaptation_Unsupervised);
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDM::PredictionUnSupervised(), EMPTY_DIST, Adaptation_Unsupervised);
 	//const CMatrixClassifierFgMDM ref = InitMatrixClassif::FgMDM::AfterUnSupervised();
 	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Adapt Classify after Unsupervised adaptation", ref, calc).str();
 }
@@ -236,5 +236,58 @@ TEST_F(Tests_MatrixClassifier, MDM_Rebias_Save)
 	EXPECT_TRUE(ref.saveXML("test_MDM_Rebias_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
 	EXPECT_TRUE(calc.loadXML("test_MDM_Rebias_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
 	EXPECT_TRUE(ref == calc) << ErrorMsg("MDM Rebias Save", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDM_RT_Rebias_Train)
+{
+	CMatrixClassifierFgMDMRTRebias calc;
+	EXPECT_TRUE(calc.train(m_dataSet)) << "Error during Training : " << std::endl << calc << std::endl;
+	std::cout << calc << std::endl;
+	const CMatrixClassifierFgMDMRTRebias ref = InitMatrixClassif::FgMDMRTRebias::Reference();
+	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Rebias Train", ref, calc).str(); // The mean method is different in matlab toolbox and python toolbox
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDM_RT_Rebias_Save)
+{
+	CMatrixClassifierFgMDMRTRebias calc;
+	CMatrixClassifierFgMDMRTRebias ref = InitMatrixClassif::FgMDMRTRebias::Reference();
+	EXPECT_TRUE(ref.saveXML("test_FgMDM_Rebias_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
+	EXPECT_TRUE(calc.loadXML("test_FgMDM_Rebias_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
+	EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Rebias Save", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDM_RT_Rebias_Classifify)
+{
+	CMatrixClassifierFgMDMRTRebias calc = InitMatrixClassif::FgMDMRTRebias::Reference();
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRTRebias::Prediction(), EMPTY_DIST, Adaptation_None);
+	//const CMatrixClassifierFgMDMRTRebias ref = InitMatrixClassif::FgMDMRTRebias::After();
+	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Rebias Classify Change without adaptation mode", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDM_RT_Rebias_Classifify_Adapt_Supervised)
+{
+	CMatrixClassifierFgMDMRTRebias calc = InitMatrixClassif::FgMDMRTRebias::Reference();
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRTRebias::PredictionSupervised(), EMPTY_DIST, Adaptation_Supervised);
+	//const CMatrixClassifierFgMDMRTRebias ref = InitMatrixClassif::FgMDMRTRebias::AfterSupervised();
+	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Rebias Adapt Classify after Supervised adaptation", ref, calc).str();
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_MatrixClassifier, FgMDM_RT_Rebias_Classifify_Adapt_Unsupervised)
+{
+	CMatrixClassifierFgMDMRTRebias calc = InitMatrixClassif::FgMDMRTRebias::Reference();
+	TestClassify(calc, m_dataSet, InitMatrixClassif::FgMDMRTRebias::PredictionUnSupervised(), EMPTY_DIST, Adaptation_Unsupervised);
+	//const CMatrixClassifierFgMDMRTRebias ref = InitMatrixClassif::FgMDMRTRebias::AfterUnSupervised();
+	//EXPECT_TRUE(ref == calc) << ErrorMsg("FgMDM Rebias Adapt Classify after Unsupervised adaptation", ref, calc).str();
 }
 //---------------------------------------------------------------------------------------------------

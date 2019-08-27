@@ -116,8 +116,8 @@ bool CMatrixClassifierFgMDMRT::loadAdditional(XMLElement* data)
 std::stringstream CMatrixClassifierFgMDMRT::printAdditional() const
 {
 	stringstream ss;
-	ss << "Reference matrix : " << endl << m_Ref << endl;		// Reference 
-	ss << "Weight matrix : " << endl << m_Weight << endl;		// Print Weight
+	ss << "Reference matrix : " << endl << m_Ref.format(MATRIX_FORMAT) << endl;		// Reference 
+	ss << "Weight matrix : " << endl << m_Weight.format(MATRIX_FORMAT) << endl;		// Print Weight
 	return ss;
 }
 ///-------------------------------------------------------------------------------------------------

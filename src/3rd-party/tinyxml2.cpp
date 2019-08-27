@@ -39,14 +39,14 @@ static int TIXML_SNPRINTF(char* buffer, size_t size, const char* format, ...)
 {
 	va_list va;
 	va_start(va, format);
-	int result = vsnprintf_s(buffer, size, _TRUNCATE, format, va);
+	const int result = vsnprintf_s(buffer, size, _TRUNCATE, format, va);
 	va_end(va);
 	return result;
 }
 
 static int TIXML_VSNPRINTF(char* buffer, size_t size, const char* format, va_list va)
 {
-	int result = vsnprintf_s(buffer, size, _TRUNCATE, format, va);
+	const int result = vsnprintf_s(buffer, size, _TRUNCATE, format, va);
 	return result;
 }
 
@@ -95,9 +95,9 @@ static inline int TIXML_VSCPRINTF(const char* format, va_list va)
 #endif
 
 
-static const char LINE_FEED       = (char)0x0a;			// all line endings are normalized to LF
+static const char LINE_FEED       = char(0x0a);			// all line endings are normalized to LF
 static const char LF              = LINE_FEED;
-static const char CARRIAGE_RETURN = (char)0x0d;			// CR gets filtered out
+static const char CARRIAGE_RETURN = char(0x0d);			// CR gets filtered out
 static const char CR              = CARRIAGE_RETURN;
 static const char SINGLE_QUOTE    = '\'';
 static const char DOUBLE_QUOTE    = '\"';
@@ -120,7 +120,7 @@ namespace tinyxml2
 	};
 
 	static const int NUM_ENTITIES              = 5;
-	static const Entity entities[NUM_ENTITIES] = {
+	static const Entity ENTITIES[NUM_ENTITIES] = {
 		{ "quot", 4, DOUBLE_QUOTE },
 		{ "amp", 3, '&' },
 		{ "apos", 4, SINGLE_QUOTE },
@@ -168,7 +168,7 @@ namespace tinyxml2
 	{
 		TIXMLASSERT(str);
 		Reset();
-		size_t len = strlen(str);
+		const size_t len = strlen(str);
 		TIXMLASSERT(_start == nullptr);
 		_start = new char[len + 1];
 		memcpy(_start, str, len + 1);
@@ -184,8 +184,8 @@ namespace tinyxml2
 		TIXMLASSERT(curLineNumPtr);
 
 		char* start   = in;
-		char endChar  = *endTag;
-		size_t length = strlen(endTag);
+		const char endChar  = *endTag;
+		const size_t length = strlen(endTag);
 
 		// Inner loop of text parsing.
 		while (*in)
@@ -327,7 +327,7 @@ namespace tinyxml2
 							bool entityFound = false;
 							for (int i = 0; i < NUM_ENTITIES; ++i)
 							{
-								const Entity& entity = entities[i];
+								const Entity& entity = ENTITIES[i];
 								if (strncmp(p + 1, entity.pattern, entity.length) == 0
 									&& *(p + entity.length + 1) == ';')
 								{
@@ -544,43 +544,32 @@ namespace tinyxml2
 	}
 
 
-	void XMLUtil::ToStr(int v, char* buffer, int bufferSize)
-	{
-		TIXML_SNPRINTF(buffer, bufferSize, "%d", v);
-	}
+	void XMLUtil::ToStr(int value, char* buffer, int bufferSize) { TIXML_SNPRINTF(buffer, bufferSize, "%d", value); }
 
+	void XMLUtil::ToStr(unsigned value, char* buffer, int bufferSize) { TIXML_SNPRINTF(buffer, bufferSize, "%u", value); }
 
-	void XMLUtil::ToStr(unsigned v, char* buffer, int bufferSize)
-	{
-		TIXML_SNPRINTF(buffer, bufferSize, "%u", v);
-	}
-
-
-	void XMLUtil::ToStr(bool v, char* buffer, int bufferSize)
-	{
-		TIXML_SNPRINTF(buffer, bufferSize, "%s", v ? writeBoolTrue : writeBoolFalse);
-	}
+	void XMLUtil::ToStr(bool value, char* buffer, int bufferSize) { TIXML_SNPRINTF(buffer, bufferSize, "%s", value ? writeBoolTrue : writeBoolFalse); }
 
 	/*
 		ToStr() of a number is a very tricky topic.
 		https://github.com/leethomason/tinyxml2/issues/106
 	*/
-	void XMLUtil::ToStr(float v, char* buffer, int bufferSize)
+	void XMLUtil::ToStr(float value, char* buffer, int bufferSize)
 	{
-		TIXML_SNPRINTF(buffer, bufferSize, "%.8g", v);
+		TIXML_SNPRINTF(buffer, bufferSize, "%.8g", value);
 	}
 
 
-	void XMLUtil::ToStr(double v, char* buffer, int bufferSize)
+	void XMLUtil::ToStr(double value, char* buffer, int bufferSize)
 	{
-		TIXML_SNPRINTF(buffer, bufferSize, "%.17g", v);
+		TIXML_SNPRINTF(buffer, bufferSize, "%.17g", value);
 	}
 
 
-	void XMLUtil::ToStr(int64_t v, char* buffer, int bufferSize)
+	void XMLUtil::ToStr(int64_t value, char* buffer, int bufferSize)
 	{
 		// horrible syntax trick to make the compiler happy about %lld
-		TIXML_SNPRINTF(buffer, bufferSize, "%lld", (long long)v);
+		TIXML_SNPRINTF(buffer, bufferSize, "%lld", (long long)value);
 	}
 
 
@@ -601,7 +590,7 @@ namespace tinyxml2
 		int ival = 0;
 		if (ToInt(str, &ival))
 		{
-			*value = (ival == 0) ? false : true;
+			*value = ival != 0;
 			return true;
 		}
 		if (StringEqual(str, "true"))
@@ -637,7 +626,7 @@ namespace tinyxml2
 		long long v = 0;	// horrible syntax trick to make the compiler happy about %lld
 		if (TIXML_SSCANF(str, "%lld", &v) == 1)
 		{
-			*value = (int64_t)v;
+			*value = int64_t(v);
 			return true;
 		}
 		return false;
@@ -738,11 +727,6 @@ namespace tinyxml2
 	// --------- XMLNode ----------- //
 
 	XMLNode::XMLNode(XMLDocument* doc) : _document(doc),
-										 _parent(nullptr),
-										 _parseLineNum(0),
-										 _firstChild(nullptr), _lastChild(nullptr),
-										 _prev(nullptr), _next(nullptr),
-										 _userData(nullptr),
 										 _memPool(nullptr) { }
 
 
@@ -759,10 +743,10 @@ namespace tinyxml2
 		return _value.GetStr();
 	}
 
-	void XMLNode::SetValue(const char* str, bool staticMem)
+	void XMLNode::SetValue(const char* val, bool staticMem)
 	{
-		if (staticMem) { _value.SetInternedStr(str); }
-		else { _value.SetStr(str); }
+		if (staticMem) { _value.SetInternedStr(val); }
+		else { _value.SetStr(val); }
 	}
 
 	XMLNode* XMLNode::DeepClone(XMLDocument* target) const
@@ -1000,7 +984,7 @@ namespace tinyxml2
 			TIXMLASSERT(p);
 			if (node == nullptr) { break; }
 
-			int initialLineNum = node->_parseLineNum;
+			const int initialLineNum = node->_parseLineNum;
 
 			StrPair endTag;
 			p = node->ParseDeep(p, &endTag, curLineNumPtr);
@@ -1123,7 +1107,7 @@ namespace tinyxml2
 	}
 
 	// --------- XMLText ---------- //
-	char* XMLText::ParseDeep(char* p, StrPair*, int* curLineNumPtr)
+	char* XMLText::ParseDeep(char* p, StrPair* /*parentEndTag*/, int* curLineNumPtr)
 	{
 		if (this->CData())
 		{
@@ -1179,30 +1163,18 @@ namespace tinyxml2
 
 	// --------- XMLComment ---------- //
 
-	XMLComment::XMLComment(XMLDocument* doc) : XMLNode(doc) { }
-
-
-	XMLComment::~XMLComment() { }
-
-
-	char* XMLComment::ParseDeep(char* p, StrPair*, int* curLineNumPtr)
+	char* XMLComment::ParseDeep(char* p, StrPair* /*parentEndTag*/, int* curLineNumPtr)
 	{
 		// Comment parses as text.
 		p = _value.ParseText(p, "-->", StrPair::COMMENT, curLineNumPtr);
-		if (p == nullptr)
-		{
-			_document->SetError(XML_ERROR_PARSING_COMMENT, _parseLineNum, nullptr);
-		}
+		if (p == nullptr) { _document->SetError(XML_ERROR_PARSING_COMMENT, _parseLineNum, nullptr); }
 		return p;
 	}
 
 
 	XMLNode* XMLComment::ShallowClone(XMLDocument* doc) const
 	{
-		if (!doc)
-		{
-			doc = _document;
-		}
+		if (!doc) { doc = _document; }
 		XMLComment* comment = doc->NewComment(Value());	// fixme: this will always allocate memory. Intern?
 		return comment;
 	}
@@ -1225,13 +1197,7 @@ namespace tinyxml2
 
 	// --------- XMLDeclaration ---------- //
 
-	XMLDeclaration::XMLDeclaration(XMLDocument* doc) : XMLNode(doc) { }
-
-
-	XMLDeclaration::~XMLDeclaration() { }
-
-
-	char* XMLDeclaration::ParseDeep(char* p, StrPair*, int* curLineNumPtr)
+	char* XMLDeclaration::ParseDeep(char* p, StrPair* /*parentEndTag*/, int* curLineNumPtr)
 	{
 		// Declaration parses as text.
 		p = _value.ParseText(p, "?>", StrPair::NEEDS_NEWLINE_NORMALIZATION, curLineNumPtr);
@@ -1264,30 +1230,18 @@ namespace tinyxml2
 
 	// --------- XMLUnknown ---------- //
 
-	XMLUnknown::XMLUnknown(XMLDocument* doc) : XMLNode(doc) { }
-
-
-	XMLUnknown::~XMLUnknown() { }
-
-
-	char* XMLUnknown::ParseDeep(char* p, StrPair*, int* curLineNumPtr)
+	char* XMLUnknown::ParseDeep(char* p, StrPair* /*parentEndTag*/, int* curLineNumPtr)
 	{
 		// Unknown parses as text.
 		p = _value.ParseText(p, ">", StrPair::NEEDS_NEWLINE_NORMALIZATION, curLineNumPtr);
-		if (!p)
-		{
-			_document->SetError(XML_ERROR_PARSING_UNKNOWN, _parseLineNum, nullptr);
-		}
+		if (!p) { _document->SetError(XML_ERROR_PARSING_UNKNOWN, _parseLineNum, nullptr); }
 		return p;
 	}
 
 
 	XMLNode* XMLUnknown::ShallowClone(XMLDocument* doc) const
 	{
-		if (!doc)
-		{
-			doc = _document;
-		}
+		if (!doc) { doc = _document; }
 		XMLUnknown* text = doc->NewUnknown(Value());	// fixme: this will always allocate memory. Intern?
 		return text;
 	}
@@ -1309,10 +1263,6 @@ namespace tinyxml2
 
 	// --------- XMLAttribute ---------- //
 
-	const char* XMLAttribute::Name() const { return _name.GetStr(); }
-
-	const char* XMLAttribute::Value() const { return _value.GetStr(); }
-
 	char* XMLAttribute::ParseDeep(char* p, bool processEntities, int* curLineNumPtr)
 	{
 		// Parse using the name rules: bug fix, was using ParseText before
@@ -1333,9 +1283,6 @@ namespace tinyxml2
 		p = _value.ParseText(p, endTag, processEntities ? StrPair::ATTRIBUTE_VALUE : StrPair::ATTRIBUTE_VALUE_LEAVE_ENTITIES, curLineNumPtr);
 		return p;
 	}
-
-
-	void XMLAttribute::SetName(const char* n) { _name.SetStr(n); }
 
 
 	XMLError XMLAttribute::QueryIntValue(int* value) const
@@ -1379,61 +1326,53 @@ namespace tinyxml2
 		return XML_WRONG_ATTRIBUTE_TYPE;
 	}
 
-
-	void XMLAttribute::SetAttribute(const char* v) { _value.SetStr(v); }
-
-
-	void XMLAttribute::SetAttribute(int v)
+	void XMLAttribute::SetAttribute(int value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		_value.SetStr(buf);
 	}
 
 
-	void XMLAttribute::SetAttribute(unsigned v)
+	void XMLAttribute::SetAttribute(unsigned value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		_value.SetStr(buf);
 	}
 
 
-	void XMLAttribute::SetAttribute(int64_t v)
+	void XMLAttribute::SetAttribute(int64_t value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		_value.SetStr(buf);
 	}
 
 
-	void XMLAttribute::SetAttribute(bool v)
+	void XMLAttribute::SetAttribute(bool value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		_value.SetStr(buf);
 	}
 
-	void XMLAttribute::SetAttribute(double v)
+	void XMLAttribute::SetAttribute(double value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		_value.SetStr(buf);
 	}
 
-	void XMLAttribute::SetAttribute(float v)
+	void XMLAttribute::SetAttribute(float value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		_value.SetStr(buf);
 	}
 
 
 	// --------- XMLElement ---------- //
-	XMLElement::XMLElement(XMLDocument* doc) : XMLNode(doc),
-											   _closingType(OPEN),
-											   _rootAttribute(nullptr) { }
-
 
 	XMLElement::~XMLElement()
 	{
@@ -1524,120 +1463,120 @@ namespace tinyxml2
 	}
 
 
-	void XMLElement::SetText(int v)
+	void XMLElement::SetText(int value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		SetText(buf);
 	}
 
 
-	void XMLElement::SetText(unsigned v)
+	void XMLElement::SetText(unsigned value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		SetText(buf);
 	}
 
 
-	void XMLElement::SetText(int64_t v)
+	void XMLElement::SetText(int64_t value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		SetText(buf);
 	}
 
 
-	void XMLElement::SetText(bool v)
+	void XMLElement::SetText(bool value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		SetText(buf);
 	}
 
 
-	void XMLElement::SetText(float v)
+	void XMLElement::SetText(float value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		SetText(buf);
 	}
 
 
-	void XMLElement::SetText(double v)
+	void XMLElement::SetText(double value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		SetText(buf);
 	}
 
 
-	XMLError XMLElement::QueryIntText(int* ival) const
+	XMLError XMLElement::QueryIntText(int* val) const
 	{
 		if (FirstChild() && FirstChild()->ToText())
 		{
 			const char* t = FirstChild()->Value();
-			if (XMLUtil::ToInt(t, ival)) { return XML_SUCCESS; }
+			if (XMLUtil::ToInt(t, val)) { return XML_SUCCESS; }
 			return XML_CAN_NOT_CONVERT_TEXT;
 		}
 		return XML_NO_TEXT_NODE;
 	}
 
 
-	XMLError XMLElement::QueryUnsignedText(unsigned* uval) const
+	XMLError XMLElement::QueryUnsignedText(unsigned* val) const
 	{
 		if (FirstChild() && FirstChild()->ToText())
 		{
 			const char* t = FirstChild()->Value();
-			if (XMLUtil::ToUnsigned(t, uval)) { return XML_SUCCESS; }
+			if (XMLUtil::ToUnsigned(t, val)) { return XML_SUCCESS; }
 			return XML_CAN_NOT_CONVERT_TEXT;
 		}
 		return XML_NO_TEXT_NODE;
 	}
 
 
-	XMLError XMLElement::QueryInt64Text(int64_t* ival) const
+	XMLError XMLElement::QueryInt64Text(int64_t* val) const
 	{
 		if (FirstChild() && FirstChild()->ToText())
 		{
 			const char* t = FirstChild()->Value();
-			if (XMLUtil::ToInt64(t, ival)) { return XML_SUCCESS; }
+			if (XMLUtil::ToInt64(t, val)) { return XML_SUCCESS; }
 			return XML_CAN_NOT_CONVERT_TEXT;
 		}
 		return XML_NO_TEXT_NODE;
 	}
 
 
-	XMLError XMLElement::QueryBoolText(bool* bval) const
+	XMLError XMLElement::QueryBoolText(bool* val) const
 	{
 		if (FirstChild() && FirstChild()->ToText())
 		{
 			const char* t = FirstChild()->Value();
-			if (XMLUtil::ToBool(t, bval)) { return XML_SUCCESS; }
+			if (XMLUtil::ToBool(t, val)) { return XML_SUCCESS; }
 			return XML_CAN_NOT_CONVERT_TEXT;
 		}
 		return XML_NO_TEXT_NODE;
 	}
 
 
-	XMLError XMLElement::QueryDoubleText(double* dval) const
+	XMLError XMLElement::QueryDoubleText(double* val) const
 	{
 		if (FirstChild() && FirstChild()->ToText())
 		{
 			const char* t = FirstChild()->Value();
-			if (XMLUtil::ToDouble(t, dval)) { return XML_SUCCESS; }
+			if (XMLUtil::ToDouble(t, val)) { return XML_SUCCESS; }
 			return XML_CAN_NOT_CONVERT_TEXT;
 		}
 		return XML_NO_TEXT_NODE;
 	}
 
 
-	XMLError XMLElement::QueryFloatText(float* fval) const
+	XMLError XMLElement::QueryFloatText(float* val) const
 	{
 		if (FirstChild() && FirstChild()->ToText())
 		{
 			const char* t = FirstChild()->Value();
-			if (XMLUtil::ToFloat(t, fval)) { return XML_SUCCESS; }
+			if (XMLUtil::ToFloat(t, val)) { return XML_SUCCESS; }
 			return XML_CAN_NOT_CONVERT_TEXT;
 		}
 		return XML_NO_TEXT_NODE;
@@ -1721,14 +1660,8 @@ namespace tinyxml2
 		{
 			if (XMLUtil::StringEqual(name, a->Name()))
 			{
-				if (prev)
-				{
-					prev->_next = a->_next;
-				}
-				else
-				{
-					_rootAttribute = a->_next;
-				}
+				if (prev) { prev->_next = a->_next; }
+				else { _rootAttribute = a->_next; }
 				DeleteAttribute(a);
 				break;
 			}
@@ -1758,7 +1691,7 @@ namespace tinyxml2
 				TIXMLASSERT(attrib);
 				attrib->_parseLineNum = _document->_parseCurLineNum;
 
-				int attrLineNum = attrib->_parseLineNum;
+				const int attrLineNum = attrib->_parseLineNum;
 
 				p = attrib->ParseDeep(p, _document->ProcessEntities(), curLineNumPtr);
 				if (!p || Attribute(attrib->Name()))
@@ -1854,10 +1787,7 @@ namespace tinyxml2
 
 	XMLNode* XMLElement::ShallowClone(XMLDocument* doc) const
 	{
-		if (!doc)
-		{
-			doc = _document;
-		}
+		if (!doc) { doc = _document; }
 		XMLElement* element = doc->NewElement(Value());					// fixme: this will always allocate memory. Intern?
 		for (const XMLAttribute* a = FirstAttribute(); a; a = a->Next())
 		{
@@ -1882,12 +1812,7 @@ namespace tinyxml2
 				a = a->Next();
 				b = b->Next();
 			}
-			if (a || b)
-			{
-				// different count
-				return false;
-			}
-			return true;
+			return !(a || b);  	// different count
 		}
 		return false;
 	}
@@ -1933,15 +1858,7 @@ namespace tinyxml2
 	};
 
 
-	XMLDocument::XMLDocument(bool processEntities, Whitespace whitespaceMode) : XMLNode(nullptr),
-																				_writeBOM(false),
-																				_processEntities(processEntities),
-																				_errorID(XML_SUCCESS),
-																				_whitespaceMode(whitespaceMode),
-																				_errorLineNum(0),
-																				_charBuffer(nullptr),
-																				_parseCurLineNum(0),
-																				_parsingDepth(0)
+	XMLDocument::XMLDocument(bool processEntities, Whitespace whitespaceMode) : XMLNode(nullptr), _processEntities(processEntities), _whitespaceMode(whitespaceMode)
 	{
 		// avoid VC++ C4355 warning about 'this' in initializer list (C4355 is off by default in VS2012+)
 		_document = this;
@@ -1969,10 +1886,7 @@ namespace tinyxml2
 	void XMLDocument::Clear()
 	{
 		DeleteChildren();
-		while (_unlinked.Size())
-		{
-			DeleteNode(_unlinked[0]);	// Will remove from _unlinked as part of delete.
-		}
+		while (_unlinked.Size()) { DeleteNode(_unlinked[0]); } // Will remove from _unlinked as part of delete.
 
 #ifdef TINYXML2_DEBUG
 		const bool hadError = Error();
@@ -2005,10 +1919,7 @@ namespace tinyxml2
 	void XMLDocument::DeepCopy(XMLDocument* target) const
 	{
 		TIXMLASSERT(target);
-		if (target == this)
-		{
-			return; // technically success - a no-op.
-		}
+		if (target == this) { return; } // technically success - a no-op.
 
 		target->Clear();
 		for (const XMLNode* node = this->FirstChild(); node; node = node->NextSibling()) { target->InsertEndChild(node->DeepClone(target)); }
@@ -2059,7 +1970,7 @@ namespace tinyxml2
 		TIXMLASSERT(mode);
 #if defined(_MSC_VER) && (_MSC_VER >= 1400 ) && (!defined WINCE)
 		FILE* fp    = nullptr;
-		errno_t err = fopen_s(&fp, filepath, mode);
+		const errno_t err = fopen_s(&fp, filepath, mode);
 		if (err) { return nullptr; }
 #else
 		FILE* fp = fopen(filepath, mode);
@@ -2122,7 +2033,7 @@ namespace tinyxml2
 	template <>
 	struct LongFitsIntoSizeTMinusOne<false>
 	{
-		static bool Fits(unsigned long) { return true; }
+		static bool Fits(unsigned long /*value*/) { return true; }
 	};
 
 	XMLError XMLDocument::LoadFile(FILE* fp)
@@ -2162,7 +2073,7 @@ namespace tinyxml2
 		const size_t size = filelength;
 		TIXMLASSERT(_charBuffer == nullptr);
 		_charBuffer = new char[size + 1];
-		size_t read = fread(_charBuffer, 1, size, fp);
+		const size_t read = fread(_charBuffer, 1, size, fp);
 		if (read != size)
 		{
 			SetError(XML_ERROR_FILE_READ_ERROR, 0, nullptr);
@@ -2208,22 +2119,19 @@ namespace tinyxml2
 	}
 
 
-	XMLError XMLDocument::Parse(const char* p, size_t len)
+	XMLError XMLDocument::Parse(const char* xml, size_t len)
 	{
 		Clear();
 
-		if (len == 0 || !p || !*p)
+		if (len == 0 || !xml || !*xml)
 		{
 			SetError(XML_ERROR_EMPTY_DOCUMENT, 0, nullptr);
 			return _errorID;
 		}
-		if (len == size_t(-1))
-		{
-			len = strlen(p);
-		}
+		if (len == size_t(-1)) { len = strlen(xml); }
 		TIXMLASSERT(_charBuffer == nullptr);
 		_charBuffer = new char[len + 1];
-		memcpy(_charBuffer, p, len);
+		memcpy(_charBuffer, xml, len);
 		_charBuffer[len] = 0;
 
 		Parse();
@@ -2260,7 +2168,7 @@ namespace tinyxml2
 		_errorLineNum = lineNum;
 		_errorStr.Reset();
 
-		size_t BUFFER_SIZE = 1000;
+		const size_t BUFFER_SIZE = 1000;
 		char* buffer       = new char[BUFFER_SIZE];
 
 		TIXMLASSERT(sizeof(error) <= sizeof(int));
@@ -2291,10 +2199,7 @@ namespace tinyxml2
 		return errorName;
 	}
 
-	const char* XMLDocument::ErrorStr() const
-	{
-		return _errorStr.Empty() ? "" : _errorStr.GetStr();
-	}
+	const char* XMLDocument::ErrorStr() const { return _errorStr.Empty() ? "" : _errorStr.GetStr(); }
 
 
 	void XMLDocument::PrintError() const { printf("%s\n", ErrorStr()); }
@@ -2333,13 +2238,7 @@ namespace tinyxml2
 		--_parsingDepth;
 	}
 
-	XMLPrinter::XMLPrinter(FILE* file, bool compact, int depth) : _elementJustOpened(false),
-																  _firstElement(true),
-																  _fp(file),
-																  _depth(depth),
-																  _textDepth(-1),
-																  _processEntities(true),
-																  _compactMode(compact)
+	XMLPrinter::XMLPrinter(FILE* file, bool compact, int depth) : _fp(file), _depth(depth), _compactMode(compact)
 	{
 		for (int i = 0; i < ENTITY_RANGE; ++i)
 		{
@@ -2348,14 +2247,14 @@ namespace tinyxml2
 		}
 		for (int i = 0; i < NUM_ENTITIES; ++i)
 		{
-			const char entityValue        = entities[i].value;
-			const unsigned char flagIndex = (unsigned char)entityValue;
+			const char entityValue        = ENTITIES[i].value;
+			const unsigned char flagIndex = static_cast<unsigned char>(entityValue);
 			TIXMLASSERT(flagIndex < ENTITY_RANGE);
 			_entityFlag[flagIndex] = true;
 		}
-		_restrictedEntityFlag[(unsigned char)'&'] = true;
-		_restrictedEntityFlag[(unsigned char)'<'] = true;
-		_restrictedEntityFlag[(unsigned char)'>'] = true;	// not required, but consistency is nice
+		_restrictedEntityFlag[static_cast<unsigned char>('&')] = true;
+		_restrictedEntityFlag[static_cast<unsigned char>('<')] = true;
+		_restrictedEntityFlag[static_cast<unsigned char>('>')] = true;	// not required, but consistency is nice
 		_buffer.Push(0);
 	}
 
@@ -2405,10 +2304,7 @@ namespace tinyxml2
 	}
 
 
-	void XMLPrinter::PrintSpace(int depth)
-	{
-		for (int i = 0; i < depth; ++i) { Write("    "); }
-	}
+	void XMLPrinter::PrintSpace(int depth) { for (int i = 0; i < depth; ++i) { Write("    "); } }
 
 
 	void XMLPrinter::PrintString(const char* p, bool restricted)
@@ -2428,22 +2324,22 @@ namespace tinyxml2
 					// Check for entities. If one is found, flush
 					// the stream up until the entity, write the
 					// entity, and keep looking.
-					if (flag[(unsigned char)(*q)])
+					if (flag[static_cast<unsigned char>(*q)])
 					{
 						while (p < q)
 						{
 							const size_t delta = q - p;
-							const int toPrint  = (INT_MAX < delta) ? INT_MAX : (int)delta;
+							const int toPrint  = (INT_MAX < delta) ? INT_MAX : int(delta);
 							Write(p, toPrint);
 							p += toPrint;
 						}
 						bool entityPatternPrinted = false;
 						for (int i = 0; i < NUM_ENTITIES; ++i)
 						{
-							if (entities[i].value == *q)
+							if (ENTITIES[i].value == *q)
 							{
 								Putc('&');
-								Write(entities[i].pattern, entities[i].length);
+								Write(ENTITIES[i].pattern, ENTITIES[i].length);
 								Putc(';');
 								entityPatternPrinted = true;
 								break;
@@ -2465,7 +2361,7 @@ namespace tinyxml2
 			if (p < q)
 			{
 				const size_t delta = q - p;
-				const int toPrint  = (INT_MAX < delta) ? INT_MAX : (int)delta;
+				const int toPrint  = (INT_MAX < delta) ? INT_MAX : int(delta);
 				Write(p, toPrint);
 			}
 		}
@@ -2480,10 +2376,7 @@ namespace tinyxml2
 			static const unsigned char bom[] = { TIXML_UTF_LEAD_0, TIXML_UTF_LEAD_1, TIXML_UTF_LEAD_2, 0 };
 			Write(reinterpret_cast<const char*>(bom));
 		}
-		if (writeDec)
-		{
-			PushDeclaration("xml version=\"1.0\"");
-		}
+		if (writeDec) { PushDeclaration("xml version=\"1.0\""); }
 	}
 
 
@@ -2518,42 +2411,42 @@ namespace tinyxml2
 	}
 
 
-	void XMLPrinter::PushAttribute(const char* name, int v)
+	void XMLPrinter::PushAttribute(const char* name, int value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		PushAttribute(name, buf);
 	}
 
 
-	void XMLPrinter::PushAttribute(const char* name, unsigned v)
+	void XMLPrinter::PushAttribute(const char* name, unsigned value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		PushAttribute(name, buf);
 	}
 
 
-	void XMLPrinter::PushAttribute(const char* name, int64_t v)
+	void XMLPrinter::PushAttribute(const char* name, int64_t value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		PushAttribute(name, buf);
 	}
 
 
-	void XMLPrinter::PushAttribute(const char* name, bool v)
+	void XMLPrinter::PushAttribute(const char* name, bool value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		PushAttribute(name, buf);
 	}
 
 
-	void XMLPrinter::PushAttribute(const char* name, double v)
+	void XMLPrinter::PushAttribute(const char* name, double value)
 	{
 		char buf[BUF_SIZE];
-		XMLUtil::ToStr(v, buf, BUF_SIZE);
+		XMLUtil::ToStr(value, buf, BUF_SIZE);
 		PushAttribute(name, buf);
 	}
 
@@ -2601,10 +2494,7 @@ namespace tinyxml2
 			Write(text);
 			Write("]]>");
 		}
-		else
-		{
-			PrintString(text, true);
-		}
+		else { PrintString(text, true); }
 	}
 
 	void XMLPrinter::PushText(int64_t value)

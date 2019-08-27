@@ -76,8 +76,7 @@ bool IMatrixClassifier::loadXML(const string& filename)
 ///-------------------------------------------------------------------------------------------------
 bool IMatrixClassifier::convertMatrixToXMLFormat(const MatrixXd& in, stringstream& out)
 {
-	const IOFormat fmt(FullPrecision, 0, " ", "\n", "", "", "", "");
-	out << in.format(fmt);
+	out << in.format(MATRIX_FORMAT);
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------

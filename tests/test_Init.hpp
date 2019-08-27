@@ -19,6 +19,8 @@
 #include "classifier/CMatrixClassifierFgMDMRT.hpp"
 #include "classifier/CMatrixClassifierMDMRebias.hpp"
 #include "classifier/CMatrixClassifierFgMDM.hpp"
+#include "classifier/CMatrixClassifierFgMDMRTRebias.hpp"
+#include <unsupported/Eigen/MatrixFunctions> // SQRT of Matrix
 
 #define NB_CLASS	02
 #define NB_CHAN		03
@@ -192,7 +194,7 @@ namespace InitBasics
 			result[1] = SecondClassReference();
 			return result;
 		}
-	}
+	} // namespace Center
 
 	namespace StandardScaler
 	{
@@ -268,8 +270,8 @@ namespace InitBasics
 			result[1] = SecondClassReference();
 			return result;
 		}
-	}
-}
+	}  // namespace StandardScaler
+}  // namespace InitBasics
 
 //*********************************************************************
 //********** Initialisation Covariance Reference of Datasets **********
@@ -353,7 +355,7 @@ namespace InitCovariance
 			result[1] = SecondClassDataset();
 			return result;
 		}
-	}
+	}  // namespace COR
 	// namespace COR
 
 	//*********************************
@@ -433,7 +435,7 @@ namespace InitCovariance
 			result[1] = SecondClassDataset();
 			return result;
 		}
-	}
+	}  // namespace COV
 	// namespace COV
 
 	//*********************************
@@ -513,7 +515,7 @@ namespace InitCovariance
 			result[1] = SecondClassReference();
 			return result;
 		}
-	}
+	}  // namespace LWF
 	// namespace LWF
 
 	//*********************************
@@ -593,7 +595,7 @@ namespace InitCovariance
 			result[1] = SecondClassReference();
 			return result;
 		}
-	}
+	}  // namespace MCD
 	// namespace MCD
 
 	//*********************************
@@ -673,7 +675,7 @@ namespace InitCovariance
 			result[1] = SecondClassReference();
 			return result;
 		}
-	}
+	}  // namespace OAS
 	// namespace OAS
 
 	//*********************************
@@ -753,9 +755,9 @@ namespace InitCovariance
 			result[1] = SecondClassReference();
 			return result;
 		}
-	}
+	}  // namespace SCM
 	// namespace SCM
-}
+}  // namespace InitCovariance
 // namespace InitCovariance
 
 //****************************************************************
@@ -777,7 +779,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace Euclidian
 
 	//****************************************
 	//********** Mean Log Euclidian **********
@@ -793,7 +795,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace LogEuclidian
 
 	//**********************************
 	//********** Mean Riemann **********
@@ -809,7 +811,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace Riemann
 
 	//******************************************
 	//********** Mean Log Determinant **********
@@ -825,7 +827,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace LogDeterminant
 
 	//***********************************
 	//********** Mean Kullback **********
@@ -841,7 +843,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace Kullback
 
 	//**************************************
 	//********** Mean Wasserstein **********
@@ -857,7 +859,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace Wasserstein
 
 	//******************************
 	//********** Mean ALE **********
@@ -873,7 +875,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace ALE
 
 	//***********************************
 	//********** Mean Harmonic **********
@@ -889,7 +891,7 @@ namespace InitMeans
 
 			return result;
 		}
-	}
+	}  // namespace Harmonic
 
 	//***********************************
 	//********** Mean Identity **********
@@ -905,8 +907,8 @@ namespace InitMeans
 
 			return result;
 		}
-	}
-}
+	}  // namespace Identity
+}  // namespace InitMeans
 
 //*******************************************************************
 //********** Initialisation Distance Reference of Datasets **********
@@ -978,7 +980,7 @@ namespace InitDistance
 			return std::vector<double>{ 0.80006691, 0.41547827, 0.38690865, 0.70393068, 0.5282644, 0.16253726, 0.22475651, 0.42258195, 0.41676291, 0.45835023, 0.32884, 0.33947315 };
 		}
 	}
-}
+}  // namespace InitDistance
 
 //********************************************************************
 //********** Initialisation Geodesics Reference of Datasets **********
@@ -1045,7 +1047,7 @@ namespace InitGeodesics
 
 			return result;
 		}
-	}
+	}  // namespace Euclidian
 
 	//********************************************
 	//********** Geodesic Log Euclidian **********
@@ -1107,7 +1109,7 @@ namespace InitGeodesics
 
 			return result;
 		}
-	}
+	}  // namespace LogEuclidian
 
 	//**************************************
 	//********** Geodesic Riemann **********
@@ -1169,8 +1171,8 @@ namespace InitGeodesics
 
 			return result;
 		}
-	}
-}
+	}  // namespace Riemann
+}  // namespace InitGeodesics
 
 //************************************************************************
 //********** Initialisation Featurization Reference of Datasets **********
@@ -1200,7 +1202,7 @@ namespace InitFeaturization
 
 			return result;
 		}
-	}
+	}  // namespace TangentSpace
 
 	namespace Squeeze
 	{
@@ -1225,7 +1227,7 @@ namespace InitFeaturization
 
 			return result;
 		}
-	}
+	}  // namespace Squeeze
 
 	namespace SqueezeDiag
 	{
@@ -1250,8 +1252,8 @@ namespace InitFeaturization
 
 			return result;
 		}
-	}
-}
+	}  // namespace SqueezeDiag
+}  // namespace InitFeaturization
 
 //**********************************************************************
 //********** Initialisation Classifiers Reference of Datasets **********
@@ -1289,8 +1291,8 @@ namespace InitClassif
 					-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
 			return result;
 		}
-	}
-}
+	}  // namespace FgDACompute
+}  // namespace InitClassif
 
 //*****************************************************************************
 //********** Initialisation Matrix Classifiers Reference of Datasets **********
@@ -1433,7 +1435,7 @@ namespace InitMatrixClassif
 
 			return result;
 		}
-	}
+	}  // namespace MDM
 
 	namespace FgMDMRT
 	{
@@ -1581,7 +1583,7 @@ namespace InitMatrixClassif
 			result[11] = { 0, 0 };
 			return result;
 		}
-	}
+	}  // namespace FgMDMRT
 
 	namespace MDMRebias
 	{
@@ -1745,7 +1747,7 @@ namespace InitMatrixClassif
 			result[11] = { 1.085189723107800, 0.367393525001945 };
 			return result;
 		}
-	}
+	}  // namespace MDMRebias
 
 	namespace FgMDM
 	{
@@ -1880,5 +1882,215 @@ namespace InitMatrixClassif
 			result[11] = { 0, 0 };
 			return result;
 		}
-	}
-}
+	}  // namespace FgMDM
+
+	namespace FgMDMRTRebias
+	{
+		inline CMatrixClassifierFgMDMRTRebias Reference()
+		{
+			CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 1.21749102419878, -0.065244040475294, 0.00919064364644959,
+					-0.0652440404752944, 0.879520180058735, 0.0383106920991925,
+					0.00919064364644961, 0.0383106920991925, 0.882712321945327;
+
+			result.m_Means[1] << 0.764724285777722, 0.0858374005624361, -0.0164757238732658,
+					0.0858374005624357, 1.20857271214632, -0.0743441311282506,
+					-0.0164757238732657, -0.0743441311282506, 1.19491180388651;
+
+			result.m_Ref.resize(NB_CHAN, NB_CHAN);
+			result.m_Ref << 1.0, 0.0, 0.0,
+					0.0, 1.0, 0.0,
+					0.0, 0.0, 1.0;
+
+			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
+			result.m_Weight.resize(nbFeatures, nbFeatures);
+			result.m_Weight << 0.457148328143448, -0.209165242331525, 0.0336196848430174, -0.308465155960592, 0.145512230780716, -0.294887759430561,
+					-0.209165242331525, 0.0957021953405835, -0.0153824679964544, 0.141136224558352, -0.0665781741717288, 0.134923975140382,
+					0.0336196848430174, -0.0153824679964544, 0.00247246492956471, -0.0226852001637271, 0.0107012867344819, -0.0216866888180067,
+					-0.308465155960592, 0.141136224558352, -0.0226852001637271, 0.208139779988291, -0.098185753285447, 0.19897830332888,
+					0.145512230780716, -0.0665781741717288, 0.0107012867344819, -0.098185753285447, 0.0463171535435127, -0.0938640110069554,
+					-0.294887759430561, 0.134923975140382, -0.0216866888180067, 0.19897830332888, -0.0938640110069554, 0.190220078054599;
+
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
+			result.m_Rebias.m_NClassify = 0;
+
+			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias.m_Bias << 1.70952703700155, 0.0167406580855047, 0.0207774590925802,
+					0.0167406580855047, 1.60344585621418, 0.0542388460600326,
+					0.0207774590925802, 0.0542388460600327, 0.830325461380695;
+			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+
+			return result;
+		}
+
+		inline CMatrixClassifierFgMDMRTRebias After()
+		{
+			CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 2.08042432, -0.08968098, 0.03145977,
+					-0.08968098, 1.41163613, 0.09127538,
+					0.03145977, 0.09127538, 0.734828;
+
+			result.m_Means[1] << 1.30840283, 0.15716713, 0.00232698,
+					0.15716713, 1.93455782, -0.01963492,
+					0.00232698, -0.01963492, 0.98852719;
+
+			result.m_Ref.resize(NB_CHAN, NB_CHAN);
+			result.m_Ref << 1.70952664, 0.01674082, 0.02077766,
+					0.01674082, 1.60344581, 0.05423902,
+					0.02077766, 0.05423902, 0.8303257;
+
+			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
+			result.m_Weight.resize(nbFeatures, nbFeatures);
+			result.m_Weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
+					-0.20916523, 0.09570218, -0.01538245, 0.14113622, -0.06657818, 0.13492396,
+					0.03361964, -0.01538245, 0.00247246, -0.02268517, 0.01070127, -0.02168666,
+					-0.30846516, 0.14113622, -0.02268517, 0.20813978, -0.09818576, 0.1989783,
+					0.14551225, -0.06657818, 0.01070127, -0.09818576, 0.04631716, -0.09386402,
+					-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
+
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
+			result.m_Rebias.m_NClassify = 0;
+
+			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias.m_Bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
+					0.016735943232582, 1.603446473585329, 0.054241640196169,
+					0.020785623695383, 0.054241640196169, 0.830327834469631;
+			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+
+			return result;
+		}
+
+		inline CMatrixClassifierFgMDMRTRebias AfterSupervised()
+		{
+			CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			result.m_Ref.resize(NB_CHAN, NB_CHAN);
+			result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
+			result.m_Weight.resize(nbFeatures, nbFeatures);
+			result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
+			result.m_Rebias.m_NClassify = 0;
+
+			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias.m_Bias << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+
+			return result;
+		}
+
+		inline CMatrixClassifierFgMDMRTRebias AfterUnSupervised()
+		{
+			CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Metric_Riemann);
+			for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+
+			result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			result.m_Ref.resize(NB_CHAN, NB_CHAN);
+			result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
+			result.m_Weight.resize(nbFeatures, nbFeatures);
+			result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+
+			result.m_NbTrials[0] = NB_TRIALS1;
+			result.m_NbTrials[1] = NB_TRIALS2;
+
+			result.m_Rebias.m_NClassify = 0;
+
+			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
+			result.m_Rebias.m_Bias << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+
+			return result;
+		}
+
+		inline std::vector<size_t> Prediction() { return std::vector<size_t>{ 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
+		inline std::vector<size_t> PredictionSupervised() { return std::vector<size_t>{ 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
+		inline std::vector<size_t> PredictionUnSupervised() { return std::vector<size_t>{ 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 }; }
+
+		inline std::vector<std::vector<double>> PredictionDistance()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0]  = { 0.02665352, 0.71870784 };
+			result[1]  = { 0.0963665, 0.78842083 };
+			result[2]  = { 0.27172762, 0.4203267 };
+			result[3]  = { 0.86848167, 1.56053599 };
+			result[4]  = { 0.13999143, 0.83204575 };
+			result[5]  = { 0.44863838, 0.24341594 };
+			result[6]  = { 0.41112711, 0.28092722 };
+			result[7]  = { 0.59496729, 0.09708703 };
+			result[8]  = { 0.87589215, 0.18383782 };
+			result[9]  = { 0.76329856, 0.07124423 };
+			result[10] = { 0.59422854, 0.09782578 };
+			result[11] = { 0.63188509, 0.06016924 };
+			return result;
+		}
+
+		inline std::vector<std::vector<double>> PredictionDistanceSupervised()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0]  = { 0, 0 };
+			result[1]  = { 0, 0 };
+			result[2]  = { 0, 0 };
+			result[3]  = { 0, 0 };
+			result[4]  = { 0, 0 };
+			result[5]  = { 0, 0 };
+			result[6]  = { 0, 0 };
+			result[7]  = { 0, 0 };
+			result[8]  = { 0, 0 };
+			result[9]  = { 0, 0 };
+			result[10] = { 0, 0 };
+			result[11] = { 0, 0 };
+			return result;
+		}
+
+		inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
+		{
+			std::vector<std::vector<double>> result(NB_TRIALS);
+			result[0]  = { 0, 0 };
+			result[1]  = { 0, 0 };
+			result[2]  = { 0, 0 };
+			result[3]  = { 0, 0 };
+			result[4]  = { 0, 0 };
+			result[5]  = { 0, 0 };
+			result[6]  = { 0, 0 };
+			result[7]  = { 0, 0 };
+			result[8]  = { 0, 0 };
+			result[9]  = { 0, 0 };
+			result[10] = { 0, 0 };
+			result[11] = { 0, 0 };
+			return result;
+		}
+	}  // namespace FgMDMRTRebias
+
+}  // namespace InitMatrixClassif

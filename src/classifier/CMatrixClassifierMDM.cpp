@@ -146,7 +146,7 @@ std::stringstream CMatrixClassifierMDM::printClasses() const
 	for (size_t i = 0; i < m_nbClass; ++i)
 	{
 		ss << "Mean of class " << i << " (" << m_NbTrials[i] << " trials): ";
-		if (m_Means[i].size() != 0) { ss << endl << m_Means[i] << endl; }
+		if (m_Means[i].size() != 0) { ss << endl << m_Means[i].format(MATRIX_FORMAT) << endl; }
 		else { ss << "Not Computed" << endl; }
 	}
 	return ss;
