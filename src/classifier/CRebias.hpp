@@ -3,20 +3,58 @@
 #include <Eigen/Dense>
 #include <vector>
 #include "utils/Metrics.hpp"
+#include "3rd-party/tinyxml2.h"
 
 class CRebias
 {
 public:
+	/// <summary> Initializes a new instance of the <see cref="CRebias"/> class. </summary>
 	CRebias() = default;
+	/// <summary> Finalizes an instance of the <see cref="CRebias"/> class. </summary>
 	~CRebias() = default;
 
+	/// <summary> Computes the rebias matrix and reset the number of classification. </summary>
+	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
+	/// <param name="metric">The metric.</param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
 	bool computeRebias(const std::vector<std::vector<Eigen::MatrixXd>>& datasets, const EMetrics metric = Metric_Riemann);
 
+	/// <summary> Applies the rebias on 2D vector of Matrix. </summary>
+	/// <param name="in">The input 2D vector of matrix.</param>
+	/// <param name="out">The output 2D vector of matrix.</param>
 	void applyRebias(const std::vector<std::vector<Eigen::MatrixXd>>& in, std::vector<std::vector<Eigen::MatrixXd>>& out);
+	/// <summary> Applies the rebias on vector of Matrix. </summary>
+	/// <param name="in">The input vector of matrix.</param>
+	/// <param name="out">The output vector of matrix.</param>
 	void applyRebias(const std::vector<Eigen::MatrixXd>& in, std::vector<Eigen::MatrixXd>& out);
+	/// <summary> Applies the rebias on Matrix. </summary>
+	/// <param name="in">The input matrix.</param>
+	/// <param name="out">The output matrix.</param>
 	void applyRebias(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
+	/// <summary> Updates the rebias. </summary>
+	/// <param name="sample">The sample.</param>
+	/// <param name="metric">The metric.</param>
 	void updateRebias(const Eigen::MatrixXd& sample, const EMetrics metric = Metric_Riemann);
+
+	/// <summary> Gets the bias. </summary>
+	/// <returns></returns>
+	Eigen::MatrixXd getBias() const { return m_bias; }
+	
+	/// <summary> Set the bias and the inverse square root of biais. </summary>
+	/// <param name="bias">	The new bias.</param>
+	void setBias(Eigen::MatrixXd& bias);
+
+	//***********************
+	//***** XML Manager *****
+	//***********************
+	/// <summary>	Save informations in xml element (Rebias and number of classification). </summary>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	bool save(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const;
+
+	/// <summary>	Load informations in xml element (Rebias and number of classification). </summary>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	bool load(tinyxml2::XMLElement* data);
 
 	//*****************************
 	//***** Override Operator *****
@@ -64,8 +102,11 @@ public:
 	//*********************
 	//***** Variables *****
 	//*********************
-	/// <summary>	Rebias Matrix. </summary>
-	Eigen::MatrixXd m_Bias, m_BiasIS;
 	/// <summary>	Number of classification launched. </summary>
 	size_t m_NClassify = 0;
+
+protected:
+	/// <summary>	Rebias Matrix. </summary>
+	Eigen::MatrixXd m_bias, m_biasIS;
+
 };

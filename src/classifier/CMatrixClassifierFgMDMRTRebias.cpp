@@ -8,14 +8,16 @@ using namespace std;
 using namespace Eigen;
 using namespace tinyxml2;
 
-
+//**********************
+//***** Classifier *****
+//**********************
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDMRTRebias::train(const vector<vector<MatrixXd>>& datasets)
 {
 	if (!m_Rebias.computeRebias(datasets, m_Metric)) { return false; }
 	vector<vector<MatrixXd>> newDatasets;
 	m_Rebias.applyRebias(datasets, newDatasets);
-	return CMatrixClassifierFgMDMRT::train(newDatasets);					// Train MDM
+	return CMatrixClassifierFgMDMRT::train(newDatasets);					// Train FgMDM
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -31,6 +33,30 @@ bool CMatrixClassifierFgMDMRTRebias::classify(const MatrixXd& sample, size_t& cl
 }
 ///-------------------------------------------------------------------------------------------------
 
+//***********************
+//***** XML Manager *****
+//***********************
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierFgMDMRTRebias::saveAdditional(XMLDocument& doc, XMLElement* data) const
+{
+	if (!CMatrixClassifierFgMDMRT::saveAdditional(doc, data)) { return false; }
+	if (!m_Rebias.save(doc, data)) { return false; }
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+bool CMatrixClassifierFgMDMRTRebias::loadAdditional(XMLElement* data)
+{
+	if (!CMatrixClassifierFgMDMRT::loadAdditional(data)) { return false; }
+	if (!m_Rebias.load(data)) { return false; }
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+//*****************************
+//***** Override Operator *****
+//*****************************
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDMRTRebias::isEqual(const CMatrixClassifierFgMDMRTRebias& obj, const double precision) const
 {
@@ -47,32 +73,6 @@ void CMatrixClassifierFgMDMRTRebias::copy(const CMatrixClassifierFgMDMRTRebias& 
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDMRTRebias::saveAdditional(XMLDocument& doc, XMLElement* data) const
-{
-	if (!CMatrixClassifierFgMDMRT::saveAdditional(doc, data)) { return false; }
-
-	// Save Rebias
-	XMLElement* rebias = doc.NewElement("Rebias");					// Create Rebias node
-	rebias->SetAttribute("nb-classify", int(m_Rebias.m_NClassify));	// Set attribute class number of trials
-	if (!saveMatrix(rebias, m_Rebias.m_Bias)) { return false; }		// Save class
-	data->InsertEndChild(rebias);									// Add class node to data node
-
-	return true;
-}
-///-------------------------------------------------------------------------------------------------
-
-///-------------------------------------------------------------------------------------------------
-bool CMatrixClassifierFgMDMRTRebias::loadAdditional(XMLElement* data)
-{
-	if (!CMatrixClassifierFgMDMRT::loadAdditional(data)) { return false; }
-
-	XMLElement* rebias = data->FirstChildElement("Rebias");			// Get LDA Weight Node
-	m_Rebias.m_NClassify = rebias->IntAttribute("nb-classify");		// Get the number of Trials for this class
-	if (!loadMatrix(rebias, m_Rebias.m_Bias)) { return false; }		// Load Reference Matrix
-	m_Rebias.m_BiasIS = m_Rebias.m_Bias.sqrt().inverse();			// Inverse Square root of Rebias matrix => isR
-	return true;
-}
-
 std::stringstream CMatrixClassifierFgMDMRTRebias::printAdditional() const
 {
 	stringstream ss = CMatrixClassifierFgMDMRT::printAdditional();

@@ -15,21 +15,10 @@ using namespace tinyxml2;
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDMRebias::train(const vector<vector<MatrixXd>>& datasets)
 {
-	if (datasets.empty()) { return false; }
-	if (!Mean(Vector2DTo1D(datasets), m_Rebias, m_Metric)) { return false; }	// Compute Rebias reference
-	const MatrixXd isR = m_Rebias.sqrt().inverse();								// Square root & Inverse Square root of Rebias matrix => isR
-
-	setClassCount(datasets.size());												// Change the number of classes if needed
-	for (size_t i = 0; i < m_nbClass; ++i)
-	{
-		m_NbTrials[i] = datasets[i].size();
-		vector<MatrixXd> newDatas;												// Create new dataset transform with Rebias
-		newDatas.reserve(m_NbTrials[i]);
-		for (const auto& data : datasets[i]) { newDatas.emplace_back(isR * data * isR.transpose()); }	// Transforme dataset for class i
-		if (!Mean(newDatas, m_Means[i], m_Metric)) { return false; }			// Compute the mean of each class
-	}
-	m_NbClassify = 0;															// Used for Rebias Reference adaptation
-	return true;
+	if (!m_Rebias.computeRebias(datasets, m_Metric)) { return false; }
+	vector<vector<MatrixXd>> newDatasets;
+	m_Rebias.applyRebias(datasets, newDatasets);
+	return CMatrixClassifierMDM::train(newDatasets);					// Train MDM
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -38,14 +27,9 @@ bool CMatrixClassifierMDMRebias::classify(const MatrixXd& sample, size_t& classI
 										  std::vector<double>& probability, const EAdaptations adaptation, const size_t& realClassId)
 {
 	if (!isSquare(sample)) { return false; }							// Verification if it's a square matrix 
-	m_NbClassify++;														// Update number of classify
-	// Change sample
-	const MatrixXd newSample = AffineTransformation(m_Rebias, sample);	// Affine transformation : isR * sample * isR^T
-
-	// Modify rebias for the next step
-	if (m_NbClassify == 1) { m_Rebias = sample; }						// At the first pass
-	else { Geodesic(m_Rebias, sample, m_Rebias, m_Metric, 1.0 / m_NbClassify); }
-
+	MatrixXd newSample;
+	m_Rebias.applyRebias(sample, newSample);
+	m_Rebias.updateRebias(sample, m_Metric);
 	return CMatrixClassifierMDM::classify(newSample, classId, distance, probability, adaptation, realClassId);
 }
 ///-------------------------------------------------------------------------------------------------
@@ -56,11 +40,8 @@ bool CMatrixClassifierMDMRebias::classify(const MatrixXd& sample, size_t& classI
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDMRebias::saveAdditional(XMLDocument& doc, XMLElement* data) const
 {
-	// Save Rebias
-	XMLElement* rebias = doc.NewElement("REBIAS");				// Create REBIAS node
-	rebias->SetAttribute("nb-classify", int(m_NbClassify));		// Set attribute number of Classification performed
-	if (!saveMatrix(rebias, m_Rebias)) { return false; }		// Save REBIAS Matrix
-	data->InsertEndChild(rebias);
+	if (!CMatrixClassifierMDM::saveAdditional(doc, data)) { return false; }
+	if (!m_Rebias.save(doc, data)) { return false; }
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -68,10 +49,9 @@ bool CMatrixClassifierMDMRebias::saveAdditional(XMLDocument& doc, XMLElement* da
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDMRebias::loadAdditional(XMLElement* data)
 {
-	// Load Rebias
-	XMLElement* rebias = data->FirstChildElement("REBIAS");		// Get REBIAS Node
-	m_NbClassify       = rebias->IntAttribute("nb-classify");	// Get the number of Classification performed
-	return loadMatrix(rebias, m_Rebias);						// Load REBIAS Matrix
+	if (!CMatrixClassifierMDM::loadAdditional(data)) { return false; }
+	if (!m_Rebias.load(data)) { return false; }
+	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -81,7 +61,7 @@ bool CMatrixClassifierMDMRebias::loadAdditional(XMLElement* data)
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDMRebias::isEqual(const CMatrixClassifierMDMRebias& obj, const double precision) const
 {
-	return CMatrixClassifierMDM::isEqual(obj) && AreEquals(m_Rebias, obj.m_Rebias, precision) && m_NbClassify == obj.m_NbClassify;
+	return CMatrixClassifierMDM::isEqual(obj) && m_Rebias == obj.m_Rebias;;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -89,19 +69,15 @@ bool CMatrixClassifierMDMRebias::isEqual(const CMatrixClassifierMDMRebias& obj, 
 void CMatrixClassifierMDMRebias::copy(const CMatrixClassifierMDMRebias& obj)
 {
 	CMatrixClassifierMDM::copy(obj);
-	m_Rebias     = obj.m_Rebias;
-	m_NbClassify = obj.m_NbClassify;
+	m_Rebias = obj.m_Rebias;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
 std::stringstream CMatrixClassifierMDMRebias::printAdditional() const
 {
-	stringstream ss;
-	ss << "Number of Classification : " << m_NbClassify << endl;
-	ss << "REBIAS Matrix : ";
-	if (m_Rebias.size() != 0) { ss << endl << m_Rebias.format(MATRIX_FORMAT) << endl; }
-	else { ss << "Not Computed" << endl; }
+	stringstream ss = CMatrixClassifierMDM::printAdditional();
+	ss << m_Rebias;
 	return ss;
 }
 ///-------------------------------------------------------------------------------------------------

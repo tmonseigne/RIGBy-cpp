@@ -74,6 +74,32 @@ public:
 		}
 	}
 
+	/// <summary>	Format the Matrix for XML Saving. </summary>
+	/// <param name="in">	Matrix. </param>
+	/// <param name="out">	Stringstream. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool convertMatrixToXMLFormat(const Eigen::MatrixXd& in, std::stringstream& out);
+
+	/// <summary>	Fill the Matrix From XML Format. </summary>
+	/// <param name="in">	Stringstream. </param>
+	/// <param name="out">	Matrix. </param>
+	/// <param name="rows">	Number of rows. </param>
+	/// <param name="cols">	Number of cols. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool convertXMLFormatToMatrix(std::stringstream& in, Eigen::MatrixXd& out, size_t rows, size_t cols);
+
+	/// <summary>	Saves matrix. </summary>
+	/// <param name="element">	Matrix Node. </param>
+	/// <param name="matrix">	Matrix to save. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool saveMatrix(tinyxml2::XMLElement* element, const Eigen::MatrixXd& matrix);
+
+	/// <summary>	Load matrix. </summary>
+	/// <param name="element">	Matrix Node. </param>
+	/// <param name="matrix">	Matrix to load. </param>
+	/// <returns>	True if it succeeds, false if it fails. </returns>
+	static bool loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixXd& matrix);
+
 	//***********************	
 	//***** Constructor *****	
 	//***********************	
@@ -250,31 +276,6 @@ protected:
 	/// <returns>	True. </returns>
 	virtual bool loadClasses(tinyxml2::XMLElement* /*data*/) { return true; }
 
-	/// <summary>	Format the Matrix for XML Saving. </summary>
-	/// <param name="in">	Matrix. </param>
-	/// <param name="out">	Stringstream. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool convertMatrixToXMLFormat(const Eigen::MatrixXd& in, std::stringstream& out);
-
-	/// <summary>	Fill the Matrix From XML Format. </summary>
-	/// <param name="in">	Stringstream. </param>
-	/// <param name="out">	Matrix. </param>
-	/// <param name="rows">	Number of rows. </param>
-	/// <param name="cols">	Number of cols. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool convertXMLFormatToMatrix(std::stringstream& in, Eigen::MatrixXd& out, size_t rows, size_t cols);
-
-	/// <summary>	Saves matrix. </summary>
-	/// <param name="element">	Matrix Node. </param>
-	/// <param name="matrix">	Matrix to save. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool saveMatrix(tinyxml2::XMLElement* element, const Eigen::MatrixXd& matrix);
-
-	/// <summary>	Load matrix. </summary>
-	/// <param name="element">	Matrix Node. </param>
-	/// <param name="matrix">	Matrix to load. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
-	static bool loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixXd& matrix);
 
 	//*********************	
 	//***** Variables *****

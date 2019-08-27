@@ -13,6 +13,7 @@
 
 #include "CMatrixClassifierMDM.hpp"
 #include "utils/Metrics.hpp"
+#include "CRebias.hpp"
 
 /// <summary>	Class of Minimum Distance to Mean (MDM) Classifier with Rebias. </summary>
 /// <seealso cref="IMatrixClassifier" />
@@ -107,10 +108,8 @@ public:
 	//*********************
 	//***** Variables *****
 	//*********************
-	/// <summary>	Rebias Matrix. </summary>
-	Eigen::MatrixXd m_Rebias;
-	/// <summary>	Number of classification launched. </summary>
-	size_t m_NbClassify = 0;
+	/// <summary>	Rebias Method. </summary>
+	CRebias m_Rebias;
 
 protected:
 

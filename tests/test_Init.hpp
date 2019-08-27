@@ -1602,12 +1602,14 @@ namespace InitMatrixClassif
 
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
-			result.m_NbClassify  = 0;
 
-			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
+			result.m_Rebias.m_NClassify = 0;
+
+			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
+			bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
 					0.016735943232582, 1.603446473585329, 0.054241640196169,
 					0.020785623695383, 0.054241640196169, 0.830327834469631;
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
@@ -1628,12 +1630,13 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
 
-			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
+			result.m_Rebias.m_NClassify = NB_TRIALS;
+
+			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
+			bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
 					0.015745816879592, 1.606186296382902, 0.055107313019667,
 					0.019622109841864, 0.055107313019667, 0.830841812602058;
-
-			result.m_NbClassify = NB_TRIALS;
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
@@ -1654,12 +1657,13 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = 2 * NB_TRIALS1;
 			result.m_NbTrials[1] = 2 * NB_TRIALS2;
 
-			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
+			result.m_Rebias.m_NClassify = NB_TRIALS;
+
+			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
+			bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
 					0.015745816879592, 1.606186296382902, 0.055107313019667,
 					0.019622109841864, 0.055107313019667, 0.830841812602058;
-
-			result.m_NbClassify = NB_TRIALS;
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
@@ -1680,12 +1684,13 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1 + 2;	// Find 2 times in Prediction
 			result.m_NbTrials[1] = NB_TRIALS2 + 10;	// Find 10 times in Prediction
 
-			result.m_Rebias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
+			result.m_Rebias.m_NClassify = NB_TRIALS;
+
+			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
+			bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
 					0.015745816879592, 1.606186296382902, 0.055107313019667,
 					0.019622109841864, 0.055107313019667, 0.830841812602058;
-
-			result.m_NbClassify = NB_TRIALS;
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
@@ -1918,11 +1923,11 @@ namespace InitMatrixClassif
 
 			result.m_Rebias.m_NClassify = 0;
 
-			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias.m_Bias << 1.70952703700155, 0.0167406580855047, 0.0207774590925802,
+			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
+			bias << 1.70952703700155, 0.0167406580855047, 0.0207774590925802,
 					0.0167406580855047, 1.60344585621418, 0.0542388460600326,
 					0.0207774590925802, 0.0542388460600327, 0.830325461380695;
-			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
@@ -1959,11 +1964,11 @@ namespace InitMatrixClassif
 
 			result.m_Rebias.m_NClassify = 0;
 
-			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias.m_Bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
+			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
+			bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
 					0.016735943232582, 1.603446473585329, 0.054241640196169,
 					0.020785623695383, 0.054241640196169, 0.830327834469631;
-			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
@@ -1994,9 +1999,8 @@ namespace InitMatrixClassif
 
 			result.m_Rebias.m_NClassify = 0;
 
-			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias.m_Bias << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+			Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
@@ -2027,9 +2031,8 @@ namespace InitMatrixClassif
 
 			result.m_Rebias.m_NClassify = 0;
 
-			result.m_Rebias.m_Bias.resize(NB_CHAN, NB_CHAN);
-			result.m_Rebias.m_Bias << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-			result.m_Rebias.m_BiasIS = result.m_Rebias.m_Bias.sqrt().inverse();
+			Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+			result.m_Rebias.setBias(bias);
 
 			return result;
 		}
