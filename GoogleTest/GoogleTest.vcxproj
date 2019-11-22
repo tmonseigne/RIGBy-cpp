@@ -146,12 +146,12 @@
     <ClCompile Include="..\dependencies\googletest\googlemock\src\gmock-all.cc" />
     <ClCompile Include="..\dependencies\googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="..\src\3rd-party\tinyxml2.cpp" />
+    <ClCompile Include="..\src\classifier\CBias.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDMRT.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDMRTRebias.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDMRebias.cpp" />
-    <ClCompile Include="..\src\classifier\CRebias.cpp" />
     <ClCompile Include="..\src\classifier\IMatrixClassifier.cpp" />
     <ClCompile Include="..\src\utils\Basics.cpp" />
     <ClCompile Include="..\src\utils\Classification.cpp" />
@@ -164,12 +164,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\3rd-party\tinyxml2.h" />
+    <ClInclude Include="..\src\classifier\CBias.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRT.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRTRebias.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierMDMRebias.hpp" />
-    <ClInclude Include="..\src\classifier\CRebias.hpp" />
     <ClInclude Include="..\src\classifier\IMatrixClassifier.hpp" />
     <ClInclude Include="..\src\utils\Basics.hpp" />
     <ClInclude Include="..\src\utils\Classification.hpp" />

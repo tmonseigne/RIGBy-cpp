@@ -65,7 +65,7 @@ bool CMatrixClassifierMDM::train(const vector<vector<MatrixXd>>& datasets)
 bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance,
 									std::vector<double>& probability, const EAdaptations adaptation, const size_t& realClassId)
 {
-	if (!isSquare(sample)) { return false; }				// Verification if it's a square matrix 
+	if (!IsSquare(sample)) { return false; }				// Verification if it's a square matrix 
 	double distMin = std::numeric_limits<double>::max();	// Init of distance min
 
 	// Compute Distances

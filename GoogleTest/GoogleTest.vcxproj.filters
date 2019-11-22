@@ -94,7 +94,7 @@
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRTRebias.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\classifier\CRebias.hpp">
+    <ClInclude Include="..\src\classifier\CBias.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
   </ItemGroup>
@@ -148,7 +148,7 @@
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDMRTRebias.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\classifier\CRebias.cpp">
+    <ClCompile Include="..\src\classifier\CBias.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClCompile>
   </ItemGroup>

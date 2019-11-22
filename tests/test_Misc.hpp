@@ -18,7 +18,7 @@
 #include <type_traits>
 #include "classifier/IMatrixClassifier.hpp"
 
-const std::string SEP = "\n====================\n";
+const std::string SEP("\n====================\n");
 
 //*********************************************************************************
 //********** Comparison of values with epsilon tolerance for google test **********
@@ -28,10 +28,7 @@ const std::string SEP = "\n====================\n";
 /// <param name="y">	  	The second value. </param>
 /// <param name="epsilon">	(Optional) The epsilon tolerance. </param>
 /// <returns>	True if almost equal, false if not. </returns>
-inline bool isAlmostEqual(const double x, const double y, const double epsilon = 0.0001)
-{
-	return std::abs(x - y) < epsilon;
-}
+inline bool isAlmostEqual(const double x, const double y, const double epsilon = 0.0001) { return std::abs(x - y) < epsilon; }
 
 /// <summary>	Check if sum of two vectors are almost equal. </summary>
 /// <typeparam name="T">	Generic numeric type parameter. </typeparam>

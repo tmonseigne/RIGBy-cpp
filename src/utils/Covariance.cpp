@@ -30,7 +30,7 @@ double Covariance(const RowVectorXd& x, const RowVectorXd& y)
 //---------------------------------------------------------------------------------------------------
 bool ShrunkCovariance(MatrixXd& cov, const double shrinkage)
 {
-	if (!inRange(shrinkage, 0, 1)) { return false; }		// Verification
+	if (!InRange(shrinkage, 0, 1)) { return false; }		// Verification
 	const size_t n = cov.rows();							// Number of Features				=> N
 
 	const double coef = shrinkage * cov.trace() / n;		// Diagonal Coefficient
@@ -52,7 +52,7 @@ bool ShrunkCovariance(const MatrixXd& in, MatrixXd& out, const double shrinkage)
 //---------------------------------------------------------------------------------------------------
 bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estimator, const EStandardization standard)
 {
-	if (!isNotEmpty(in)) { return false; }					// Verification
+	if (!IsNotEmpty(in)) { return false; }					// Verification
 	MatrixXd sample;
 	MatrixStandardization(in, sample, standard);			// Standardization
 	switch (estimator)										// Switch Method
@@ -144,10 +144,7 @@ bool CovarianceMatrixOAS(const MatrixXd& samples, MatrixXd& cov)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixMCD(const MatrixXd& samples, MatrixXd& cov)
-{
-	return CovarianceMatrixIDE(samples, cov);
-}
+bool CovarianceMatrixMCD(const MatrixXd& samples, MatrixXd& cov) { return CovarianceMatrixIDE(samples, cov); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
@@ -157,10 +154,7 @@ bool CovarianceMatrixCOR(const MatrixXd& samples, MatrixXd& cov)
 	CovarianceMatrixCOV(samples, cov);						// Initial Covariance Matrix		=> Cov
 	const MatrixXd d = cov.diagonal().cwiseSqrt();			// Squared root of diagonal
 
-	for (size_t i = 0; i < n; ++i)
-	{
-		for (size_t j = 0; j < n; ++j) { cov(i, j) /= d(i) * d(j); }
-	}
+	for (size_t i = 0; i < n; ++i) { for (size_t j = 0; j < n; ++j) { cov(i, j) /= d(i) * d(j); } }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
@@ -169,6 +163,47 @@ bool CovarianceMatrixCOR(const MatrixXd& samples, MatrixXd& cov)
 bool CovarianceMatrixIDE(const MatrixXd& samples, MatrixXd& cov)
 {
 	cov = MatrixXd::Identity(samples.rows(), samples.rows());
+	return true;
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool CovarianceClass(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& cov)
+{
+	// Precomputation
+	if (datasets.empty()) { return false; }
+	const size_t nbClass = datasets.size(), nbFeatures = datasets[0][0].size();
+	vector<size_t> nbSample(nbClass);
+	size_t totalSample = 0;
+	for (size_t k = 0; k < nbClass; ++k)
+	{
+		if (datasets[k].empty()) { return false; }
+		nbSample[k] = datasets[k].size();
+		totalSample += nbSample[k];
+	}
+
+	// Compute Class Covariance
+	cov = MatrixXd::Zero(nbFeatures, nbFeatures);
+	for (size_t k = 0; k < nbClass; ++k)
+	{
+		//Fit Data to existing covariance matrix method
+		MatrixXd classData(nbFeatures, nbSample[k]);
+		for (size_t i = 0; i < nbSample[k]; ++i) { classData.col(i) = datasets[k][i]; }
+
+		// Standardize Features
+		RowVectorXd scale;
+		MatrixStandardScaler(classData, scale);
+
+		//Compute Covariance of this class
+		MatrixXd classCov;
+		if (!CovarianceMatrix(classData, classCov, Estimator_LWF)) { return false; }
+
+		// Rescale
+		for (size_t i = 0; i < nbFeatures; ++i) { for (size_t j = 0; j < nbFeatures; ++j) { classCov(i, j) *= scale[i] * scale[j]; } }
+
+		//Add to cov with good weight
+		cov += (double(nbSample[k]) / double(totalSample)) * classCov;
+	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

@@ -17,10 +17,7 @@ IMatrixClassifier::IMatrixClassifier(const size_t nbClass, const EMetrics metric
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-void IMatrixClassifier::setClassCount(const size_t nbClass)
-{
-	m_nbClass = nbClass;
-}
+void IMatrixClassifier::setClassCount(const size_t nbClass) { m_nbClass = nbClass; }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
@@ -35,7 +32,7 @@ bool IMatrixClassifier::classify(const MatrixXd& sample, size_t& classId, const 
 //***** XML Manager *****
 //***********************
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::saveXML(const string& filename)
+bool IMatrixClassifier::saveXML(const string& filename) const
 {
 	XMLDocument xmlDoc;
 	// Create Root
@@ -108,6 +105,7 @@ bool IMatrixClassifier::saveMatrix(XMLElement* element, const MatrixXd& matrix)
 bool IMatrixClassifier::loadMatrix(XMLElement* element, MatrixXd& matrix)
 {
 	const size_t size = element->IntAttribute("size");	// Get number of row/col
+	if (size == 0) { return true; }
 	stringstream ss(element->GetText());				// String stream to parse Matrix value
 	convertXMLFormatToMatrix(ss, matrix, size, size);
 	return true;
@@ -133,10 +131,7 @@ void IMatrixClassifier::copy(const IMatrixClassifier& obj)
 /// -------------------------------------------------------------------------------------------------
 
 /// -------------------------------------------------------------------------------------------------
-std::stringstream IMatrixClassifier::print() const
-{
-	return stringstream(printHeader().str() + printAdditional().str() + printClasses().str());
-}
+std::stringstream IMatrixClassifier::print() const { return stringstream(printHeader().str() + printAdditional().str() + printClasses().str()); }
 /// -------------------------------------------------------------------------------------------------
 
 /// -------------------------------------------------------------------------------------------------

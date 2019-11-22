@@ -28,24 +28,18 @@ bool UnFeaturization(const RowVectorXd& rowVector, MatrixXd& matrix, const bool 
 //---------------------------------------------------------------------------------------------------
 bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const bool rowMajor)
 {
-	if (!isSquare(matrix)) { return false; }					// Verification
+	if (!IsSquare(matrix)) { return false; }					// Verification
 	const size_t n = matrix.rows();								// Number of Features			=> N
 	rowVector.resize(n * (n + 1) / 2);							// Resize
 
 	size_t idx = 0;												// Row Index					=> idx
 	if (rowMajor)												// Row Major Method
 	{
-		for (size_t i = 0; i < n; ++i)
-		{
-			for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(i, j); }
-		}
+		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(i, j); } }
 	}
 	else														// Diagonal Method
 	{
-		for (size_t i = 0; i < n; ++i)
-		{
-			for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(j, j - i); }
-		}
+		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(j, j - i); } }
 	}
 	return true;
 }
@@ -62,17 +56,11 @@ bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, cons
 	size_t idx = 0;												// Row Index					=> idx
 	if (rowMajor)												// Row Major Method
 	{
-		for (size_t i = 0; i < n; ++i)
-		{
-			for (size_t j = i; j < n; ++j) { matrix(j, i) = matrix(i, j) = rowVector[idx++]; }
-		}
+		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { matrix(j, i) = matrix(i, j) = rowVector[idx++]; } }
 	}
 	else														// Diagonal Method
 	{
-		for (size_t i = 0; i < n; ++i)
-		{
-			for (size_t j = i; j < n; ++j) { matrix(j - i, j) = matrix(j, j - i) = rowVector[idx++]; }
-		}
+		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { matrix(j - i, j) = matrix(j, j - i) = rowVector[idx++]; } }
 	}
 	return true;
 }
@@ -81,7 +69,7 @@ bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, cons
 //---------------------------------------------------------------------------------------------------
 bool TangentSpace(const MatrixXd& matrix, RowVectorXd& rowVector, const MatrixXd& ref)
 {
-	if (!isSquare(matrix)) { return false; }					// Verification
+	if (!IsSquare(matrix)) { return false; }					// Verification
 	const size_t n = matrix.rows();								// Number of Features			=> N
 
 	const MatrixXd sC      = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),

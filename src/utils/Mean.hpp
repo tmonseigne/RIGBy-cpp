@@ -141,3 +141,10 @@ bool MeanHarmonic(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mea
 ///	</summary>
 /// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
 bool MeanIdentity(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
+
+/// <summary>	Compute the Euclidian Mean of each class. </summary>
+/// <param name="datasets">	The datasets one class by row and trials on colums (each sample is a feature vector). </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <remarks> Used for LDA Solver as in scikit-learn library (<a href="https://github.com/scikit-learn/scikit-learn/blob/1495f69242646d239d89a5713982946b8ffcf9d9/sklearn/discriminant_analysis.py#L72">scikit-learn Class Mean</a>).</remarks>
+bool MeanClass(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& mean);

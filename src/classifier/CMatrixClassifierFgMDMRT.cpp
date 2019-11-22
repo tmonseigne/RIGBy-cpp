@@ -23,10 +23,7 @@ bool CMatrixClassifierFgMDMRT::train(const vector<vector<MatrixXd>>& datasets)
 	{
 		const size_t nbTrials = datasets[k].size();
 		tsSample[k].resize(nbTrials);
-		for (size_t i = 0; i < nbTrials; ++i)
-		{
-			if (!TangentSpace(datasets[k][i], tsSample[k][i], m_Ref)) { return false; }
-		}
+		for (size_t i = 0; i < nbTrials; ++i) { if (!TangentSpace(datasets[k][i], tsSample[k][i], m_Ref)) { return false; } }
 	}
 
 	// Compute FgDA Weight

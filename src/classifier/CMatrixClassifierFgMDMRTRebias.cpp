@@ -1,7 +1,6 @@
 #include "CMatrixClassifierFgMDMRTRebias.hpp"
 #include "utils/Mean.hpp"
 #include "utils/Covariance.hpp"
-#include <iostream>
 #include <unsupported/Eigen/MatrixFunctions> // SQRT of Matrix
 
 using namespace std;
@@ -14,10 +13,13 @@ using namespace tinyxml2;
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDMRTRebias::train(const vector<vector<MatrixXd>>& datasets)
 {
-	if (!m_Rebias.computeRebias(datasets, m_Metric)) { return false; }
+	if (!m_Rebias.computeBias(datasets, m_Metric)) { return false; }
 	vector<vector<MatrixXd>> newDatasets;
-	m_Rebias.applyRebias(datasets, newDatasets);
-	return CMatrixClassifierFgMDMRT::train(newDatasets);					// Train FgMDM
+	m_Rebias.applyBias(datasets, newDatasets);
+	if (!CMatrixClassifierFgMDMRT::train(newDatasets)) { return false; }		// Train FgMDM
+	const MatrixXd identity = MatrixXd::Identity(m_Ref.rows(), m_Ref.cols());	// Identity matrix
+	if (AreEquals(m_Ref, identity)) { m_Ref = identity; }						// Normally it's always the case with Identity matrix we simplify future operation
+	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -25,10 +27,10 @@ bool CMatrixClassifierFgMDMRTRebias::train(const vector<vector<MatrixXd>>& datas
 bool CMatrixClassifierFgMDMRTRebias::classify(const MatrixXd& sample, size_t& classId, std::vector<double>& distance,
 											  std::vector<double>& probability, const EAdaptations adaptation, const size_t& realClassId)
 {
-	if (!isSquare(sample)) { return false; }							// Verification if it's a square matrix 
+	if (!IsSquare(sample)) { return false; }							// Verification if it's a square matrix 
 	MatrixXd newSample;
-	m_Rebias.applyRebias(sample, newSample);
-	m_Rebias.updateRebias(sample, m_Metric);
+	m_Rebias.applyBias(sample, newSample);
+	m_Rebias.updateBias(sample, m_Metric);
 	return CMatrixClassifierFgMDMRT::classify(newSample, classId, distance, probability, adaptation, realClassId);
 }
 ///-------------------------------------------------------------------------------------------------
@@ -40,7 +42,7 @@ bool CMatrixClassifierFgMDMRTRebias::classify(const MatrixXd& sample, size_t& cl
 bool CMatrixClassifierFgMDMRTRebias::saveAdditional(XMLDocument& doc, XMLElement* data) const
 {
 	if (!CMatrixClassifierFgMDMRT::saveAdditional(doc, data)) { return false; }
-	if (!m_Rebias.save(doc, data)) { return false; }
+	if (!m_Rebias.saveAdditional(doc, data)) { return false; }
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -49,7 +51,7 @@ bool CMatrixClassifierFgMDMRTRebias::saveAdditional(XMLDocument& doc, XMLElement
 bool CMatrixClassifierFgMDMRTRebias::loadAdditional(XMLElement* data)
 {
 	if (!CMatrixClassifierFgMDMRT::loadAdditional(data)) { return false; }
-	if (!m_Rebias.load(data)) { return false; }
+	if (!m_Rebias.loadAdditional(data)) { return false; }
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------

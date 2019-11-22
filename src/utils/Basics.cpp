@@ -143,52 +143,40 @@ RowVectorXd GetElements(const RowVectorXd& row, const std::vector<size_t>& index
 //******************** Validates ********************
 //***************************************************
 //---------------------------------------------------------------------------------------------------
-bool inRange(const double value, const double min, const double max)
-{
-	return (min <= value && value <= max);
-}
+bool InRange(const double value, const double min, const double max) { return (min <= value && value <= max); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool areNotEmpty(const vector<MatrixXd>& matrices)
+bool AreNotEmpty(const vector<MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
-	for (const auto& m : matrices) { if (!isNotEmpty(m)) { return false; } }
+	for (const auto& m : matrices) { if (!IsNotEmpty(m)) { return false; } }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool isNotEmpty(const MatrixXd& matrix)
-{
-	return (matrix.rows() != 0 && matrix.cols() != 0);
-}
+bool IsNotEmpty(const MatrixXd& matrix) { return (matrix.rows() != 0 && matrix.cols() != 0); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool haveSameSize(const MatrixXd& a, const MatrixXd& b)
-{
-	return (isNotEmpty(a) && a.rows() == b.rows() && a.cols() == b.cols());
-}
+bool HaveSameSize(const MatrixXd& a, const MatrixXd& b) { return (IsNotEmpty(a) && a.rows() == b.rows() && a.cols() == b.cols()); }
 //---------------------------------------------------------------------------------------------------
 
-bool isSquare(const MatrixXd& matrix)
-{
-	return (isNotEmpty(matrix) && matrix.rows() == matrix.cols());
-}
+bool IsSquare(const MatrixXd& matrix) { return (IsNotEmpty(matrix) && matrix.rows() == matrix.cols()); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool areSquare(const vector<MatrixXd>& matrices)
+bool AreSquare(const vector<MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
-	for (const auto& m : matrices) { if (!isSquare(m)) { return false; } }
+	for (const auto& m : matrices) { if (!IsSquare(m)) { return false; } }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool haveSameSize(const std::vector<MatrixXd>& matrices)
+bool HaveSameSize(const std::vector<MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
 	const size_t R = matrices[0].rows(), C = matrices[0].cols();

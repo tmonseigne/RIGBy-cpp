@@ -173,38 +173,38 @@ std::vector<std::vector<T>> Vector1DTo2D(const std::vector<T>& in, const std::ve
 /// <param name="min">		The minimum. </param>
 /// <param name="max">		The maximum. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool inRange(double value, double min, double max);
+bool InRange(double value, double min, double max);
 
 /// <summary>	Validate if the vector is not empty and the matrices are validate. </summary>
 /// <param name="matrices">	Vector of Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool areNotEmpty(const std::vector<Eigen::MatrixXd>& matrices);
+bool AreNotEmpty(const std::vector<Eigen::MatrixXd>& matrices);
 
 /// <summary>	Validates if matrix is not empty. </summary>
 /// <param name="matrix">	Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool isNotEmpty(const Eigen::MatrixXd& matrix);
+bool IsNotEmpty(const Eigen::MatrixXd& matrix);
 
 /// <summary>	Validates if two matrix have same size. </summary>
 /// <param name="a">	Matrix A. </param>
 /// <param name="b">	Matrix B. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool haveSameSize(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b);
+bool HaveSameSize(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b);
 
 /// <summary>	Validate if the vector is not empty and the matrices have same size. </summary>
 /// <param name="matrices">	Vector of Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool haveSameSize(const std::vector<Eigen::MatrixXd>& matrices);
+bool HaveSameSize(const std::vector<Eigen::MatrixXd>& matrices);
 
 /// <summary>	Validates if matrix is square matrix and not empty. </summary>
 /// <param name="matrix">	Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool isSquare(const Eigen::MatrixXd& matrix);
+bool IsSquare(const Eigen::MatrixXd& matrix);
 
 /// <summary>	Validate if the vector is not empty and the matrices are square matrix and not empty. </summary>
 /// <param name="matrices">	Vector of Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool areSquare(const std::vector<Eigen::MatrixXd>& matrices);
+bool AreSquare(const std::vector<Eigen::MatrixXd>& matrices);
 
 //********************************************************
 //******************** CSV MANAGEMENT ********************

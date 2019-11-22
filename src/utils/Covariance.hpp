@@ -103,7 +103,8 @@ bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, double sh
 /// <param name="estimator">	(Optional) The selected estimator (see <see cref="EEstimator"/>). </param>
 /// <param name="standard">		(Optional) Standardize the data (see <see cref="EStandardization"/>). </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = Estimator_COV, EStandardization standard = Standardization_Center);
+bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = Estimator_COV,
+					  EStandardization standard                                             = Standardization_Center);
 
 //***********************************************************
 //******************** COVARIANCES TYPES ********************
@@ -187,14 +188,14 @@ bool CovarianceMatrixLWF(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool CovarianceMatrixOAS(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
-/// <summary>Calculation of the covariance matrix and shrinkage by the method : Minimum Covariance Determinant (MCD).</summary>
+/// <summary> Calculation of the covariance matrix and shrinkage by the method : Minimum Covariance Determinant (MCD).</summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// \todo Not implemented.
 bool CovarianceMatrixMCD(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
-/// <summary>	Calculation of the covariance matrix by the method : Pearson Correlation.\n
+/// <summary> Calculation of the covariance matrix by the method : Pearson Correlation.\n
 /// \f[
 ///		M_{\operatorname{Cov_{COR}}}\left(i,j\right) 
 ///		= \frac{  M_{\operatorname{Cov}}\left(i,j\right) } { \sqrt{  M_{\operatorname{Cov}}\left(i,i\right) *  M_{\operatorname{Cov}}\left(j,j\right) } }
@@ -210,3 +211,10 @@ bool CovarianceMatrixCOR(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// <param name="cov">	  	The Covariance Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool CovarianceMatrixIDE(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
+
+/// <summary> Calculation of the class covariance.</summary>
+/// <param name="datasets">	The datasets one class by row and trials on colums (each sample is a feature vector). </param>
+/// <param name="cov">	  	The Covariance Matrix. </param>
+/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <remarks> Used for LDA Solver as in scikit-learn library (<a href="https://github.com/scikit-learn/scikit-learn/blob/1495f69242646d239d89a5713982946b8ffcf9d9/sklearn/discriminant_analysis.py#L96">scikit-learn Class Mean</a>).</remarks>
+bool CovarianceClass(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& cov);

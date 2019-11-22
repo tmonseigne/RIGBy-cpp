@@ -42,10 +42,12 @@ enum EMatrixClassifiers
 	/// <summary>	Minimum Distance to Mean with geodesic filtering & Rebias adaptation Real Time assumed. </summary>
 	Matrix_Classifier_FgMDM_RT_Rebias,	
 	/// <summary>	Minimum Distance to Mean with geodesic filtering & Rebias adaptation. </summary>
-	Matrix_Classifier_FgMDM_Rebias,
+	Matrix_Classifier_FgMDM_Rebias
 };
 
-const Eigen::IOFormat MATRIX_FORMAT = Eigen::IOFormat(-2, 0, " ", "\n", "", "", "", "");
+
+/// <summary>	Format the Eigen matrix with Full Precision. </summary>
+#define MATRIX_FORMAT Eigen::IOFormat(-2, 0, " ", "\n", "", "", "", "")
 
 /// <summary>	Abstract class of Matrix Classifier. </summary>
 class IMatrixClassifier
@@ -56,9 +58,11 @@ public:
 		switch (type)
 		{
 			case Matrix_Classifier_MDM: return "Minimum Distance to Mean";
-			case Matrix_Classifier_MDM_Rebias: return "Minimum Distance to Mean REBIAS";
+			case Matrix_Classifier_MDM_Rebias: return "Minimum Distance to Mean Rebias";
 			case Matrix_Classifier_FgMDM_RT: return "Minimum Distance to Mean with geodesic filtering Real Time assumed";
 			case Matrix_Classifier_FgMDM: return "Minimum Distance to Mean with geodesic filtering";
+			case Matrix_Classifier_FgMDM_RT_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias Real Time assumed";
+			case Matrix_Classifier_FgMDM_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias";
 			default: return "Invalid";
 		}
 	}
@@ -141,7 +145,7 @@ public:
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	/// <seealso cref="classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, EAdaptations, const size_t&)"/>
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId,
-						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max());
+						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max());
 
 	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class. </summary>
 	/// <param name="sample">		The sample to classify. </param>
@@ -152,7 +156,7 @@ public:
 	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>	
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) = 0;	
+						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max()) = 0;	
 
 	//***********************
 	//***** XML Manager *****
@@ -160,7 +164,7 @@ public:
 	/// <summary>	Saves the classifier information in an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	virtual bool saveXML(const std::string& filename);
+	virtual bool saveXML(const std::string& filename) const;
 	
 	/// <summary>	Loads the classifier information from an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
@@ -282,5 +286,4 @@ protected:
 	//*********************	
 	/// <summary>	Number of classes to classify. </summary>
 	size_t m_nbClass = 2;
-
 };

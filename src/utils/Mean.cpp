@@ -9,9 +9,9 @@
 using namespace Eigen;
 using namespace std;
 
-//const double EPSILON = 0.000000001;	// 10^{-9}
-const double EPSILON  = 0.0001;			// 10^{-4}
-const size_t ITER_MAX = 50;
+//static const double EPSILON = 0.000000001;	// 10^{-9}
+static const double EPSILON  = 0.0001;			// 10^{-4}
+static const size_t ITER_MAX = 50;
 
 //---------------------------------------------------------------------------------------------------
 bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metric)
@@ -22,14 +22,14 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 		mean = covs[0];
 		return true;
 	}	// If just one matrix in vector
-	if (!haveSameSize(covs))
+	if (!HaveSameSize(covs))
 	{
 		cout << "Matrices haven't same size." << endl;
 		return false;
 	}
 
 	// Force Square Matrix for non Euclidian and non Identity metric
-	if (!areSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
+	if (!AreSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
 	{
 		cout << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
 		return false;
@@ -221,6 +221,29 @@ bool MeanHarmonic(const vector<MatrixXd>& covs, MatrixXd& mean)
 bool MeanIdentity(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	mean = MatrixXd::Identity(covs[0].rows(), covs[0].cols());
+	return true;
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool MeanClass(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& mean)
+{
+	if (datasets.empty()) { return false; }
+	const size_t nbClass = datasets.size(), nbFeatures = datasets[0][0].size();
+	vector<size_t> nbSample(nbClass);
+	for (size_t k = 0; k < nbClass; ++k)
+	{
+		if (datasets[k].empty()) { return false; }
+		nbSample[k] = datasets[k].size();
+	}
+
+	// Compute Class Euclidian mean
+	mean = MatrixXd::Zero(nbClass, nbFeatures);
+	for (size_t k = 0; k < nbClass; ++k)
+	{
+		for (size_t i = 0; i < nbSample[k]; ++i) { mean.row(k) += datasets[k][i]; }
+		mean.row(k) /= double(nbSample[k]);
+	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

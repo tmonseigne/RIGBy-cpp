@@ -922,7 +922,9 @@ namespace InitDistance
 	{
 		inline std::vector<double> Reference()
 		{
-			return std::vector<double>{ 2.27941886, 1.06479476, 1.02847791, 1.59375373, 1.55723736, 0.38300632, 0.50680192, 1.04235464, 1.05530485, 1.12584212, 0.7888681, 0.74648348 };
+			return std::vector<double>{
+				2.27941886, 1.06479476, 1.02847791, 1.59375373, 1.55723736, 0.38300632, 0.50680192, 1.04235464, 1.05530485, 1.12584212, 0.7888681, 0.74648348
+			};
 		}
 	}
 
@@ -933,7 +935,9 @@ namespace InitDistance
 	{
 		inline std::vector<double> Reference()
 		{
-			return std::vector<double>{ 1.32256326, 0.66407543, 0.58679669, 1.40770199, 0.74410706, 0.35240113, 0.43103276, 0.71149032, 0.67768624, 0.80611325, 0.59020555, 0.66716464 };
+			return std::vector<double>{
+				1.32256326, 0.66407543, 0.58679669, 1.40770199, 0.74410706, 0.35240113, 0.43103276, 0.71149032, 0.67768624, 0.80611325, 0.59020555, 0.66716464
+			};
 		}
 	}
 
@@ -944,7 +948,9 @@ namespace InitDistance
 	{
 		inline std::vector<double> Reference()
 		{
-			return std::vector<double>{ 1.32849591, 0.66514346, 0.58560532, 1.41024439, 0.747409, 0.34896944, 0.43236778, 0.71205324, 0.67698377, 0.80599981, 0.59091178, 0.66423683 };
+			return std::vector<double>{
+				1.32849591, 0.66514346, 0.58560532, 1.41024439, 0.747409, 0.34896944, 0.43236778, 0.71205324, 0.67698377, 0.80599981, 0.59091178, 0.66423683
+			};
 		}
 	}
 
@@ -955,7 +961,9 @@ namespace InitDistance
 	{
 		inline std::vector<double> Reference()
 		{
-			return std::vector<double>{ 0.46451334, 0.23505451, 0.20685864, 0.49230328, 0.26223382, 0.1207747, 0.15093304, 0.25002132, 0.23755315, 0.28080601, 0.20652205, 0.23046043 };
+			return std::vector<double>{
+				0.46451334, 0.23505451, 0.20685864, 0.49230328, 0.26223382, 0.1207747, 0.15093304, 0.25002132, 0.23755315, 0.28080601, 0.20652205, 0.23046043
+			};
 		}
 	}
 
@@ -966,7 +974,9 @@ namespace InitDistance
 	{
 		inline std::vector<double> Reference()
 		{
-			return std::vector<double>{ 0.9229355, 0.22182567, 0.17231943, 1.04684976, 0.28821354, 0.06625571, 0.09835624, 0.26108052, 0.23637438, 0.34499747, 0.18292577, 0.238331 };
+			return std::vector<double>{
+				0.9229355, 0.22182567, 0.17231943, 1.04684976, 0.28821354, 0.06625571, 0.09835624, 0.26108052, 0.23637438, 0.34499747, 0.18292577, 0.238331
+			};
 		}
 	}
 
@@ -977,7 +987,9 @@ namespace InitDistance
 	{
 		inline std::vector<double> Reference()
 		{
-			return std::vector<double>{ 0.80006691, 0.41547827, 0.38690865, 0.70393068, 0.5282644, 0.16253726, 0.22475651, 0.42258195, 0.41676291, 0.45835023, 0.32884, 0.33947315 };
+			return std::vector<double>{
+				0.80006691, 0.41547827, 0.38690865, 0.70393068, 0.5282644, 0.16253726, 0.22475651, 0.42258195, 0.41676291, 0.45835023, 0.32884, 0.33947315
+			};
 		}
 	}
 }  // namespace InitDistance
@@ -1603,7 +1615,7 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
 
-			result.m_Rebias.m_NClassify = 0;
+			result.m_Rebias.m_N = 0;
 
 			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
 			bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
@@ -1630,7 +1642,7 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
 
-			result.m_Rebias.m_NClassify = NB_TRIALS;
+			result.m_Rebias.m_N = NB_TRIALS;
 
 			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
 			bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
@@ -1657,7 +1669,7 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = 2 * NB_TRIALS1;
 			result.m_NbTrials[1] = 2 * NB_TRIALS2;
 
-			result.m_Rebias.m_NClassify = NB_TRIALS;
+			result.m_Rebias.m_N = NB_TRIALS;
 
 			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
 			bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
@@ -1684,7 +1696,7 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1 + 2;	// Find 2 times in Prediction
 			result.m_NbTrials[1] = NB_TRIALS2 + 10;	// Find 10 times in Prediction
 
-			result.m_Rebias.m_NClassify = NB_TRIALS;
+			result.m_Rebias.m_N = NB_TRIALS;
 
 			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
 			bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
@@ -1921,7 +1933,7 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
 
-			result.m_Rebias.m_NClassify = 0;
+			result.m_Rebias.m_N = 0;
 
 			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
 			bias << 1.70952703700155, 0.0167406580855047, 0.0207774590925802,
@@ -1962,7 +1974,7 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
 
-			result.m_Rebias.m_NClassify = 0;
+			result.m_Rebias.m_N = 0;
 
 			Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
 			bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
@@ -1997,9 +2009,9 @@ namespace InitMatrixClassif
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
 
-			result.m_Rebias.m_NClassify = 0;
+			result.m_Rebias.m_N = 0;
 
-			Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+			const Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
 			result.m_Rebias.setBias(bias);
 
 			return result;
@@ -2020,18 +2032,18 @@ namespace InitMatrixClassif
 			const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
 			result.m_Weight.resize(nbFeatures, nbFeatures);
 			result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+					0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
 
 			result.m_NbTrials[0] = NB_TRIALS1;
 			result.m_NbTrials[1] = NB_TRIALS2;
 
-			result.m_Rebias.m_NClassify = 0;
+			result.m_Rebias.m_N = 0;
 
-			Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+			const Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
 			result.m_Rebias.setBias(bias);
 
 			return result;
@@ -2095,5 +2107,4 @@ namespace InitMatrixClassif
 			return result;
 		}
 	}  // namespace FgMDMRTRebias
-
 }  // namespace InitMatrixClassif

@@ -22,10 +22,7 @@ class Tests_Distances : public testing::Test
 protected:
 	std::vector<Eigen::MatrixXd> m_dataSet;
 
-	void SetUp() override
-	{
-		m_dataSet = Vector2DTo1D(InitCovariance::LWF::Reference());
-	}
+	void SetUp() override { m_dataSet = Vector2DTo1D(InitCovariance::LWF::Reference()); }
 };
 //---------------------------------------------------------------------------------------------------
 

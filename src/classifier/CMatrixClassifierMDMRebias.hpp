@@ -13,7 +13,7 @@
 
 #include "CMatrixClassifierMDM.hpp"
 #include "utils/Metrics.hpp"
-#include "CRebias.hpp"
+#include "CBias.hpp"
 
 /// <summary>	Class of Minimum Distance to Mean (MDM) Classifier with Rebias. </summary>
 /// <seealso cref="IMatrixClassifier" />
@@ -60,7 +60,7 @@ public:
 	///	</summary>
 	/// \copydetails CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<std::size_t>::max()) override;
+				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
 
 	//*****************************
 	//***** Override Operator *****
@@ -109,7 +109,7 @@ public:
 	//***** Variables *****
 	//*********************
 	/// <summary>	Rebias Method. </summary>
-	CRebias m_Rebias;
+	CBias m_Rebias;
 
 protected:
 
