@@ -15,60 +15,51 @@
 #include <string>
 
 /// <summary>	Enumeration of metrics. Inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a>. </summary>
-enum EMetrics
+enum class EMetric
 {
-	/// <summary>	The Riemannian Metric. </summary>
-	Metric_Riemann,
-	/// <summary>	The Euclidian Metric. </summary>
-	Metric_Euclidian,
-	/// <summary>	The Log Euclidian Metric. </summary>
-	Metric_LogEuclidian,
-	/// <summary>	The Log Determinant Metric. </summary>
-	Metric_LogDet,
-	/// <summary>	The Kullback Metric. </summary>
-	Metric_Kullback,
-	/// <summary>	The AJD-based log-Euclidean (ALE) Metric. </summary>
-	Metric_ALE,
-	/// <summary>	The Harmonic Metric. </summary>
-	Metric_Harmonic,
-	/// <summary>	The Wasserstein Metric. </summary>
-	Metric_Wasserstein,
-	/// <summary>	The Identity Metric. </summary>
-	Metric_Identity
+	Riemann,		///< The Riemannian Metric.
+	Euclidian,		///< The Euclidian Metric.
+	LogEuclidian,	///< The Log Euclidian Metric.
+	LogDet,			///< The Log Determinant Metric.
+	Kullback,		///< The Kullback Metric.
+	ALE,			///< The AJD-based log-Euclidean (ALE) Metric.
+	Harmonic,		///< The Harmonic Metric.
+	Wasserstein,	///< The Wasserstein Metric.
+	Identity		///< The Identity Metric.
 };
 
 /// <summary>	Convert Metrics to string. </summary>
 /// <param name="metric">	The metric. </param>
 /// <returns>	std::string </returns>
-inline std::string MetricToString(const EMetrics metric)
+inline std::string toString(const EMetric metric)
 {
 	switch (metric)
 	{
-		case Metric_Riemann: return "Riemann";
-		case Metric_Euclidian: return "Euclidian";
-		case Metric_LogEuclidian: return "Log Euclidian";
-		case Metric_LogDet: return "Log Determinant";
-		case Metric_Kullback: return "Kullback";
-		case Metric_ALE: return "AJD-based log-Euclidean";
-		case Metric_Harmonic: return "Harmonic";
-		case Metric_Wasserstein: return "Wasserstein";
-		case Metric_Identity:
-		default: return "Identity";
+		case EMetric::Riemann: return "Riemann";
+		case EMetric::Euclidian: return "Euclidian";
+		case EMetric::LogEuclidian: return "Log Euclidian";
+		case EMetric::LogDet: return "Log Determinant";
+		case EMetric::Kullback: return "Kullback";
+		case EMetric::ALE: return "AJD-based log-Euclidean";
+		case EMetric::Harmonic: return "Harmonic";
+		case EMetric::Wasserstein: return "Wasserstein";
+		case EMetric::Identity: return "Identity";
+		default: return "Invalid Metric";
 	}
 }
 
 /// <summary>	Convert string to Metric. </summary>
 /// <param name="metric">	The metric. </param>
-/// <returns>	<see cref="EMetrics"/> </returns>
-inline EMetrics StringToMetric(const std::string& metric)
+/// <returns>	<see cref="EMetric"/> </returns>
+inline EMetric StringToMetric(const std::string& metric)
 {
-	if (metric == "Riemann") { return Metric_Riemann; }
-	if (metric == "Euclidian") { return Metric_Euclidian; }
-	if (metric == "Log Euclidian") { return Metric_LogEuclidian; }
-	if (metric == "Log Determinant") { return Metric_LogDet; }
-	if (metric == "Kullback") { return Metric_Kullback; }
-	if (metric == "AJD-based log-Euclidean") { return Metric_ALE; }
-	if (metric == "Harmonic") { return Metric_Harmonic; }
-	if (metric == "Wasserstein") { return Metric_Wasserstein; }
-	return Metric_Identity;
+	if (metric == "Riemann") { return EMetric::Riemann; }
+	if (metric == "Euclidian") { return EMetric::Euclidian; }
+	if (metric == "Log Euclidian") { return EMetric::LogEuclidian; }
+	if (metric == "Log Determinant") { return EMetric::LogDet; }
+	if (metric == "Kullback") { return EMetric::Kullback; }
+	if (metric == "AJD-based log-Euclidean") { return EMetric::ALE; }
+	if (metric == "Harmonic") { return EMetric::Harmonic; }
+	if (metric == "Wasserstein") { return EMetric::Wasserstein; }
+	return EMetric::Identity;
 }

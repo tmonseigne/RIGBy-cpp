@@ -9,7 +9,7 @@ using namespace tinyxml2;
 //***** Constructor *****	
 //***********************
 ///-------------------------------------------------------------------------------------------------
-IMatrixClassifier::IMatrixClassifier(const size_t nbClass, const EMetrics metric)
+IMatrixClassifier::IMatrixClassifier(const size_t nbClass, const EMetric metric)
 {
 	IMatrixClassifier::setClassCount(nbClass);
 	m_Metric = metric;
@@ -139,7 +139,7 @@ std::stringstream IMatrixClassifier::printHeader() const
 {
 	stringstream ss;
 	ss << getType() << " Classifier" << endl;
-	ss << "Metric : " << MetricToString(m_Metric) << endl;
+	ss << "Metric : " << toString(m_Metric) << endl;
 	ss << "Number of Classes : " << m_nbClass << endl;
 	return ss;
 }
@@ -153,7 +153,7 @@ bool IMatrixClassifier::saveHeader(XMLElement* data) const
 {
 	data->SetAttribute("type", getType().c_str());					// Set attribute classifier type
 	data->SetAttribute("class-count", int(m_nbClass));				// Set attribute class count
-	data->SetAttribute("metric", MetricToString(m_Metric).c_str());	// Set attribute metric
+	data->SetAttribute("metric", toString(m_Metric).c_str());	// Set attribute metric
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------

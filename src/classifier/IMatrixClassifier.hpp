@@ -17,67 +17,96 @@
 #include "3rd-party/tinyxml2.h"
 #include "utils/Metrics.hpp"
 
+///-------------------------------------------------------------------------------------------------
 /// <summary>	Enumeration of Adaptation Methods for classifier. </summary>
-enum EAdaptations
+enum class EAdaptations
 {
-	/// <summary>	No Adaptation. </summary>
-	Adaptation_None,
-	/// <summary>	Supervised Adaptation. </summary>
-	Adaptation_Supervised,
-	/// <summary>	Unsupervised Adaptation. </summary>
-	Adaptation_Unsupervised
+	None,			///< No Adaptation.
+	Supervised,		///< Supervised Adaptation.
+	Unsupervised	///< Unsupervised Adaptation.
 };
 
+
+/// <summary>	Convert Adaptations to string.</summary>
+/// <param name="type">	The type of adaptation.</param>
+/// <returns>	std::string </returns>
+inline std::string toString(const EAdaptations type)
+{
+	switch (type)
+	{
+		case EAdaptations::None: return "No";
+		case EAdaptations::Supervised: return "Supervised";
+		case EAdaptations::Unsupervised: return "Unsupervised";
+		default: return "Invalid";
+	}
+}
+
+/// <summary>	Convert string to Adaptations.</summary>
+/// <param name="type">	The type of adaptation.</param>
+/// <returns>	<see cref="EAdaptations"/> </returns>
+inline EAdaptations StringToAdaptation(const std::string& type)
+{
+	if (type == "No") { return EAdaptations::None; }
+	if (type == "Supervised") { return EAdaptations::Supervised; }
+	return EAdaptations::Unsupervised;
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
 /// <summary>	Enumeration of Matrix Classifiers. </summary>
-enum EMatrixClassifiers
+enum class EMatrixClassifiers
 {
-	/// <summary>	Minimum Distance To Mean Classifier. </summary>
-	Matrix_Classifier_MDM,
-	/// <summary>	Minimum Distance To Mean REBIAS Classifier. </summary>
-	Matrix_Classifier_MDM_Rebias,
-	/// <summary>	Minimum Distance to Mean with geodesic filtering Real Time assumed. </summary>
-	Matrix_Classifier_FgMDM_RT,
-	/// <summary>	Minimum Distance to Mean with geodesic filtering. </summary>
-	Matrix_Classifier_FgMDM,
-	/// <summary>	Minimum Distance to Mean with geodesic filtering & Rebias adaptation Real Time assumed. </summary>
-	Matrix_Classifier_FgMDM_RT_Rebias,	
-	/// <summary>	Minimum Distance to Mean with geodesic filtering & Rebias adaptation. </summary>
-	Matrix_Classifier_FgMDM_Rebias
+	MDM,				///< Minimum Distance To Mean (MDM) Classifier.
+	MDM_Rebias,			///< Minimum Distance To Mean Rebias (MDM Rebias) Classifier.
+	FgMDM_RT,			///< Minimum Distance to Mean with geodesic filtering (FgMDM) (Real Time adaptation assumed).
+	FgMDM,				///< Minimum Distance to Mean with geodesic filtering (FgMDM).
+	FgMDM_RT_Rebias,	///< Minimum Distance to Mean with geodesic filtering & Rebias adaptation (FgMDM Rebias) (Real Time adaptation assumed).
+	FgMDM_Rebias		///< Minimum Distance to Mean with geodesic filtering & Rebias adaptation (FgMDM Rebias).
 };
 
+
+/// <summary>	Convert Matrix Classifiers to string.</summary>
+/// <param name="type">	The type of classifier.</param>
+/// <returns>	std::string </returns>
+inline std::string toString(const EMatrixClassifiers type)
+{
+	switch (type)
+	{
+		case EMatrixClassifiers::MDM: return "Minimum Distance to Mean (MDM)";
+		case EMatrixClassifiers::MDM_Rebias: return "Minimum Distance to Mean Rebias (MDM Rebias)";
+		case EMatrixClassifiers::FgMDM_RT: return "Minimum Distance to Mean with geodesic filtering (FgMDM) (Real Time adaptation assumed)";
+		case EMatrixClassifiers::FgMDM: return "Minimum Distance to Mean with geodesic filtering (FgMDM)";
+		case EMatrixClassifiers::FgMDM_RT_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias) (Real Time adaptation assumed)";
+		case EMatrixClassifiers::FgMDM_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias)";
+		default: return "Invalid";
+	}
+}
+
+/// <summary>	Convert string to Matrix Classifiers.</summary>
+/// <param name="type">	The type of classifier.</param>
+/// <returns>	<see cref="EMatrixClassifiers"/> </returns>
+inline EMatrixClassifiers StringToMatrixClassifier(const std::string& type)
+{
+	if (type == "Minimum Distance to Mean (MDM)") { return EMatrixClassifiers::MDM; }
+	if (type == "Minimum Distance to Mean Rebias (MDM Rebias)") { return EMatrixClassifiers::MDM_Rebias; }
+	if (type == "Minimum Distance to Mean with geodesic filtering (FgMDM) (Real Time adaptation assumed)") { return EMatrixClassifiers::FgMDM_RT; }
+	if (type == "Minimum Distance to Mean with geodesic filtering (FgMDM)") { return EMatrixClassifiers::FgMDM; }
+	if (type == "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias) (Real Time adaptation assumed)")
+	{
+		return EMatrixClassifiers::FgMDM_RT_Rebias;
+	}
+	return EMatrixClassifiers::FgMDM_Rebias;
+}
+///-------------------------------------------------------------------------------------------------
 
 /// <summary>	Format the Eigen matrix with Full Precision. </summary>
 #define MATRIX_FORMAT Eigen::IOFormat(-2, 0, " ", "\n", "", "", "", "")
 
+///-------------------------------------------------------------------------------------------------
 /// <summary>	Abstract class of Matrix Classifier. </summary>
 class IMatrixClassifier
 {
 public:
-	static std::string getType(const EMatrixClassifiers type)
-	{
-		switch (type)
-		{
-			case Matrix_Classifier_MDM: return "Minimum Distance to Mean";
-			case Matrix_Classifier_MDM_Rebias: return "Minimum Distance to Mean Rebias";
-			case Matrix_Classifier_FgMDM_RT: return "Minimum Distance to Mean with geodesic filtering Real Time assumed";
-			case Matrix_Classifier_FgMDM: return "Minimum Distance to Mean with geodesic filtering";
-			case Matrix_Classifier_FgMDM_RT_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias Real Time assumed";
-			case Matrix_Classifier_FgMDM_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias";
-			default: return "Invalid";
-		}
-	}
-
-	static std::string getAdaptation(const EAdaptations type)
-	{
-		switch (type)
-		{
-			case Adaptation_None: return "No";
-			case Adaptation_Supervised: return "Supervised";
-			case Adaptation_Unsupervised: return "Unsupervised";
-			default: return "Invalid";
-		}
-	}
-
 	/// <summary>	Format the Matrix for XML Saving. </summary>
 	/// <param name="in">	Matrix. </param>
 	/// <param name="out">	Stringstream. </param>
@@ -116,8 +145,8 @@ public:
 
 	/// <summary>	Initializes a new instance of the <see cref="IMatrixClassifier"/> class and set members. </summary>
 	/// <param name="nbClass">	The number of classes. </param>
-	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetrics" />). </param>
-	explicit IMatrixClassifier(size_t nbClass, EMetrics metric);
+	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetric" />). </param>
+	explicit IMatrixClassifier(size_t nbClass, EMetric metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="IMatrixClassifier"/> class. </summary>
 	virtual ~IMatrixClassifier() = default;
@@ -131,7 +160,7 @@ public:
 
 	/// <summary>	get the class count. </summary>
 	virtual size_t getClassCount() const { return m_nbClass; }
-	
+
 	/// <summary>	Train the classifier with the dataset. </summary>
 	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
@@ -145,7 +174,7 @@ public:
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	/// <seealso cref="classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, EAdaptations, const size_t&)"/>
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId,
-						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max());
+						  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max());
 
 	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class. </summary>
 	/// <param name="sample">		The sample to classify. </param>
@@ -156,7 +185,7 @@ public:
 	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>	
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-						  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max()) = 0;	
+						  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) = 0;
 
 	//***********************
 	//***** XML Manager *****
@@ -165,7 +194,7 @@ public:
 	/// <param name="filename">	Filename. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	virtual bool saveXML(const std::string& filename) const;
-	
+
 	/// <summary>	Loads the classifier information from an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
@@ -188,7 +217,7 @@ public:
 	/// <summary>	Get the type of the classifier. </summary>
 	/// <returns>	The type in string. </returns>
 	virtual std::string getType() const = 0;
-	
+
 	/// <summary>	Get the Classifier information for output. </summary>
 	/// <returns>	The Classifier print in stringstream. </returns>
 	virtual std::stringstream print() const;
@@ -225,10 +254,10 @@ public:
 	//*********************	
 	//***** Variables *****
 	//*********************	
-	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetrics" />). </summary>
-	EMetrics m_Metric = Metric_Riemann;
+	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetric" />). </summary>
+	EMetric m_Metric = EMetric::Riemann;
 
-protected:	
+protected:
 	/// <summary>	Prints the header informations.</summary>
 	/// <returns>	Header informations in stringstream</returns>
 	virtual std::stringstream printHeader() const;
@@ -267,15 +296,15 @@ protected:
 	/// <summary>	Save Additionnal informations (none at this level). </summary>
 	/// <returns>	True. </returns>
 	virtual bool saveAdditional(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) const { return true; }
-	
+
 	/// <summary>	Load Additionnal informations (none at this level). </summary>
 	/// <returns>	True. </returns>
 	virtual bool loadAdditional(tinyxml2::XMLElement* /*data*/) { return true; }
-	
+
 	/// <summary>	Save Classes informations (none at this level). </summary>
 	/// <returns>	True. </returns>
 	virtual bool saveClasses(tinyxml2::XMLDocument& /*doc*/, tinyxml2::XMLElement* /*data*/) const { return true; }
-	
+
 	/// <summary>	Load Classes informations (none at this level). </summary>
 	/// <returns>	True. </returns>
 	virtual bool loadClasses(tinyxml2::XMLElement* /*data*/) { return true; }

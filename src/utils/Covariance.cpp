@@ -57,12 +57,12 @@ bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estima
 	MatrixStandardization(in, sample, standard);			// Standardization
 	switch (estimator)										// Switch Method
 	{
-		case Estimator_COV: return CovarianceMatrixCOV(sample, out);
-		case Estimator_SCM: return CovarianceMatrixSCM(sample, out);
-		case Estimator_LWF: return CovarianceMatrixLWF(sample, out);
-		case Estimator_OAS: return CovarianceMatrixOAS(sample, out);
-		case Estimator_MCD: return CovarianceMatrixMCD(sample, out);
-		case Estimator_COR: return CovarianceMatrixCOR(sample, out);
+		case EEstimator::COV: return CovarianceMatrixCOV(sample, out);
+		case EEstimator::SCM: return CovarianceMatrixSCM(sample, out);
+		case EEstimator::LWF: return CovarianceMatrixLWF(sample, out);
+		case EEstimator::OAS: return CovarianceMatrixOAS(sample, out);
+		case EEstimator::MCD: return CovarianceMatrixMCD(sample, out);
+		case EEstimator::COR: return CovarianceMatrixCOR(sample, out);
 		default: return CovarianceMatrixIDE(sample, out);
 	}
 }
@@ -163,47 +163,6 @@ bool CovarianceMatrixCOR(const MatrixXd& samples, MatrixXd& cov)
 bool CovarianceMatrixIDE(const MatrixXd& samples, MatrixXd& cov)
 {
 	cov = MatrixXd::Identity(samples.rows(), samples.rows());
-	return true;
-}
-//---------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------
-bool CovarianceClass(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& cov)
-{
-	// Precomputation
-	if (datasets.empty()) { return false; }
-	const size_t nbClass = datasets.size(), nbFeatures = datasets[0][0].size();
-	vector<size_t> nbSample(nbClass);
-	size_t totalSample = 0;
-	for (size_t k = 0; k < nbClass; ++k)
-	{
-		if (datasets[k].empty()) { return false; }
-		nbSample[k] = datasets[k].size();
-		totalSample += nbSample[k];
-	}
-
-	// Compute Class Covariance
-	cov = MatrixXd::Zero(nbFeatures, nbFeatures);
-	for (size_t k = 0; k < nbClass; ++k)
-	{
-		//Fit Data to existing covariance matrix method
-		MatrixXd classData(nbFeatures, nbSample[k]);
-		for (size_t i = 0; i < nbSample[k]; ++i) { classData.col(i) = datasets[k][i]; }
-
-		// Standardize Features
-		RowVectorXd scale;
-		MatrixStandardScaler(classData, scale);
-
-		//Compute Covariance of this class
-		MatrixXd classCov;
-		if (!CovarianceMatrix(classData, classCov, Estimator_LWF)) { return false; }
-
-		// Rescale
-		for (size_t i = 0; i < nbFeatures; ++i) { for (size_t j = 0; j < nbFeatures; ++j) { classCov(i, j) *= scale[i] * scale[j]; } }
-
-		//Add to cov with good weight
-		cov += (double(nbSample[k]) / double(totalSample)) * classCov;
-	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

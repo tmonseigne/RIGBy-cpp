@@ -14,7 +14,7 @@ using namespace tinyxml2;
 bool CMatrixClassifierFgMDMRT::train(const vector<vector<MatrixXd>>& datasets)
 {
 	if (datasets.empty()) { return false; }
-	if (!Mean(Vector2DTo1D(datasets), m_Ref, Metric_Riemann)) { return false; }	// Compute Reference matrix
+	if (!Mean(Vector2DTo1D(datasets), m_Ref, EMetric::Riemann)) { return false; }	// Compute Reference matrix
 
 	// Transform to the Tangent Space
 	const size_t nbClass = datasets.size();

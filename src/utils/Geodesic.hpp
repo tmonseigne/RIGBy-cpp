@@ -17,15 +17,15 @@
 #include <Eigen/Dense>
 
 /// <summary>	Compute the matrix at the position alpha on the geodesic between A and B with the selected \p metric.\n
-/// - Allowed Metrics : <see cref="Metric_Riemann"/>, <see cref="Metric_Euclidian"/>, <see cref="Metric_LogEuclidian"/>, <see cref="Metric_Identity"/>
+/// - Allowed Metrics : <see cref="EMetric::Riemann"/>, <see cref="EMetric::Euclidian"/>, <see cref="EMetric::LogEuclidian"/>, <see cref="EMetric::Identity"/>
 /// </summary>
 /// <param name="a">		The First Covariance matrix. </param>
 /// <param name="b">		The Second Covariance matrix. </param>
 /// <param name="g">		The Geodesic. </param>
-/// <param name="metric">	(Optional) The metric (see <see cref="EMetrics"/>). </param>
+/// <param name="metric">	(Optional) The metric (see <see cref="EMetric"/>). </param>
 /// <param name="alpha"> 	(Optional) Position on the Geodesic : \f$ 0\leq \text{alpha} \leq 1\f$. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool Geodesic(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, Eigen::MatrixXd& g, EMetrics metric = Metric_Riemann, double alpha = 0.5);
+bool Geodesic(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, Eigen::MatrixXd& g, EMetric metric = EMetric::Riemann, double alpha = 0.5);
 
 /// <summary>	Compute the matrix at the position alpha on the Riemannian geodesic between A and B. \n
 /// \f[ \gamma_\text{R} = A^{1/2} ~ \left( A^{-1/2} ~ B ~ A^{-1/2} \right)^\alpha ~ A^{1/2} \f]

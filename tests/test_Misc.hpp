@@ -16,9 +16,10 @@
 #include <cmath>
 #include <vector>
 #include <type_traits>
+
 #include "classifier/IMatrixClassifier.hpp"
 
-const std::string SEP("\n====================\n");
+const std::string SEP = "\n====================\n";
 
 //*********************************************************************************
 //********** Comparison of values with epsilon tolerance for google test **********

@@ -19,9 +19,9 @@
 /// <summary>	Compute the distance between two matrix with the selected \p metric. </summary>
 /// <param name="a">		The First Covariance matrix. </param>
 /// <param name="b">		The Second Covariance matrix. </param>
-/// <param name="metric">	(Optional) The metric (see <see cref="EMetrics"/>). </param>
+/// <param name="metric">	(Optional) The metric (see <see cref="EMetric"/>). </param>
 /// <returns>	The Distance between A and B. </returns>
-double Distance(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, EMetrics metric = Metric_Riemann);
+double Distance(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, EMetric metric = EMetric::Riemann);
 
 /// <summary>	Compute the Riemannian Distance between two covariance matrices A and B.\n
 /// \f[ d_{\text{R}}(A,B) = \sqrt{\left( \sum_i \log\left(\lambda_i\right)^2 \right)} \f]

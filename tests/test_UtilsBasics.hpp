@@ -14,6 +14,7 @@
 #include "gtest/gtest.h"
 #include "test_Init.hpp"
 #include "test_Misc.hpp"
+
 #include "utils/Basics.hpp"
 #include "utils/Metrics.hpp"
 
@@ -40,8 +41,8 @@ TEST_F(Tests_Basics, MatrixStandardization)
 		calcS[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcC[k][i], Standardization_Center)) << "Error During Centerization" << std::endl;
-			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcS[k][i], Standardization_StandardScale)) << "Error During Standard Scaler" << std::endl;
+			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcC[k][i], EStandardization::Center)) << "Error During Centerization" << std::endl;
+			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcS[k][i], EStandardization::StandardScale)) << "Error During Standard Scaler" << std::endl;
 			const std::string title = "Matrix Center Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(refC[k][i], calcC[k][i])) << ErrorMsg(title, refC[k][i], calcC[k][i]).str();
 			EXPECT_TRUE(isAlmostEqual(refS[k][i], calcS[k][i])) << ErrorMsg(title, refS[k][i], calcS[k][i]).str();
@@ -84,32 +85,34 @@ TEST_F(Tests_Basics, Vector2DTo1D)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Basics, Metrics)
 {
-	EXPECT_TRUE(MetricToString(Metric_Riemann) == "Riemann");
-	EXPECT_TRUE(MetricToString(Metric_Euclidian) == "Euclidian");
-	EXPECT_TRUE(MetricToString(Metric_LogEuclidian) == "Log Euclidian");
-	EXPECT_TRUE(MetricToString(Metric_LogDet) == "Log Determinant");
-	EXPECT_TRUE(MetricToString(Metric_Kullback) == "Kullback");
-	EXPECT_TRUE(MetricToString(Metric_ALE) == "AJD-based log-Euclidean");
-	EXPECT_TRUE(MetricToString(Metric_Harmonic) == "Harmonic");
-	EXPECT_TRUE(MetricToString(Metric_Wasserstein) == "Wasserstein");
-	EXPECT_TRUE(MetricToString(Metric_Identity) == "Identity");
-	EXPECT_TRUE(StringToMetric("Riemann") == Metric_Riemann);
-	EXPECT_TRUE(StringToMetric("Euclidian") == Metric_Euclidian);
-	EXPECT_TRUE(StringToMetric("Log Euclidian") == Metric_LogEuclidian);
-	EXPECT_TRUE(StringToMetric("Log Determinant") == Metric_LogDet);
-	EXPECT_TRUE(StringToMetric("Kullback") == Metric_Kullback);
-	EXPECT_TRUE(StringToMetric("AJD-based log-Euclidean") == Metric_ALE);
-	EXPECT_TRUE(StringToMetric("Harmonic") == Metric_Harmonic);
-	EXPECT_TRUE(StringToMetric("Wasserstein") == Metric_Wasserstein);
-	EXPECT_TRUE(StringToMetric("Identity") == Metric_Identity);
-	EXPECT_TRUE(StringToMetric("") == Metric_Identity);
+	EXPECT_TRUE(toString(EMetric::Riemann) == "Riemann");
+	EXPECT_TRUE(toString(EMetric::Euclidian) == "Euclidian");
+	EXPECT_TRUE(toString(EMetric::LogEuclidian) == "Log Euclidian");
+	EXPECT_TRUE(toString(EMetric::LogDet) == "Log Determinant");
+	EXPECT_TRUE(toString(EMetric::Kullback) == "Kullback");
+	EXPECT_TRUE(toString(EMetric::ALE) == "AJD-based log-Euclidean");
+	EXPECT_TRUE(toString(EMetric::Harmonic) == "Harmonic");
+	EXPECT_TRUE(toString(EMetric::Wasserstein) == "Wasserstein");
+	EXPECT_TRUE(toString(EMetric::Identity) == "Identity");
+	EXPECT_TRUE(StringToMetric("Riemann") == EMetric::Riemann);
+	EXPECT_TRUE(StringToMetric("Euclidian") == EMetric::Euclidian);
+	EXPECT_TRUE(StringToMetric("Log Euclidian") == EMetric::LogEuclidian);
+	EXPECT_TRUE(StringToMetric("Log Determinant") == EMetric::LogDet);
+	EXPECT_TRUE(StringToMetric("Kullback") == EMetric::Kullback);
+	EXPECT_TRUE(StringToMetric("AJD-based log-Euclidean") == EMetric::ALE);
+	EXPECT_TRUE(StringToMetric("Harmonic") == EMetric::Harmonic);
+	EXPECT_TRUE(StringToMetric("Wasserstein") == EMetric::Wasserstein);
+	EXPECT_TRUE(StringToMetric("Identity") == EMetric::Identity);
+	EXPECT_TRUE(StringToMetric("") == EMetric::Identity);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Basics, Validation)
 {
-	const Eigen::MatrixXd m1 = Eigen::MatrixXd::Zero(2, 2), m2 = Eigen::MatrixXd::Zero(1, 2), m3;
+	const Eigen::MatrixXd m1 = Eigen::MatrixXd::Zero(2, 2),
+						  m2 = Eigen::MatrixXd::Zero(1, 2),
+						  m3;
 	std::vector<Eigen::MatrixXd> v;
 
 	EXPECT_TRUE(InRange(1, 0, 2));
@@ -138,7 +141,7 @@ TEST_F(Tests_Basics, Validation)
 	MatrixPrint(m3);
 
 	std::vector<std::string> vs = Split("0,1,2,3.a\n", ",");
-	EXPECT_TRUE(vs.size() == 4 && vs[0] == "0" && vs[1] == "1" && vs[2] == "2" && vs[3] == "3.a")
-		<< vs.size() << " " << vs[0] << " " << vs[1] << " " << vs[2] << " " << vs[3] << std::endl;
+	EXPECT_TRUE(vs.size() == 4 && vs[0] == "0" && vs[1] == "1" && vs[2] == "2" && vs[3] == "3.a") << vs.size() << " " << vs[0] << " " << vs[1] << " " << vs[2]
+ << " " << vs[3] << std::endl;
 }
 //---------------------------------------------------------------------------------------------------

@@ -29,8 +29,8 @@ public:
 	CMatrixClassifierFgMDMRT(const CMatrixClassifierFgMDMRT& obj) { *this = obj; }
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDMRT"/> class and set base members. </summary>
-	/// \copydetails CMatrixClassifierMDM(size_t, EMetrics)
-	explicit CMatrixClassifierFgMDMRT(const size_t nbClass, const EMetrics metric) : CMatrixClassifierMDM(nbClass, metric) { }
+	/// \copydetails CMatrixClassifierMDM(size_t, EMetric)
+	explicit CMatrixClassifierFgMDMRT(const size_t nbClass, const EMetric metric) : CMatrixClassifierMDM(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDMRT"/> class. </summary>
 	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
@@ -65,7 +65,7 @@ public:
 	/// </remarks>
 	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
+				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
 
 
 	//*****************************
@@ -76,10 +76,10 @@ public:
 
 	/// \copydoc CMatrixClassifierMDM::copy(const CMatrixClassifierMDM&)
 	void copy(const CMatrixClassifierFgMDMRT& obj);
-	
+
 	/// \copybrief CMatrixClassifierMDM::getType()
-	/// <returns>	Minimum Distance to Mean with geodesic filtering. </returns>
-	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_FgMDM_RT); }
+	/// <returns>	Minimum Distance to Mean with geodesic filtering (FgMDM). </returns>
+	std::string getType() const override { return toString(EMatrixClassifiers::FgMDM_RT); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>

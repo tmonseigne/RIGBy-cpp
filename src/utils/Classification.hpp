@@ -17,9 +17,6 @@
 #include <vector>
 #include <Eigen/Dense>
 
-/// <summary>	Solver for LDA Computes. </summary>
-enum ESolver { Solver_LSQR, Solver_Eigen };
-
 /// <summary>	 Compute the weight of Linear Discriminant Analysis with Least squares (LSQR) Solver. </summary>
 /// <param name="datasets">	The datasets one class by row and trials on colums. </param>
 /// <param name="weight">	The Weight to apply. </param>
@@ -27,23 +24,14 @@ enum ESolver { Solver_LSQR, Solver_Eigen };
 /// <remarks>	Inspired by <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html">LinearDiscriminantAnalysis</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
 bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
 
-
-/// <summary>	 Compute the weight with Eigenvalue decomposition Solver. </summary>
-/// <param name="datasets">	The datasets one class by row and trials on colums. </param>
-/// <param name="weight">	The Weight to apply. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
-/// <remarks>	Inspired by <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html">LinearDiscriminantAnalysis</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
-bool EigenSolv(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
-
 /// <summary>	 Compute Least squares (LSQR) Weight and transform to FgDA Weight. \n
 ///	\f[ W_{\text{FgDA}} = W^{\mathsf{T}} \times (W \times W^{\mathsf{T}})^{-1} \times W \f]
 /// </summary>
 /// <param name="datasets">	The data set one class by row and trials on colums. </param>
 /// <param name="weight">	The Weight to apply. </param>
-/// <param name="solver">	The solver method, see <see cref="ESolver"/></param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// <remarks>	Method inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>).</remarks>
-bool FgDACompute(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight, const ESolver solver = Solver_LSQR);
+bool FgDACompute(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
 
 /// <summary>	 Apply the weight on the vector. (just a matrix product) </summary>
 /// <param name="in">		Sample to transform. </param>

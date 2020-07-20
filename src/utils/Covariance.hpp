@@ -23,40 +23,47 @@
 //******************** CONSTANTS ********************
 //***************************************************
 /// <summary>	Enumeration of the covariance matrix estimator. Inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a>. </summary>
-enum EEstimator
+enum class EEstimator
 {
-	/// <summary>	The Simple Covariance Estimator. </summary>
-	Estimator_COV,
-	/// <summary>	The Normalized Spatial Covariance Matrix (SCM) Estimator. </summary>
-	Estimator_SCM,
-	/// <summary>	The Ledoit and Wolf Estimator. </summary>
-	Estimator_LWF,
-	/// <summary>	The Oracle Approximating Shrinkage (OAS) Estimator. </summary>
-	Estimator_OAS,
-	/// <summary>	The Minimum Covariance Determinant (MCD) Estimator. </summary>
-	Estimator_MCD,
-	/// <summary>	The Pearson Correlation Estimator. </summary>
-	Estimator_COR,
-	/// <summary>	The Identity Matrix. </summary>
-	Estimator_IDE
+	COV,	///< The Simple Covariance Estimator.
+	SCM,	///< The Normalized Spatial Covariance Matrix (SCM) Estimator.
+	LWF,	///< The Ledoit and Wolf Estimator.
+	OAS,	///< The Oracle Approximating Shrinkage (OAS) Estimator.
+	MCD,	///< The Minimum Covariance Determinant (MCD) Estimator.
+	COR,	///< The Pearson Correlation Estimator.
+	IDE		///< The Identity Matrix.
 };
 
 /// <summary>	Convert estimators to string.</summary>
 /// <param name="estimator">	The estimator.</param>
 /// <returns>	std::string </returns>
-inline std::string EstimatorToString(const EEstimator estimator)
+inline std::string toString(const EEstimator estimator)
 {
 	switch (estimator)
 	{
-		case Estimator_COV: return "Covariance";
-		case Estimator_SCM: return "Normalized Spatial Covariance Matrix (SCM)";
-		case Estimator_LWF: return "Ledoit and Wolf";
-		case Estimator_OAS: return "Oracle Approximating Shrinkage (OAS)";
-		case Estimator_MCD: return "Minimum Covariance Determinant (MCD)";
-		case Estimator_COR: return "Pearson Correlation";
-		case Estimator_IDE: return "Identity";
+		case EEstimator::COV: return "Covariance";
+		case EEstimator::SCM: return "Normalized Spatial Covariance Matrix (SCM)";
+		case EEstimator::LWF: return "Ledoit and Wolf";
+		case EEstimator::OAS: return "Oracle Approximating Shrinkage (OAS)";
+		case EEstimator::MCD: return "Minimum Covariance Determinant (MCD)";
+		case EEstimator::COR: return "Pearson Correlation";
+		case EEstimator::IDE: return "Identity";
 		default: return "Invalid";
 	}
+}
+
+/// <summary>	Convert string to estimators. </summary>
+/// <param name="estimator">	The estimator. </param>
+/// <returns>	<see cref="EEstimator"/> </returns>
+inline EEstimator StringToEstimator(const std::string& estimator)
+{
+	if (estimator == "Covariance") { return EEstimator::COV; }
+	if (estimator == "Normalized Spatial Covariance Matrix (SCM)") { return EEstimator::SCM; }
+	if (estimator == "Ledoit and Wolf") { return EEstimator::LWF; }
+	if (estimator == "Oracle Approximating Shrinkage (OAS)") { return EEstimator::OAS; }
+	if (estimator == "Minimum Covariance Determinant (MCD)") { return EEstimator::MCD; }
+	if (estimator == "Pearson Correlation") { return EEstimator::COR; }
+	return EEstimator::IDE;
 }
 
 //***********************************************************
@@ -95,16 +102,15 @@ bool ShrunkCovariance(Eigen::MatrixXd& cov, double shrinkage = 0.1);
 bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, double shrinkage = 0.1);
 
 /// <summary>	Select the function to call for the covariance matrix.\n
-/// - centralizing the data is useless for <see cref="Estimator_COV"/> and <see cref="Estimator_COR"/>.\n
-/// - centralizing the data is not usual for <see cref="Estimator_SCM"/>.
+/// - centralizing the data is useless for <see cref="EEstimator::COV"/> and <see cref="EEstimator::COR"/>.\n
+/// - centralizing the data is not usual for <see cref="EEstimator::SCM"/>.
 /// </summary>
 /// <param name="in">			The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="out">			The Covariance Matrix. </param>
 /// <param name="estimator">	(Optional) The selected estimator (see <see cref="EEstimator"/>). </param>
 /// <param name="standard">		(Optional) Standardize the data (see <see cref="EStandardization"/>). </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = Estimator_COV,
-					  EStandardization standard                                             = Standardization_Center);
+bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = EEstimator::COV, EStandardization standard = EStandardization::Center);
 
 //***********************************************************
 //******************** COVARIANCES TYPES ********************
@@ -188,14 +194,14 @@ bool CovarianceMatrixLWF(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool CovarianceMatrixOAS(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
-/// <summary> Calculation of the covariance matrix and shrinkage by the method : Minimum Covariance Determinant (MCD).</summary>
+/// <summary>Calculation of the covariance matrix and shrinkage by the method : Minimum Covariance Determinant (MCD).</summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// \todo Not implemented.
 bool CovarianceMatrixMCD(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
-/// <summary> Calculation of the covariance matrix by the method : Pearson Correlation.\n
+/// <summary>	Calculation of the covariance matrix by the method : Pearson Correlation.\n
 /// \f[
 ///		M_{\operatorname{Cov_{COR}}}\left(i,j\right) 
 ///		= \frac{  M_{\operatorname{Cov}}\left(i,j\right) } { \sqrt{  M_{\operatorname{Cov}}\left(i,i\right) *  M_{\operatorname{Cov}}\left(j,j\right) } }
@@ -211,10 +217,3 @@ bool CovarianceMatrixCOR(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// <param name="cov">	  	The Covariance Matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 bool CovarianceMatrixIDE(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
-
-/// <summary> Calculation of the class covariance.</summary>
-/// <param name="datasets">	The datasets one class by row and trials on colums (each sample is a feature vector). </param>
-/// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
-/// <remarks> Used for LDA Solver as in scikit-learn library (<a href="https://github.com/scikit-learn/scikit-learn/blob/1495f69242646d239d89a5713982946b8ffcf9d9/sklearn/discriminant_analysis.py#L96">scikit-learn Class Mean</a>).</remarks>
-bool CovarianceClass(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& cov);

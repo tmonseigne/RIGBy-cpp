@@ -6,18 +6,18 @@ using namespace Eigen;
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------
-double Distance(const MatrixXd& a, const MatrixXd& b, const EMetrics metric)
+double Distance(const MatrixXd& a, const MatrixXd& b, const EMetric metric)
 {
 	if (!HaveSameSize(a, b)) { return 0; }
 	switch (metric)
 	{
-		case Metric_Riemann: return DistanceRiemann(a, b);
-		case Metric_Euclidian: return DistanceEuclidian(a, b);
-		case Metric_LogEuclidian: return DistanceLogEuclidian(a, b);
-		case Metric_LogDet: return DistanceLogDet(a, b);
-		case Metric_Kullback: return DistanceKullbackSym(a, b);
-		case Metric_Wasserstein: return DistanceWasserstein(a, b);
-		case Metric_Identity:
+		case EMetric::Riemann: return DistanceRiemann(a, b);
+		case EMetric::Euclidian: return DistanceEuclidian(a, b);
+		case EMetric::LogEuclidian: return DistanceLogEuclidian(a, b);
+		case EMetric::LogDet: return DistanceLogDet(a, b);
+		case EMetric::Kullback: return DistanceKullbackSym(a, b);
+		case EMetric::Wasserstein: return DistanceWasserstein(a, b);
+		case EMetric::Identity:
 		default: return 1.0;
 	}
 }

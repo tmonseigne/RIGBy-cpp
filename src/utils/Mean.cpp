@@ -14,7 +14,7 @@ static const double EPSILON  = 0.0001;			// 10^{-4}
 static const size_t ITER_MAX = 50;
 
 //---------------------------------------------------------------------------------------------------
-bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metric)
+bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetric metric)
 {
 	if (covs.empty()) { return false; }							// If no matrix in vector
 	if (covs.size() == 1)
@@ -29,23 +29,23 @@ bool Mean(const std::vector<MatrixXd>& covs, MatrixXd& mean, const EMetrics metr
 	}
 
 	// Force Square Matrix for non Euclidian and non Identity metric
-	if (!AreSquare(covs) && (metric != Metric_Euclidian && metric != Metric_Identity))
+	if (!AreSquare(covs) && (metric != EMetric::Euclidian && metric != EMetric::Identity))
 	{
-		cout << "Non Square Matrix is invalid with " << MetricToString(metric) << " metric." << endl;
+		cout << "Non Square Matrix is invalid with " << toString(metric) << " metric." << endl;
 		return false;
 	}
 
 	switch (metric)												// Switch method
 	{
-		case Metric_Riemann: return MeanRiemann(covs, mean);
-		case Metric_Euclidian: return MeanEuclidian(covs, mean);
-		case Metric_LogEuclidian: return MeanLogEuclidian(covs, mean);
-		case Metric_LogDet: return MeanLogDet(covs, mean);
-		case Metric_Kullback: return MeanKullback(covs, mean);
-		case Metric_ALE: return MeanALE(covs, mean);
-		case Metric_Harmonic: return MeanHarmonic(covs, mean);
-		case Metric_Wasserstein: return MeanWasserstein(covs, mean);
-		case Metric_Identity:
+		case EMetric::Riemann: return MeanRiemann(covs, mean);
+		case EMetric::Euclidian: return MeanEuclidian(covs, mean);
+		case EMetric::LogEuclidian: return MeanLogEuclidian(covs, mean);
+		case EMetric::LogDet: return MeanLogDet(covs, mean);
+		case EMetric::Kullback: return MeanKullback(covs, mean);
+		case EMetric::ALE: return MeanALE(covs, mean);
+		case EMetric::Harmonic: return MeanHarmonic(covs, mean);
+		case EMetric::Wasserstein: return MeanWasserstein(covs, mean);
+		case EMetric::Identity:
 		default: return MeanIdentity(covs, mean);
 	}
 }
@@ -221,29 +221,6 @@ bool MeanHarmonic(const vector<MatrixXd>& covs, MatrixXd& mean)
 bool MeanIdentity(const vector<MatrixXd>& covs, MatrixXd& mean)
 {
 	mean = MatrixXd::Identity(covs[0].rows(), covs[0].cols());
-	return true;
-}
-//---------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------
-bool MeanClass(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& mean)
-{
-	if (datasets.empty()) { return false; }
-	const size_t nbClass = datasets.size(), nbFeatures = datasets[0][0].size();
-	vector<size_t> nbSample(nbClass);
-	for (size_t k = 0; k < nbClass; ++k)
-	{
-		if (datasets[k].empty()) { return false; }
-		nbSample[k] = datasets[k].size();
-	}
-
-	// Compute Class Euclidian mean
-	mean = MatrixXd::Zero(nbClass, nbFeatures);
-	for (size_t k = 0; k < nbClass; ++k)
-	{
-		for (size_t i = 0; i < nbSample[k]; ++i) { mean.row(k) += datasets[k][i]; }
-		mean.row(k) /= double(nbSample[k]);
-	}
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

@@ -19,8 +19,8 @@ MatrixXd AffineTransformation(const MatrixXd& ref, const MatrixXd& matrix)
 //---------------------------------------------------------------------------------------------------
 bool MatrixStandardization(MatrixXd& matrix, const EStandardization standard)
 {
-	if (standard == Standardization_Center) { return MatrixCenter(matrix); }
-	if (standard == Standardization_StandardScale) { return MatrixStandardization(matrix); }
+	if (standard == EStandardization::Center) { return MatrixCenter(matrix); }
+	if (standard == EStandardization::StandardScale) { return MatrixStandardization(matrix); }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

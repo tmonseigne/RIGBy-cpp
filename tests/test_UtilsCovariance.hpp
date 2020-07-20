@@ -14,6 +14,7 @@
 #include "gtest/gtest.h"
 #include "test_Misc.hpp"
 #include "test_Init.hpp"
+
 #include "utils/Covariance.hpp"
 
 //---------------------------------------------------------------------------------------------------
@@ -36,7 +37,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COR)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_COR, Standardization_None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::COR, EStandardization::None);
 			const std::string title = "Covariance Matrix COR Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
 		}
@@ -54,7 +55,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COV)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_COV, Standardization_None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::COV, EStandardization::None);
 			const std::string title = "Covariance Matrix COV Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
 		}
@@ -72,7 +73,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_LWF, Standardization_Center);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::LWF, EStandardization::Center);
 			const std::string title = "Covariance Matrix LWF Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
 		}
@@ -92,7 +93,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_MCD, Standardization_Center);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::MCD, EStandardization::Center);
 			//const std::string title = "Covariance Matrix MCD Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			//EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
 		}
@@ -110,7 +111,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_OAS)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_OAS, Standardization_Center);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::OAS, EStandardization::Center);
 			const std::string title = "Covariance Matrix OAS Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
 		}
@@ -128,7 +129,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_SCM)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_SCM, Standardization_None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::SCM, EStandardization::None);
 			const std::string title = "Covariance Matrix SCM Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
 		}
@@ -147,7 +148,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_IDE)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Estimator_IDE, Standardization_None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::IDE, EStandardization::None);
 			const std::string title = "Covariance Matrix IDE Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref, calc[k][i])) << ErrorMsg(title, ref, calc[k][i]).str();
 		}

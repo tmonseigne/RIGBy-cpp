@@ -30,8 +30,8 @@ public:
 	CMatrixClassifierMDM(const CMatrixClassifierMDM& obj) { *this = obj; }
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class and set base members. </summary>
-	/// \copydetails IMatrixClassifier(const size_t, const EMetrics)
-	explicit CMatrixClassifierMDM(size_t nbClass, EMetrics metric);
+	/// \copydetails IMatrixClassifier(const size_t, const EMetric)
+	explicit CMatrixClassifierMDM(size_t nbClass, EMetric metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
 	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
@@ -47,7 +47,7 @@ public:
 	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	/// <summary>	
 	/// -# Set the good number of classes
-	/// -# Compute the mean of each class (row) with the metric (<see cref="EMetrics" />) in <see cref="m_Metric"/> member.
+	/// -# Compute the mean of each class (row) with the metric (<see cref="EMetric" />) in <see cref="m_Metric"/> member.
 	/// -# Set the number of trials for each class.
 	///	</summary>
 	/// \copydetails IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
@@ -64,7 +64,7 @@ public:
 	/// \f]\n
 	/// <b>Remark</b> : The probability is normalized \f$ \sum{\left(\mathcal{P}_i\right)} = 1 \f$\n
 	/// If the classfier is adapted, launch adaptation method (expected class if supervised, predicted class if unsupervised).\n 
-	/// With \f$ C_k \f$ the prototype (mean) of the Class \f$ k \f$, \f$ \gamma_m \f$ the Geodesic (<see cref="Geodesic" />) with the metric \f$ m \f$ (<see cref="EMetrics" />), 
+	/// With \f$ C_k \f$ the prototype (mean) of the Class \f$ k \f$, \f$ \gamma_m \f$ the Geodesic (<see cref="Geodesic" />) with the metric \f$ m \f$ (<see cref="EMetric" />), 
 	/// \f$ S \f$ the current trial (sample) and \f$ N_k \f$ the number of trials for the class \f$ k \f$ (with the current trial).
 	/// \f[
 	/// C_k = \gamma_m\left( C_k,S,\frac{1}{N_k}\right)
@@ -72,7 +72,7 @@ public:
 	///	</summary>
 	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
+				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
 
 	//*****************************
 	//***** Override Operator *****
@@ -86,7 +86,7 @@ public:
 
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean. </returns>
-	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_MDM); }
+	std::string getType() const override { return toString(EMatrixClassifiers::MDM); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -116,7 +116,7 @@ public:
 		os << obj.print().str();
 		return os;
 	}
-	   	 
+
 	//*********************
 	//***** Variables *****
 	//*********************

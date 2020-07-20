@@ -17,7 +17,7 @@ CMatrixClassifierMDM::CMatrixClassifierMDM() { CMatrixClassifierMDM::setClassCou
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t nbClass, const EMetrics metric)
+CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t nbClass, const EMetric metric)
 {
 	CMatrixClassifierMDM::setClassCount(nbClass);
 	m_Metric = metric;
@@ -92,9 +92,9 @@ bool CMatrixClassifierMDM::classify(const MatrixXd& sample, size_t& classId, std
 	for (auto& p : probability) { p /= sumProbability; }
 
 	// Adaptation
-	if (adaptation == Adaptation_None) { return true; }
+	if (adaptation == EAdaptations::None) { return true; }
 	// Get class id for adaptation and increase number of trials, expected if supervised, predicted if unsupervised
-	const size_t id = adaptation == Adaptation_Supervised ? realClassId : classId;
+	const size_t id = adaptation == EAdaptations::Supervised ? realClassId : classId;
 	if (id >= m_nbClass) { return false; }					// Check id (if supervised and bad input)
 	m_NbTrials[id]++;										// Update number of trials for the class id
 	return Geodesic(m_Means[id], sample, m_Means[id], m_Metric, 1.0 / m_NbTrials[id]);

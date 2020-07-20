@@ -11,11 +11,11 @@ using namespace Eigen;
 using namespace tinyxml2;
 
 ///-------------------------------------------------------------------------------------------------
-bool CBias::computeBias(const std::vector<std::vector<MatrixXd>>& datasets, const EMetrics metric) { return computeBias(Vector2DTo1D(datasets), metric); }
+bool CBias::computeBias(const std::vector<std::vector<MatrixXd>>& datasets, const EMetric metric) { return computeBias(Vector2DTo1D(datasets), metric); }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CBias::computeBias(const std::vector<MatrixXd>& datasets, const EMetrics metric)
+bool CBias::computeBias(const std::vector<MatrixXd>& datasets, const EMetric metric)
 {
 	if (!Mean(datasets, m_bias, metric)) { return false; }					// Compute Bias reference
 	m_biasIS = m_bias.sqrt().inverse();										// Inverse Square root of Bias matrix => isR
@@ -47,12 +47,12 @@ void CBias::applyBias(const MatrixXd& in, MatrixXd& out) { out = m_biasIS * in *
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-void CBias::updateBias(const MatrixXd& sample, const EMetrics metric)
+void CBias::updateBias(const MatrixXd& sample, const EMetric metric)
 {
 	m_N++;													// Update number of classify
 	if (m_N == 1) { m_bias = sample; }						// At the first pass we reinitialize the Bias
 	else { Geodesic(m_bias, sample, m_bias, metric, 1.0 / m_N); }
-	m_biasIS = m_bias.sqrt().inverse();						// Inverse Square root of Bias matrix => isR
+	m_biasIS = m_bias.sqrt().inverse();								// Inverse Square root of Bias matrix => isR
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -70,13 +70,13 @@ bool CBias::saveXML(const std::string& filename) const
 	XMLDocument xmlDoc;
 	// Create Root
 	XMLNode* root = xmlDoc.NewElement("Bias");				// Create root node
-	xmlDoc.InsertFirstChild(root);							// Add root to XML
+	xmlDoc.InsertFirstChild(root);								// Add root to XML
 
 	XMLElement* data = xmlDoc.NewElement("Bias-data");		// Create data node
-	if (!saveAdditional(xmlDoc, data)) { return false; }	// Save Optionnal Informations
+	if (!saveAdditional(xmlDoc, data)) { return false; }		// Save Optionnal Informations
 
-	root->InsertEndChild(data);								// Add data to root
-	return xmlDoc.SaveFile(filename.c_str()) == 0;			// save XML (if != 0 it means error)
+	root->InsertEndChild(data);									// Add data to root
+	return xmlDoc.SaveFile(filename.c_str()) == 0;				// save XML (if != 0 it means error)
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ bool CBias::saveAdditional(XMLDocument& doc, XMLElement* data) const
 bool CBias::loadAdditional(XMLElement* data)
 {
 	XMLElement* bias = data->FirstChildElement("Bias");					// Get LDA Weight Node
-	m_N              = bias->IntAttribute("n");							// Get the number of Trials for this class
+	m_N              = bias->IntAttribute("n");										// Get the number of Trials for this class
 	if (!IMatrixClassifier::loadMatrix(bias, m_bias)) { return false; }	// Load Reference Matrix
 	m_biasIS = m_bias.sqrt().inverse();
 	return true;

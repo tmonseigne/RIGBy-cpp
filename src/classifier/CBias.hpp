@@ -27,13 +27,13 @@ public:
 	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
 	/// <param name="metric">The metric.</param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	bool computeBias(const std::vector<std::vector<Eigen::MatrixXd>>& datasets, const EMetrics metric = Metric_Riemann);
-	
+	bool computeBias(const std::vector<std::vector<Eigen::MatrixXd>>& datasets, const EMetric metric = EMetric::Riemann);
+
 	/// <summary> Computes the Bias matrix and reset the number of classification. </summary>
 	/// <param name="datasets">	The data set is a vector of trial. </param>
 	/// <param name="metric">The metric.</param>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
-	bool computeBias(const std::vector<Eigen::MatrixXd>& datasets, const EMetrics metric = Metric_Riemann);
+	bool computeBias(const std::vector<Eigen::MatrixXd>& datasets, const EMetric metric = EMetric::Riemann);
 
 	/// <summary> Applies the Bias on 2D vector of Matrix. </summary>
 	/// <param name="in">The input 2D vector of matrix.</param>
@@ -51,12 +51,12 @@ public:
 	/// <summary> Updates the Bias. </summary>
 	/// <param name="sample">The sample.</param>
 	/// <param name="metric">The metric.</param>
-	void updateBias(const Eigen::MatrixXd& sample, const EMetrics metric = Metric_Riemann);
+	void updateBias(const Eigen::MatrixXd& sample, const EMetric metric = EMetric::Riemann);
 
 	/// <summary> Gets the bias. </summary>
 	/// <returns></returns>
 	Eigen::MatrixXd getBias() const { return m_bias; }
-	
+
 	/// <summary> Set the bias and the inverse square root of biais. </summary>
 	/// <param name="bias">	The new bias.</param>
 	void setBias(const Eigen::MatrixXd& bias);

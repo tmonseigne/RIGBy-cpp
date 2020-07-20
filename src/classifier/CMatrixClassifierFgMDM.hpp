@@ -33,8 +33,8 @@ public:
 	explicit CMatrixClassifierFgMDM(const CMatrixClassifierFgMDMRT& obj) { copy(obj); }
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class and set base members. </summary>
-	/// \copydetails CMatrixClassifierFgMDMRT(size_t, EMetrics)
-	explicit CMatrixClassifierFgMDM(const size_t nbClass, const EMetrics metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
+	/// \copydetails CMatrixClassifierFgMDMRT(size_t, EMetric)
+	explicit CMatrixClassifierFgMDM(const size_t nbClass, const EMetric metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
 	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix and the <see cref="m_Datasets"/> member. </remarks>
@@ -50,7 +50,7 @@ public:
 	/// \copydoc CMatrixClassifierFgMDMRT::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	/// <remarks>	The classifier is train with the new sample. </remarks>
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
+				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
 
 
 	//*****************************
@@ -58,8 +58,8 @@ public:
 	//*****************************
 
 	/// \copybrief CMatrixClassifierMDM::getType()
-	/// <returns>	Minimum Distance to Mean with geodesic filtering. </returns>
-	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_FgMDM); }
+	/// <returns>	Minimum Distance to Mean with geodesic filtering (FgMDM). </returns>
+	std::string getType() const override { return toString(EMatrixClassifiers::FgMDM); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>

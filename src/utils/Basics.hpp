@@ -17,14 +17,11 @@
 #include <type_traits>	// Template type
 
 /// <summary> Enumeration of Standardization method for features matrix data.</summary>
-enum EStandardization
+enum class EStandardization
 {
-	/// <summary>	No change. </summary>
-	Standardization_None,
-	/// <summary>	Standardize data by removing the mean (on each feature separately). </summary>
-	Standardization_Center,
-	/// <summary>	Standardize data by removing the mean and scaling to unit variance (on each feature separately). </summary>
-	Standardization_StandardScale
+	None,			///< No change.
+	Center,			///< Standardize data by removing the mean (on each feature separately).
+	StandardScale	///< Standardize data by removing the mean and scaling to unit variance (on each feature separately).
 };
 
 //************************************************
@@ -46,14 +43,14 @@ Eigen::MatrixXd AffineTransformation(const Eigen::MatrixXd& ref, const Eigen::Ma
 /// <param name="matrix"> 	The matrix to standardize. </param>
 /// <param name="standard">	Standard method. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool MatrixStandardization(Eigen::MatrixXd& matrix, EStandardization standard = Standardization_None);
+bool MatrixStandardization(Eigen::MatrixXd& matrix, EStandardization standard = EStandardization::None);
 
 /// <summary>	Standardize data row by row with selected method (non destructive operation). </summary>
 /// <param name="in"> 		The matrix to standardize. </param>
 /// <param name="out">		The matrix standardized. </param>
 /// <param name="standard">	Standard method. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
-bool MatrixStandardization(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EStandardization standard = Standardization_None);
+bool MatrixStandardization(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EStandardization standard = EStandardization::None);
 
 /// <summary>	Removes the mean of each row at the matrix (destructive operation). </summary>
 /// <param name="matrix">	The Matrix to center. </param>

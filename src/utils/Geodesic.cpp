@@ -5,17 +5,17 @@
 using namespace Eigen;
 
 //---------------------------------------------------------------------------------------------------
-bool Geodesic(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const EMetrics metric, const double alpha)
+bool Geodesic(const MatrixXd& a, const MatrixXd& b, MatrixXd& g, const EMetric metric, const double alpha)
 {
 	if (!HaveSameSize(a, b)) { return false; }							// Verification same size
 	if (!IsSquare(a)) { return false; }									// Verification square matrix
 	if (!InRange(alpha, 0, 1)) { return false; }						// Verification alpha in [0;1]
 	switch (metric)														// Switch metric
 	{
-		case Metric_Riemann: return GeodesicRiemann(a, b, g, alpha);
-		case Metric_Euclidian: return GeodesicEuclidian(a, b, g, alpha);
-		case Metric_LogEuclidian: return GeodesicLogEuclidian(a, b, g, alpha);
-		case Metric_Identity:
+		case EMetric::Riemann: return GeodesicRiemann(a, b, g, alpha);
+		case EMetric::Euclidian: return GeodesicEuclidian(a, b, g, alpha);
+		case EMetric::LogEuclidian: return GeodesicLogEuclidian(a, b, g, alpha);
+		case EMetric::Identity:
 		default: return GeodesicIdentity(a, b, g, alpha);
 	}
 }

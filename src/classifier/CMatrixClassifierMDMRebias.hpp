@@ -31,8 +31,8 @@ public:
 	CMatrixClassifierMDMRebias(const CMatrixClassifierMDMRebias& obj) { *this = obj; }
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDMRebias"/> class and set base members. </summary>
-	/// \copydetails CMatrixClassifierMDM(const size_t, const EMetrics)
-	explicit CMatrixClassifierMDMRebias(const size_t nbClass, const EMetrics metric) : CMatrixClassifierMDM(nbClass, metric) { }
+	/// \copydetails CMatrixClassifierMDM(const size_t, const EMetric)
+	explicit CMatrixClassifierMDMRebias(const size_t nbClass, const EMetric metric) : CMatrixClassifierMDM(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDMRebias"/> class. </summary>
 	~CMatrixClassifierMDMRebias() override = default;
@@ -43,10 +43,10 @@ public:
 
 	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	/// <summary>	
-	/// -# Compute the mean of all trials with the metric (<see cref="EMetrics" />) in <see cref="m_Metric"/> member as reference and store this in <see cref="m_Rebias"/> member.
+	/// -# Compute the mean of all trials with the metric (<see cref="EMetric" />) in <see cref="m_Metric"/> member as reference and store this in <see cref="m_Rebias"/> member.
 	/// -# Set the good number of classes
 	/// -# Apply an affine transformation on each trials with the reference : \f$ S_\text{new} = R^{-1/2} * S * {R^{-1/2}}^{\mathsf{T}} \f$
-	/// -# Compute the mean of each class (row), on transformed trials, with the metric (<see cref="EMetrics" />) in <see cref="m_Metric"/> member.
+	/// -# Compute the mean of each class (row), on transformed trials, with the metric (<see cref="EMetric" />) in <see cref="m_Metric"/> member.
 	/// -# Set the number of trials for each class.
 	///	</summary>
 	/// \copydetails IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
@@ -56,11 +56,11 @@ public:
 	/// <summary>
 	/// Apply an affine transformation on the trial (sample) with the reference : \f$ S_\text{new} = R^{-1/2} * S * {R^{-1/2}}^{\mathsf{T}} \f$ \n
 	/// Update the reference with the current sample the first time and next with the Geodesic between the reference and the current sample.\n
-	/// With \f$ \gamma_m \f$ the Geodesic (<see cref="Geodesic" />) with the metric \f$ m \f$ (<see cref="EMetrics" />) and \f$ N_c \f$ the number of classification : \f$ R = \gamma_\text{m}\left( R,S,\frac{1}{N_c} \right) \f$ \n
+	/// With \f$ \gamma_m \f$ the Geodesic (<see cref="Geodesic" />) with the metric \f$ m \f$ (<see cref="EMetric" />) and \f$ N_c \f$ the number of classification : \f$ R = \gamma_\text{m}\left( R,S,\frac{1}{N_c} \right) \f$ \n
 	///	</summary>
 	/// \copydetails CMatrixClassifierMDM::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
-				  EAdaptations adaptation = Adaptation_None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
+				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
 
 	//*****************************
 	//***** Override Operator *****
@@ -74,7 +74,7 @@ public:
 
 	/// \copybrief IMatrixClassifier::getType()
 	/// <returns>	Minimum Distance to Mean REBIAS. </returns>
-	std::string getType() const override { return IMatrixClassifier::getType(Matrix_Classifier_MDM_Rebias); }
+	std::string getType() const override { return toString(EMatrixClassifiers::MDM_Rebias); }
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
