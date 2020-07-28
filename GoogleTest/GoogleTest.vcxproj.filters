@@ -17,6 +17,9 @@
     <Filter Include="Fichiers de ressources\3rd Party">
       <UniqueIdentifier>{95f17f71-a6b4-4ad2-bcd2-71efbaed0eaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers de ressources\Artifact">
+      <UniqueIdentifier>{0847a766-ee55-440e-8add-d77a0bf5bbbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\tests\test_Misc.hpp">
@@ -97,6 +100,12 @@
     <ClInclude Include="..\src\classifier\CBias.hpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\artifacts\CASR.hpp">
+      <Filter>Fichiers de ressources\Artifact</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Median.hpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\test_main.cpp" />
@@ -150,6 +159,12 @@
     </ClCompile>
     <ClCompile Include="..\src\classifier\CBias.cpp">
       <Filter>Fichiers de ressources\Classifier</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\artifacts\CASR.cpp">
+      <Filter>Fichiers de ressources\Artifact</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Median.cpp">
+      <Filter>Fichiers de ressources\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

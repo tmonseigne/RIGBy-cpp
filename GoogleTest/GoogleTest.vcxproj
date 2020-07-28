@@ -146,6 +146,7 @@
     <ClCompile Include="..\dependencies\googletest\googlemock\src\gmock-all.cc" />
     <ClCompile Include="..\dependencies\googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="..\src\3rd-party\tinyxml2.cpp" />
+    <ClCompile Include="..\src\artifacts\CASR.cpp" />
     <ClCompile Include="..\src\classifier\CBias.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDMRT.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierFgMDM.cpp" />
@@ -160,10 +161,12 @@
     <ClCompile Include="..\src\utils\Featurization.cpp" />
     <ClCompile Include="..\src\utils\Geodesic.cpp" />
     <ClCompile Include="..\src\utils\Mean.cpp" />
+    <ClCompile Include="..\src\utils\Median.cpp" />
     <ClCompile Include="..\tests\test_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\3rd-party\tinyxml2.h" />
+    <ClInclude Include="..\src\artifacts\CASR.hpp" />
     <ClInclude Include="..\src\classifier\CBias.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRT.hpp" />
     <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp" />
@@ -178,6 +181,7 @@
     <ClInclude Include="..\src\utils\Featurization.hpp" />
     <ClInclude Include="..\src\utils\Geodesic.hpp" />
     <ClInclude Include="..\src\utils\Mean.hpp" />
+    <ClInclude Include="..\src\utils\Median.hpp" />
     <ClInclude Include="..\src\utils\Metrics.hpp" />
     <ClInclude Include="..\tests\test_Init.hpp" />
     <ClInclude Include="..\tests\test_Misc.hpp" />
