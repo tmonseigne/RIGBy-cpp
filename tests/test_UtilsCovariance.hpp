@@ -39,7 +39,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COR)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::COR, EStandardization::None);
 			const std::string title = "Covariance Matrix COR Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
 	}
 }
@@ -57,7 +57,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COV)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::COV, EStandardization::None);
 			const std::string title = "Covariance Matrix COV Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
 	}
 }
@@ -75,7 +75,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::LWF, EStandardization::Center);
 			const std::string title = "Covariance Matrix LWF Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
 	}
 }
@@ -95,7 +95,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::MCD, EStandardization::Center);
 			//const std::string title = "Covariance Matrix MCD Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			//EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			//EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
 	}
 }
@@ -113,7 +113,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_OAS)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::OAS, EStandardization::Center);
 			const std::string title = "Covariance Matrix OAS Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
 	}
 }
@@ -131,7 +131,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_SCM)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::SCM, EStandardization::None);
 			const std::string title = "Covariance Matrix SCM Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
 	}
 }
@@ -150,7 +150,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_IDE)
 		{
 			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::IDE, EStandardization::None);
 			const std::string title = "Covariance Matrix IDE Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(ref, calc[k][i])) << ErrorMsg(title, ref, calc[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(ref, calc[k][i])) << ErrorMsg(title, ref, calc[k][i]);
 		}
 	}
 }

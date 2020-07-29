@@ -58,27 +58,27 @@ inline bool isAlmostEqual(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, co
 /// <param name="ref"> 	The reference value. </param>
 /// <param name="calc">	The calculate value. </param>
 /// <returns>	Error message. </returns>
-inline std::stringstream ErrorMsg(const std::string& name, const size_t ref, const size_t calc)
+inline std::string ErrorMsg(const std::string& name, const size_t ref, const size_t calc)
 {
 	std::stringstream ss;
 	ss << SEP << name << " : Reference : " << ref << ", \tCompute : " << calc << SEP;
-	return ss;
+	return ss.str();
 }
 
 /// <summary>	Error message for doubles. </summary>
 /// \copydetails ErrorMsg(const std::string&, const size_t, const size_t)
-inline std::stringstream ErrorMsg(const std::string& name, const double ref, const double calc)
+inline std::string ErrorMsg(const std::string& name, const double ref, const double calc)
 {
 	std::stringstream ss;
 	ss << SEP << name << " : Reference : " << ref << ", \tCompute : " << calc << SEP;
-	return ss;
+	return ss.str();
 }
 
 /// <summary>	Error message for numeric vector. </summary>
 /// <typeparam name="T">	Generic numeric type parameter. </typeparam>
 /// \copydetails ErrorMsg(const std::string&, const size_t, const size_t)
 template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, const std::vector<T>& calc)
+std::string ErrorMsg(const std::string& name, const std::vector<T>& ref, const std::vector<T>& calc)
 {
 	std::stringstream ss;
 	ss << SEP << name << " : " << std::endl << "  Reference : \t[";
@@ -88,23 +88,23 @@ std::stringstream ErrorMsg(const std::string& name, const std::vector<T>& ref, c
 	for (const T& t : calc) { ss << t << ", "; }
 	if (!ref.empty()) { ss.seekp(ss.str().length() - 2); }
 	ss << "] " << SEP;
-	return ss;
+	return ss.str();
 }
 
 /// <summary>	Error message for matrix. </summary>
 /// \copydetails ErrorMsg(const std::string&, const size_t, const size_t)
-inline std::stringstream ErrorMsg(const std::string& name, const Eigen::MatrixXd& ref, const Eigen::MatrixXd& calc)
+inline std::string ErrorMsg(const std::string& name, const Eigen::MatrixXd& ref, const Eigen::MatrixXd& calc)
 {
 	std::stringstream ss;
 	ss << SEP << name << " : " << std::endl << "********** Reference **********\n" << ref << std::endl << "********** Compute **********\n" << calc << SEP;
-	return ss;
+	return ss.str();
 }
 
 /// <summary>	Error message for matrix Classifier. </summary>
 /// \copydetails ErrorMsg(const std::string&, const size_t, const size_t)
-inline std::stringstream ErrorMsg(const std::string& name, const IMatrixClassifier& ref, const IMatrixClassifier& calc)
+inline std::string ErrorMsg(const std::string& name, const IMatrixClassifier& ref, const IMatrixClassifier& calc)
 {
 	std::stringstream ss;
 	ss << SEP << name << " : " << std::endl << "********** Reference **********\n" << ref << std::endl << "********** Compute **********\n" << calc << SEP;
-	return ss;
+	return ss.str();
 }

@@ -36,7 +36,7 @@ TEST_F(Tests_Geodesic, Euclidian)
 	{
 		Eigen::MatrixXd calc;
 		Geodesic(mean, m_dataSet[i], calc, EMetric::Euclidian, 0.5);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic Euclidian Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic Euclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ TEST_F(Tests_Geodesic, LogEuclidian)
 	{
 		Eigen::MatrixXd calc;
 		Geodesic(mean, m_dataSet[i], calc, EMetric::LogEuclidian, 0.5);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic LogEuclidian Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic LogEuclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ TEST_F(Tests_Geodesic, Riemann)
 	{
 		Eigen::MatrixXd calc;
 		Geodesic(mean, m_dataSet[i], calc, EMetric::Riemann, 0.5);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic Riemann Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic Riemann Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ TEST_F(Tests_Geodesic, Identity)
 	{
 		Eigen::MatrixXd calc;
 		Geodesic(mean, m_dataSet[i], calc, EMetric::Identity, 0.5);
-		EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Geodesic Identity Sample [" + std::to_string(i) + "]", ref, calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Geodesic Identity Sample [" + std::to_string(i) + "]", ref, calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------

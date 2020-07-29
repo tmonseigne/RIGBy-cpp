@@ -35,7 +35,7 @@ TEST_F(Tests_Distances, Euclidian)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], EMetric::Euclidian);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Euclidian Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Euclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ TEST_F(Tests_Distances, LogEuclidian)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], EMetric::LogEuclidian);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogEuclidian Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogEuclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ TEST_F(Tests_Distances, Riemann)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], EMetric::Riemann);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Riemann Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Riemann Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ TEST_F(Tests_Distances, LogDet)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], EMetric::LogDet);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogDet Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogDet Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ TEST_F(Tests_Distances, Kullback)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], EMetric::Kullback);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Kullback Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Kullback Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ TEST_F(Tests_Distances, Wasserstein)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], EMetric::Wasserstein);
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ TEST_F(Tests_Distances, Identity)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		const double calc = Distance(mean, m_dataSet[i], EMetric::Identity);
-		EXPECT_TRUE(isAlmostEqual(1, calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", 1, calc).str();
+		EXPECT_TRUE(isAlmostEqual(1, calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", 1, calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------

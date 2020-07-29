@@ -36,7 +36,7 @@ TEST_F(Tests_Featurization, TangentSpace)
 	{
 		Eigen::RowVectorXd calc;
 		EXPECT_TRUE(Featurization(m_dataSet[i], calc, true, mean)) << "Error During Processing";
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("TangentSpace Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("TangentSpace Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ TEST_F(Tests_Featurization, UnTangentSpace)
 	{
 		Eigen::MatrixXd calc;
 		EXPECT_TRUE(UnFeaturization(ref[i], calc, true, mean)) << "Error During Processing";
-		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnTangentSpace Sample [" + std::to_string(i) + "]", m_dataSet[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnTangentSpace Sample [" + std::to_string(i) + "]", m_dataSet[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -65,9 +65,9 @@ TEST_F(Tests_Featurization, Squeeze)
 	{
 		Eigen::RowVectorXd calc;
 		EXPECT_TRUE(Featurization(m_dataSet[i], calc, false, mean)) << "Error During Processing";
-		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", ref[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", ref[i], calc);
 		EXPECT_TRUE(SqueezeUpperTriangle(m_dataSet[i], calc, false)) << "Error During Processing";
-		EXPECT_TRUE(isAlmostEqual(refDiag[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", refDiag[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(refDiag[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", refDiag[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------
@@ -82,9 +82,9 @@ TEST_F(Tests_Featurization, UnSqueeze)
 	{
 		Eigen::MatrixXd calc;
 		EXPECT_TRUE(UnFeaturization(ref[i], calc, false, mean)) << "Error During Processing";
-		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc);
 		EXPECT_TRUE(UnSqueezeUpperTriangle(refDiag[i], calc, false)) << "Error During Processing";
-		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc).str();
+		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc);
 	}
 }
 //---------------------------------------------------------------------------------------------------

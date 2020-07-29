@@ -193,6 +193,7 @@
     <ClInclude Include="..\tests\test_UtilsFeaturization.hpp" />
     <ClInclude Include="..\tests\test_UtilsGeodesics.hpp" />
     <ClInclude Include="..\tests\test_UtilsMean.hpp" />
+    <ClInclude Include="..\tests\test_UtilsMedian.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

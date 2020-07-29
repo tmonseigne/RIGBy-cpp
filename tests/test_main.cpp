@@ -4,6 +4,7 @@
 #include "test_UtilsBasics.hpp"
 #include "test_UtilsCovariance.hpp"
 #include "test_UtilsMean.hpp"
+#include "test_UtilsMedian.hpp"
 #include "test_UtilsDistance.hpp"
 #include "test_UtilsGeodesics.hpp"
 #include "test_UtilsFeaturization.hpp"
@@ -15,7 +16,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		//Code coverage tips (this function is used only if tests failed)
+		//Code coverage tips (this functions are used only if tests failed)
 		const size_t dumS           = 0;
 		const double dumD           = 0;
 		const Eigen::MatrixXd dumM  = Eigen::MatrixXd::Identity(2, 2);

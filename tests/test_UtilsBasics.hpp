@@ -44,8 +44,8 @@ TEST_F(Tests_Basics, MatrixStandardization)
 			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcC[k][i], EStandardization::Center)) << "Error During Centerization" << std::endl;
 			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcS[k][i], EStandardization::StandardScale)) << "Error During Standard Scaler" << std::endl;
 			const std::string title = "Matrix Center Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
-			EXPECT_TRUE(isAlmostEqual(refC[k][i], calcC[k][i])) << ErrorMsg(title, refC[k][i], calcC[k][i]).str();
-			EXPECT_TRUE(isAlmostEqual(refS[k][i], calcS[k][i])) << ErrorMsg(title, refS[k][i], calcS[k][i]).str();
+			EXPECT_TRUE(isAlmostEqual(refC[k][i], calcC[k][i])) << ErrorMsg(title, refC[k][i], calcC[k][i]);
+			EXPECT_TRUE(isAlmostEqual(refS[k][i], calcS[k][i])) << ErrorMsg(title, refS[k][i], calcS[k][i]);
 		}
 	}
 }
@@ -58,7 +58,7 @@ TEST_F(Tests_Basics, GetElements)
 	const std::vector<size_t> idx{ 0, 4, 7 };
 	ref << -3, -6, -1;
 	const Eigen::RowVectorXd calc = GetElements(m_dataSet[0][0].row(0), idx);
-	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("GetElements", ref, calc).str();
+	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("GetElements", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ TEST_F(Tests_Basics, ARange)
 {
 	const std::vector<size_t> ref{ 1, 3, 5, 7, 9 },
 							  calc = ARange(size_t(1), size_t(10), size_t(2));
-	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("ARange", ref, calc).str();
+	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("ARange", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
 

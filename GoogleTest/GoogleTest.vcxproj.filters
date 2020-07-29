@@ -106,6 +106,9 @@
     <ClInclude Include="..\src\utils\Median.hpp">
       <Filter>Fichiers de ressources\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\tests\test_UtilsMedian.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\test_main.cpp" />
