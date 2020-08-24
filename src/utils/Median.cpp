@@ -15,8 +15,11 @@ bool Median(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& median, c
 	if (covs.empty() || covs[0].size() == 0) { return false; }
 	const size_t n = covs.size();		// Number of sample
 
+	// It's possible but incorrect to use squeezed matrix (only the upper triangle) instead of the complete covariance matrix to limit the number of operations.
+	// The coef and the Frobenius norm needs to have the duplicate number in the SPD matrix to be correct.
+
 	// Initial Median is the median of each channel in all matrix of dataset
-	median = covs[0];				// to copy size
+	median = covs[0];					// to copy size
 	for (size_t i = 0; i < median.size(); ++i)
 	{
 		std::vector<double> tmp;
@@ -37,7 +40,10 @@ bool Median(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& median, c
 		for (const auto& cov : covs)
 		{
 			Eigen::MatrixXd difference = cov - prev;
-			double coef = 1.0 / sqrt(difference.cwiseProduct(difference).sum());
+			double coef = sqrt(difference.cwiseProduct(difference).sum());
+			// Personnal hack and security
+			if (coef == 0) { continue; }	// In this case, Median is exactly this current matrix so we don't consider this matrix
+			coef = 1.0 / coef;
 			coefs.push_back(coef);
 			sumCoefs += coef;			// Sum for normalization
 			median += coef * cov;		// Add to the new median

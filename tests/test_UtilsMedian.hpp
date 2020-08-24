@@ -6,6 +6,7 @@
 /// \version 1.0.
 /// \date 29/07/2020.
 /// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
+/// \remarks We use the EEglab Matlab plugin to compare result for validation
 /// 
 ///-------------------------------------------------------------------------------------------------
 
@@ -51,8 +52,10 @@ TEST_F(Tests_Medians, DatasetMedian)
 {
 	Eigen::MatrixXd calc;
 	Eigen::MatrixXd ref(3, 3);
-	ref << 0, 0, 0, 0, 0, 0, 0, 0, 0;
+	ref << 1.749537973777478, 0.002960131606861, 0.020507254841909,
+			0.002960131606861, 1.754563395557952, 0.043042786354499,
+			0.020507254841909, 0.043042786354499, 1.057672472691352;
 	EXPECT_TRUE(Median(m_dataSet, calc)) << "Error During Median Computes";
-	EXPECT_TRUE(calc == ref) << ErrorMsg("Median of Dataset", ref, calc);
+	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Median of Dataset", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
