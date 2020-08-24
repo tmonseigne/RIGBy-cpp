@@ -13,6 +13,7 @@
 
 #include "gtest/gtest.h"
 #include "test_Init.hpp"
+#include "test_Misc.hpp"
 
 #include "utils/Median.hpp"
 #include "utils/Basics.hpp"
@@ -30,9 +31,13 @@ protected:
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Medians, SimpleMedian)
 {
-	std::vector<int> v{ 5, 6, 4, 3, 2, 6, 7, 9, 3 };
+	std::vector<double> v{ 5, 6, 4, 3, 2, 6, 7, 9, 3 };
 	double calc = Median(v);
 	EXPECT_TRUE(calc == 5);
+
+	v.pop_back();
+	calc = Median(v);
+	EXPECT_TRUE(calc == 5.5);
 
 	Eigen::MatrixXd m(3, 3);
 	m << 5, 6, 4, 3, 2, 6, 7, 9, 3;
@@ -41,14 +46,13 @@ TEST_F(Tests_Medians, SimpleMedian)
 }
 //---------------------------------------------------------------------------------------------------
 
-
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Medians, DatasetMedian)
 {
 	Eigen::MatrixXd calc;
-	Eigen::MatrixXd ref(3,3);
+	Eigen::MatrixXd ref(3, 3);
 	ref << 0, 0, 0, 0, 0, 0, 0, 0, 0;
 	EXPECT_TRUE(Median(m_dataSet, calc)) << "Error During Median Computes";
-	//EXPECT_TRUE(calc == ref) << ErrorMsg("Median of Dataset", ref, calc);
+	EXPECT_TRUE(calc == ref) << ErrorMsg("Median of Dataset", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------

@@ -22,9 +22,9 @@
 template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 T Median(std::vector<T>& v)
 {
-	const size_t n = v.size() / 2;
-	std::nth_element(v.begin(), v.begin() + n, v.end());
-	return v[n];
+	const size_t n = v.size() / 2;								// Where is the middle (if odd number of value the decimal part is floor by cast)
+	std::nth_element(v.begin(), v.begin() + n, v.end());		// We sort one number more if we have an even number of value
+	return (v.size() % 2 == 0) ? (v[n] + v[n - 1]) / 2 : v[n];	// For Even number of value we take the mean of the two middle value
 }
 
 /// <summary> Find the median of values of the Eigen Matrix. </summary>
