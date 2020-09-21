@@ -1,15 +1,16 @@
 #include "gtest/gtest.h"
 
 // ReSharper disable CppUnusedIncludeDirective
-#include "test_UtilsBasics.hpp"
-#include "test_UtilsCovariance.hpp"
-#include "test_UtilsMean.hpp"
-#include "test_UtilsMedian.hpp"
-#include "test_UtilsDistance.hpp"
-#include "test_UtilsGeodesics.hpp"
-#include "test_UtilsFeaturization.hpp"
-#include "test_UtilsClassifier.hpp"
-#include "test_MatrixClassifier.hpp"
+//#include "test_UtilsBasics.hpp"
+//#include "test_UtilsCovariance.hpp"
+//#include "test_UtilsMean.hpp"
+#include "test_UtilsMisc.hpp"
+//#include "test_UtilsDistance.hpp"
+//#include "test_UtilsGeodesics.hpp"
+//#include "test_UtilsFeaturization.hpp"
+//#include "test_UtilsClassifier.hpp"
+//#include "test_MatrixClassifier.hpp"
+#include "test_ASR.hpp"
 // ReSharper restore CppUnusedIncludeDirective
 
 int main(int argc, char** argv)

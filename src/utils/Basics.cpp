@@ -179,8 +179,8 @@ bool AreSquare(const vector<MatrixXd>& matrices)
 bool HaveSameSize(const std::vector<MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
-	const size_t R = matrices[0].rows(), C = matrices[0].cols();
-	for (const auto& m : matrices) { if (size_t(m.rows()) != R || size_t(m.cols()) != C) { return false; } }
+	const size_t r = matrices[0].rows(), c = matrices[0].cols();
+	for (const auto& m : matrices) { if (size_t(m.rows()) != r || size_t(m.cols()) != c) { return false; } }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------

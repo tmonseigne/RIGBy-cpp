@@ -1,39 +1,49 @@
 ///-------------------------------------------------------------------------------------------------
 /// 
 /// \file CASR.hpp
-/// \brief Class used to add Rebias to Other Classifier.
+/// \brief Class used to use Artifact Subspace Reconstruction Algorithm.
 /// \author Thibaut Monseigne (Inria).
 /// \version 1.0.
-/// \date 27/08/2019.
+/// \date 27/08/2020.
 /// \copyright <a href="https://choosealicense.com/licenses/agpl-3.0/">GNU Affero General Public License v3.0</a>.
 /// 
 ///-------------------------------------------------------------------------------------------------
 #pragma once
 
-/*
 #include <string>
 #include <vector>
 #include <Eigen/Dense>
-#include <map>
-
-
 #include "3rd-party/tinyxml2.h"
+#include "utils/Metrics.hpp"
+#include "utils/Misc.hpp"
+
 
 class CASR
 {
 public:
 
-	static const std::map<size_t, std::pair<int, int>> Filters;
-	
 	CASR() = default;	///< Initializes a new instance of the <see cref="CASR"/> class.
+
+	/// <summary> Initializes a new instance of the <see cref="CASR"/> class with specified metric </summary>
+	/// <remarks> Only Euclidian and Riemmann metrics are implemnted If other is selected, Euclidian is used. </remarks>
+	//explicit CASR(const EMetric metric) : m_metric(metric) {}
+
 	~CASR() = default;	///< Finalizes an instance of the <see cref="CASR"/> class.
 
-	void computeStat(const Eigen::MatrixXd& data);
-	
-	void train(const std::vector<Eigen::MatrixXd>& dataset, const double rejectionLimit = 5);
+	/// <summary>	Trains the specified dataset. </summary>
+	/// <param name="dataset">	The dataset. </param>
+	/// <param name="rejectionLimit">	The rejection limit. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> if it fails. </returns>
+	bool train(const std::vector<Eigen::MatrixXd>& dataset, const double rejectionLimit = 5);
 
 	bool process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
+	
+	/*
+
+	static const std::map<size_t, std::pair<int, int>> Filters;
+
+	void computeStat(const Eigen::MatrixXd& data);
 	
 	//***********************
 	//***** XML Manager *****
@@ -55,6 +65,22 @@ public:
 	/// <summary>	Load informations in xml element (Bias and number of classification). </summary>
 	/// <returns>	True if it succeeds, false if it fails. </returns>
 	bool loadAdditional(tinyxml2::XMLElement* data);
+*/
+	//***************************
+	//***** Getter / Setter *****
+	//***************************
+
+	/// <summary>	Gets the metric. </summary>
+	/// <returns>	<c>EMetric</c>. </returns>
+	EMetric getMetric() const { return m_metric; }
+	
+	/// <summary>	Gets the median matrix. </summary>
+	/// <returns>	<c>Eigen::MatrixXd</c>. </returns>
+	Eigen::MatrixXd getMedian() const { return m_median; }
+
+	/// <summary>	Gets the transformation matrix. </summary>
+	/// <returns>	<c>Eigen::MatrixXd</c>. </returns>
+	Eigen::MatrixXd getTransformMatrix() const { return m_transform; }
 
 	//*****************************
 	//***** Override Operator *****
@@ -65,8 +91,8 @@ public:
 	/// <param name="obj">	The object to copy. </param>
 	void copy(const CASR& obj);
 
-	/// <summary>	Get the Classifier information for output. </summary>
-	/// <returns>	The Classifier print in stringstream. </returns>
+	/// <summary>	Get the ASR information for output. </summary>
+	/// <returns>	The ASR print in stringstream. </returns>
 	std::string toString() const;
 
 	/// <summary>	Override the affectation operator. </summary>
@@ -98,8 +124,12 @@ public:
 		return os;
 	}
 
+protected:
+
 	//*********************
 	//***** Variables *****
 	//*********************
+	EMetric m_metric = EMetric::Euclidian;	///< Metric Used for computes (only euclidian and Riemann are implemented
+	Eigen::MatrixXd m_median;				///< Median of train dataset
+	Eigen::MatrixXd m_transform;			///< Transformation matrix computed with train dataset
 };
-*/

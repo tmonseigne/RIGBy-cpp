@@ -103,10 +103,13 @@
     <ClInclude Include="..\src\artifacts\CASR.hpp">
       <Filter>Fichiers de ressources\Artifact</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\utils\Median.hpp">
+    <ClInclude Include="..\tests\test_ASR.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Misc.hpp">
       <Filter>Fichiers de ressources\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\tests\test_UtilsMedian.hpp">
+    <ClInclude Include="..\tests\test_UtilsMisc.hpp">
       <Filter>Tests</Filter>
     </ClInclude>
   </ItemGroup>
@@ -166,7 +169,7 @@
     <ClCompile Include="..\src\artifacts\CASR.cpp">
       <Filter>Fichiers de ressources\Artifact</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\utils\Median.cpp">
+    <ClCompile Include="..\src\utils\Misc.cpp">
       <Filter>Fichiers de ressources\Utils</Filter>
     </ClCompile>
   </ItemGroup>
