@@ -267,7 +267,23 @@ bool FitDistribution(const std::vector<double>& values, double& mu, double& sigm
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
+void sortedEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& vectors, std::vector<double>& values, const EMetric metric)
+{
+	// Compute Eigen Vector/Values
+	const Eigen::EigenSolver<Eigen::MatrixXd> es(matrix);
+	const Eigen::MatrixXd tmpVec = es.eigenvectors().real();	// It's complex by default but all imaginary part are 0
+	const Eigen::MatrixXd tmpVal = es.eigenvalues().real();		// It's complex by default but all imaginary part are 0
+	values = std::vector<double>(tmpVal.data(), tmpVal.data() + tmpVal.size());
 
-//---------------------------------------------------------------------------------------------------
-bool RiemannianNonLinearEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& eigenVector) { return true; }
+	// Get order of eigen values.
+	std::vector<size_t> idx(values.size());
+	std::iota(idx.begin(), idx.end(), 0);
+	std::stable_sort(idx.begin(), idx.end(), [&values](const size_t i1, const size_t i2) { return values[i1] < values[i2]; });
+	// Sort Eigen Values
+	std::stable_sort(values.begin(), values.end());
+
+	// Sort Eigen Vector
+	vectors = tmpVec;
+	for (size_t i = 0; i < tmpVec.cols(); ++i) { vectors.col(i) = tmpVec.col(idx[i]); }
+}
 //---------------------------------------------------------------------------------------------------

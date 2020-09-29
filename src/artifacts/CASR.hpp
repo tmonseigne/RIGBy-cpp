@@ -36,9 +36,13 @@ public:
 	/// <returns>	<c>True</c> if it succeeds, <c>false</c> if it fails. </returns>
 	bool train(const std::vector<Eigen::MatrixXd>& dataset, const double rejectionLimit = 5);
 
+	/// <summary>	Apply the ASR algorithm to the input signal. </summary>
+	/// <param name="in">	The input signal. </param>
+	/// <param name="out">	The corrected signal. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> if it fails. </returns>
 	bool process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
-	
+
 	/*
 
 	static const std::map<size_t, std::pair<int, int>> Filters;
@@ -70,17 +74,22 @@ public:
 	//***** Getter / Setter *****
 	//***************************
 
+	/// <summary> Set the metric to use (only Riemann and euclidian is used. </summary>
+	/// <param name="metric">The metric.</param>
+	/// <remarks> If invalid metric is used Euclidian is selected. </remarks>
+	void setMetric(EMetric& metric) { m_metric = (metric == EMetric::Riemann) ? EMetric::Riemann : EMetric::Euclidian; }
+
 	/// <summary>	Gets the metric. </summary>
 	/// <returns>	<c>EMetric</c>. </returns>
 	EMetric getMetric() const { return m_metric; }
-	
+
 	/// <summary>	Gets the median matrix. </summary>
 	/// <returns>	<c>Eigen::MatrixXd</c>. </returns>
 	Eigen::MatrixXd getMedian() const { return m_median; }
 
 	/// <summary>	Gets the transformation matrix. </summary>
 	/// <returns>	<c>Eigen::MatrixXd</c>. </returns>
-	Eigen::MatrixXd getTransformMatrix() const { return m_transform; }
+	Eigen::MatrixXd getTransformMatrix() const { return m_treshold; }
 
 	//*****************************
 	//***** Override Operator *****
@@ -129,7 +138,12 @@ protected:
 	//*********************
 	//***** Variables *****
 	//*********************
-	EMetric m_metric = EMetric::Euclidian;	///< Metric Used for computes (only euclidian and Riemann are implemented
-	Eigen::MatrixXd m_median;				///< Median of train dataset
-	Eigen::MatrixXd m_transform;			///< Transformation matrix computed with train dataset
+	EMetric m_metric    = EMetric::Euclidian;	///< Metric Used for computes (only euclidian and Riemann are implemented
+	size_t m_nChannel   = 0;					///< Number of channel (dimension)
+	bool m_trivial      = true;					///< Define if previous sample was trivial to reconstruct
+	double m_maxChannel = 1;					///< Number of channel (dimension) to reconstruct in fraction, 0 for nothing 1 for all
+	Eigen::MatrixXd m_median;					///< Median computed with train dataset
+	Eigen::MatrixXd m_treshold;					///< Treshold matrix computed with train dataset
+	Eigen::MatrixXd m_r;						///< Last Reconstruction matrix
+	Eigen::MatrixXd m_cov;						///< Last Covariance matrix
 };

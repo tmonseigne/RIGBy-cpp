@@ -14,6 +14,7 @@
 
 #include <Eigen/Dense>
 #include <vector>
+#include "Metrics.hpp"
 
 //---------------------------------------------------------------------------
 //------------------------------ Matrix Median ------------------------------
@@ -125,11 +126,20 @@ bool FitDistribution(const std::vector<double>& values, double& mu, double& sigm
 //------------------------------ Riemannian Eigen Values ------------------------------
 //-------------------------------------------------------------------------------------
 
+/// <summary>	Compute sorted eigen vector of the matrix. </summary>
+/// <param name="matrix">	the input matrix. </param>
+/// <param name="vectors"> Sorted eigen vectors. </param>
+/// <param name="values">	Sorted eigen values. </param>
+/// <param name="metric">	metric used for vectors.</param>
+/// <remarks>	Actually only euclidian method is implemented.\n
+/// For Riemmanian metric, we must have some optimisation algorithm. </remarks>
+void sortedEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& vectors, std::vector<double>& values, const EMetric metric = EMetric::Euclidian);
+
 //-------------------------------------------------------------------------------------------------
 /// <summary>	Compute the eigen vector of the input matrix. </summary>
 /// <param name="matrix">  			input Matrix. </param>
 /// <param name="eigenVector">  	Eigen Vector of input input matrix. </param>
 /// <returns>	True if it succeeds, false if it fails. </returns>
 /// <remarks> This algorithm is in <a href="https://sccn.ucsd.edu/eeglab/index.php">EEGLAB</a> plugin and inspired by the paper "A Riemannian Newton Algorithm for Nonlinear Eigenvalue Problems", Zhi Zhao, Zheng - Jian Bai, and Xiao - Qing Jin, SIAM Journal on Matrix Analysisand Applications, 36(2), 752 - 774, 2015. </remarks>
-bool RiemannianNonLinearEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& eigenVector);
+//bool RiemannianNonLinearEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& eigenVector);
 //-------------------------------------------------------------------------------------------------

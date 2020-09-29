@@ -34,7 +34,6 @@ TEST_F(Tests_ASR, trainASR)
 {
 	CASR asr;
 	asr.train(m_dataset);
-	std::cout << asr << std::endl;
 
 	Eigen::MatrixXd refMedian(3, 3), refTransformation(3, 3);
 	refMedian << 1.32267188, 0.00105802, 0.00871490,
@@ -44,10 +43,31 @@ TEST_F(Tests_ASR, trainASR)
 			3.44884211, -1.60796319, 0.00220615,
 			1.31682195, 2.82467797, 0.21177757;
 
-	EXPECT_TRUE(asr.getMetric()== EMetric::Euclidian) << "Asr Train Metric : Reference : " << toString(EMetric::Euclidian)
-			<< ", \tCompute : " << toString(asr.getMetric());
+	EXPECT_TRUE(asr.getMetric() == EMetric::Euclidian) << "Asr Train Metric : Reference : " << toString(EMetric::Euclidian)
+		<< ", \tCompute : " << toString(asr.getMetric());
 	EXPECT_TRUE(isAlmostEqual(asr.getMedian(), refMedian)) << ErrorMsg("Asr Train Median", asr.getMedian(), refMedian);
 	EXPECT_TRUE(isAlmostEqual(asr.getTransformMatrix(), refTransformation))
-			<< ErrorMsg("Asr Train Transformation Matrix", asr.getTransformMatrix(), refTransformation);
+		<< ErrorMsg("Asr Train Transformation Matrix", asr.getTransformMatrix(), refTransformation);
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_ASR, ProcessASR)
+{
+	CASR asr;
+	m_dataset = InitDataset::FirstClassDataset();
+	asr.train(m_dataset);
+
+	std::vector<Eigen::MatrixXd> testset = InitDataset::SecondClassDataset();
+	std::vector<Eigen::MatrixXd> result(testset.size());
+	for (size_t i = 0; i < testset.size(); ++i)
+	{
+		testset[i] *= 2;
+		asr.process(testset[i], result[i]);
+	}
+	for (size_t i = 1; i < testset.size(); ++i)
+	{
+		EXPECT_FALSE(isAlmostEqual(result[i], testset[i])) << "the sample " + std::to_string(i) + " wasn't reconstructed";
+	}
 }
 //---------------------------------------------------------------------------------------------------

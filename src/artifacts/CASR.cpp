@@ -2,56 +2,38 @@
 
 #include "utils/Misc.hpp"
 #include "utils/Covariance.hpp"
+#include "utils/Mean.hpp"
 
-#include <boost/math/special_functions/gamma.hpp>
+#include <boost/math/special_functions/detail/igamma_inverse.hpp>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include <cmath>
 #include <numeric>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 ///-------------------------------------------------------------------------------------------------
 bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejectionLimit)
 {
 	if (dataset.empty() || dataset[0].size() == 0) { return false; }
 	const size_t n = dataset.size();	// Number of samples
-	const size_t c = dataset[0].rows();	// Number of channels
+	m_nChannel     = dataset[0].rows();	// Number of channels
 
 	//========== Compute the covariance matrix ==========
 	std::vector<Eigen::MatrixXd> covs(n);
 	//for (size_t i = 0; i < n; ++i) { if (!CovarianceMatrixLWF(dataset[i], covs[i])) { return false; } }	// We assume data is centered
-	for (size_t i = 0; i < n; ++i)
-	{
-		if (!CovarianceMatrix(dataset[i], covs[i], EEstimator::LWF, EStandardization::Center)) { return false; }
-	}
+	for (size_t i = 0; i < n; ++i) { if (!CovarianceMatrix(dataset[i], covs[i], EEstimator::LWF, EStandardization::Center)) { return false; } }
 
 	//========== Compute Square Root of Median ==========
 	if (!Median(covs, m_median)) { return false; }
 	m_median = m_median.sqrt();
 
 	//========== Compute Eigen vectors ==========
-	//Eigen::MatrixXd eigVector;
-	//std::vector<double> eigValues;
-	//if (m_metric == EMetric::Riemann) { if (!RiemannianNonLinearEigenVector(median, eigVector)) { return false; } }
-	//else
-	//{
-	//Eigen::EigenSolver<Eigen::MatrixXd> es(median);
-	//eigVector                 = es.eigenvectors().real();	// It's complex by default but all imaginary part are 0
-	//const Eigen::MatrixXd tmp = es.eigenvalues().real();	// It's complex by default but all imaginary part are 0
-	//eigValues                 = std::vector<double>(tmp.data(), tmp.data() + tmp.size());
-	//}
-
-	const Eigen::EigenSolver<Eigen::MatrixXd> es(m_median);
-	Eigen::MatrixXd eigVector     = es.eigenvectors().real();	// It's complex by default but all imaginary part are 0
-	const Eigen::MatrixXd tmp     = es.eigenvalues().real();	// It's complex by default but all imaginary part are 0
-	std::vector<double> eigValues = std::vector<double>(tmp.data(), tmp.data() + tmp.size());
-
-	// Sort Eigen vector
-	std::vector<size_t> idx(eigValues.size());
-	std::iota(idx.begin(), idx.end(), 0);
-	std::stable_sort(idx.begin(), idx.end(), [&eigValues](const size_t i1, const size_t i2) { return eigValues[i1] < eigValues[i2]; });
-
-	Eigen::MatrixXd tmpEigVector = eigVector;
-	for (size_t i = 0; i < eigVector.cols(); ++i) { eigVector.col(i) = tmpEigVector.col(idx[i]); }
+	Eigen::MatrixXd eigVector;
+	std::vector<double> eigValues;
+	sortedEigenVector(m_median, eigVector, eigValues, m_metric);
 
 	//========== Compute the ponderate dataset ==========
 	std::vector<Eigen::MatrixXd> newDataset;
@@ -61,17 +43,83 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 
 	//========== Compute the "fit" distribution ==========
 	// Compute the RMS of each channel for each sample
-	std::vector<std::vector<double>> rms(c, std::vector<double>(n));
-	for (size_t i = 0; i < n; ++i) { for (size_t j = 0; j < c; ++j) { rms[j][i] = sqrt(newDataset[i].col(j).mean()); } }
+	std::vector<std::vector<double>> rms(m_nChannel, std::vector<double>(n));
+	for (size_t i = 0; i < n; ++i) { for (size_t j = 0; j < m_nChannel; ++j) { rms[j][i] = sqrt(newDataset[i].col(j).mean()); } }
 
 	// Compute the "fit" distribution
-	std::vector<double> mu(c, 0.0), sigma(c, 0.0);
-	for (size_t i = 0; i < c; ++i) { FitDistribution(rms[i], mu[i], sigma[i]); }
+	std::vector<double> mu(m_nChannel, 0.0), sigma(m_nChannel, 0.0);
+	for (size_t i = 0; i < m_nChannel; ++i) { FitDistribution(rms[i], mu[i], sigma[i]); }
 
 	// Compute the Transform Matrix
-	m_transform = Eigen::MatrixXd::Zero(c, c);
-	for (size_t i = 0; i < c; ++i) { m_transform(i, i) = mu[i] + rejectionLimit * sigma[i]; }
-	m_transform *= eigVector.transpose();
+	m_treshold = Eigen::MatrixXd::Zero(m_nChannel, m_nChannel);
+	for (size_t i = 0; i < m_nChannel; ++i) { m_treshold(i, i) = mu[i] + rejectionLimit * sigma[i]; }
+	m_treshold *= eigVector.transpose();
+
+	// Initialize Reconstruction matrix and trivial
+	m_r       = Eigen::MatrixXd::Identity(m_nChannel, m_nChannel);
+	m_trivial = true;
+	return true;
+}
+
+bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
+{
+	// Check if input data is compatible with train data and if we don't limit so mutch the reconstruction
+	out = in;
+	if (out.rows() != m_nChannel) { return false; }
+	const size_t begin = size_t((1.0 - m_maxChannel) * m_nChannel);	// We define the number of channels to non reconstruct
+	if (begin == m_nChannel) { return true; }
+	if (m_r.size() == 0) { m_r = Eigen::MatrixXd::Identity(m_nChannel, m_nChannel); }
+
+	// Compute Covariance matrix
+	Eigen::MatrixXd cov;
+	if (!CovarianceMatrix(in, cov, EEstimator::LWF, EStandardization::Center)) { return false; }
+	if (m_cov.size() == 0) { m_cov = cov; }									// if first time
+	else { if (!Mean({ m_cov, cov }, m_cov, m_metric)) { return false; } }	// else mean of the both
+
+	// Compute Eigen vector & values
+	Eigen::MatrixXd eigVector;
+	std::vector<double> eigValues;
+	sortedEigenVector(m_cov, eigVector, eigValues, m_metric);
+
+	// Check if eigen values is over threshold computes during train (ponderate by eigen vector)
+	Eigen::MatrixXd threshold = (m_treshold * eigVector).cwiseAbs2();
+	bool trivial              = true;
+	std::vector<bool> keep(m_nChannel, true);
+	for (size_t i = begin; i < m_nChannel; ++i)
+	{
+		if (eigValues[i] >= threshold.col(i).sum())
+		{
+			keep[i] = false;
+			trivial = false;
+		}
+	}
+
+	// Check if All channels are clean
+	if (trivial) { m_r = Eigen::MatrixXd::Identity(m_nChannel, m_nChannel); }
+	else	// if not...
+	{
+		// Compute the reconstruction matrix with bad channels 
+		Eigen::MatrixXd tmp = eigVector.transpose() * m_median;
+		for (size_t i = begin; i < m_nChannel; ++i) { if (!keep[i]) { tmp.row(i).setZero(); } }
+		const Eigen::MatrixXd newR = m_median * tmp.completeOrthogonalDecomposition().pseudoInverse() * eigVector.transpose();
+
+		if (!m_trivial)
+		{
+			// Compute blend values for the samples
+			const size_t nSample = in.cols();
+			std::vector<double> blend(nSample);
+			std::iota(blend.begin(), blend.end(), 1);	// Range 1 to nSample (inclued)
+			for (auto& b : blend) { b = (1 - cos(M_PI * (b / double(nSample)))) / 2.0; }
+
+			// Apply reconstruction ponderate by the blend (we considere the old reconstruction matrix for the second part)
+			Eigen::MatrixXd t1 = newR * in;
+			Eigen::MatrixXd t2 = m_r * in;
+			for (size_t i = 0; i < nSample; ++i) { out.col(i) = (blend[i] * t1.col(i)) + ((1 - blend[i]) * t2.col(i)); }
+		}
+		m_r = newR;	// Update the reconstruction matrix
+	}
+	m_trivial = trivial;
+
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -83,16 +131,16 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 ///-------------------------------------------------------------------------------------------------
 bool CASR::isEqual(const CASR& obj, const double precision) const
 {
-	return m_metric == obj.m_metric && m_median == obj.m_median && m_transform == obj.m_transform;
+	return m_metric == obj.m_metric && m_median == obj.m_median && m_treshold == obj.m_treshold;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
 void CASR::copy(const CASR& obj)
 {
-	m_metric = obj.m_metric;
-	m_median = obj.m_median;
-	m_transform = obj.m_transform;
+	m_metric   = obj.m_metric;
+	m_median   = obj.m_median;
+	m_treshold = obj.m_treshold;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -100,9 +148,22 @@ void CASR::copy(const CASR& obj)
 std::string CASR::toString() const
 {
 	std::stringstream ss;
-	ss << "Metric = " << (m_metric == EMetric::Riemann ? "Riemann" : "Euclidian") << std::endl;	// tostring(EMetrics) doesn't work
-	ss << "Median = " << std::endl << m_median << std::endl;
-	ss << "Transformation matrix = " << std::endl << m_transform << std::endl;
+	ss << "Metric : " << (m_metric == EMetric::Riemann ? "Riemann" : "Euclidian") << std::endl;	// tostring(EMetrics) doesn't work
+	if (m_nChannel == 0) { ss << "Train not done" << std::endl; }
+	else
+	{
+		ss << "Train done." << std::endl;
+		ss << size_t(m_maxChannel * double(m_nChannel)) << "/" << m_nChannel << " channels can be reconstruted." << std::endl;
+		ss << "Median matrix is : " << std::endl << m_median << std::endl;
+		ss << "Treshold matrix is : " << std::endl << m_treshold << std::endl;
+		if (m_cov.size() == 0) { ss << "No process launched yet." << std::endl; }
+		else
+		{
+			ss << "Last sample " << (m_trivial ? "was" : "wasn't") << " trivial." << std::endl;
+			ss << "Last Reconstruction Matrix : " << std::endl << m_r << std::endl;
+			ss << "Last Covariance Matrix : " << std::endl << m_cov << std::endl;
+		}
+	}
 	return ss.str();
 }
 ///-------------------------------------------------------------------------------------------------
