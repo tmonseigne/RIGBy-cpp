@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -118,7 +118,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\boost_1_74_0;$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\boost_1_74_0;$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -134,7 +134,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\boost_1_74_0;$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;C:\Libs\Eigen;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\boost_1_74_0;$(SolutionDir)dependencies\googletest\googletest;$(SolutionDir)dependencies\googletest\googletest\include;$(SolutionDir)dependencies\googletest\googlemock;$(SolutionDir)dependencies\googletest\googlemock\include;$(SolutionDir)dependencies\eigen;$(SolutionDir)tests;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -154,47 +154,47 @@
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDM.cpp" />
     <ClCompile Include="..\src\classifier\CMatrixClassifierMDMRebias.cpp" />
     <ClCompile Include="..\src\classifier\IMatrixClassifier.cpp" />
-    <ClCompile Include="..\src\utils\Basics.cpp" />
-    <ClCompile Include="..\src\utils\Classification.cpp" />
-    <ClCompile Include="..\src\utils\Covariance.cpp" />
-    <ClCompile Include="..\src\utils\Distance.cpp" />
-    <ClCompile Include="..\src\utils\Featurization.cpp" />
-    <ClCompile Include="..\src\utils\Geodesic.cpp" />
-    <ClCompile Include="..\src\utils\Mean.cpp" />
-    <ClCompile Include="..\src\utils\Misc.cpp" />
-    <ClCompile Include="..\tests\test_main.cpp" />
+    <ClCompile Include="..\src\Basics.cpp" />
+    <ClCompile Include="..\src\Classification.cpp" />
+    <ClCompile Include="..\src\Covariance.cpp" />
+    <ClCompile Include="..\src\Distance.cpp" />
+    <ClCompile Include="..\src\Featurization.cpp" />
+    <ClCompile Include="..\src\Geodesic.cpp" />
+    <ClCompile Include="..\src\Mean.cpp" />
+    <ClCompile Include="..\src\Misc.cpp" />
+    <ClCompile Include="..\test\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\3rd-party\tinyxml2.h" />
-    <ClInclude Include="..\src\artifacts\CASR.hpp" />
-    <ClInclude Include="..\src\classifier\CBias.hpp" />
-    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRT.hpp" />
-    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDM.hpp" />
-    <ClInclude Include="..\src\classifier\CMatrixClassifierFgMDMRTRebias.hpp" />
-    <ClInclude Include="..\src\classifier\CMatrixClassifierMDM.hpp" />
-    <ClInclude Include="..\src\classifier\CMatrixClassifierMDMRebias.hpp" />
-    <ClInclude Include="..\src\classifier\IMatrixClassifier.hpp" />
-    <ClInclude Include="..\src\utils\Basics.hpp" />
-    <ClInclude Include="..\src\utils\Classification.hpp" />
-    <ClInclude Include="..\src\utils\Covariance.hpp" />
-    <ClInclude Include="..\src\utils\Distance.hpp" />
-    <ClInclude Include="..\src\utils\Featurization.hpp" />
-    <ClInclude Include="..\src\utils\Geodesic.hpp" />
-    <ClInclude Include="..\src\utils\Mean.hpp" />
-    <ClInclude Include="..\src\utils\Misc.hpp" />
-    <ClInclude Include="..\src\utils\Metrics.hpp" />
-    <ClInclude Include="..\tests\test_ASR.hpp" />
-    <ClInclude Include="..\tests\test_Init.hpp" />
-    <ClInclude Include="..\tests\test_Misc.hpp" />
-    <ClInclude Include="..\tests\test_MatrixClassifier.hpp" />
-    <ClInclude Include="..\tests\test_UtilsBasics.hpp" />
-    <ClInclude Include="..\tests\test_UtilsClassifier.hpp" />
-    <ClInclude Include="..\tests\test_UtilsCovariance.hpp" />
-    <ClInclude Include="..\tests\test_UtilsDistance.hpp" />
-    <ClInclude Include="..\tests\test_UtilsFeaturization.hpp" />
-    <ClInclude Include="..\tests\test_UtilsGeodesics.hpp" />
-    <ClInclude Include="..\tests\test_UtilsMean.hpp" />
-    <ClInclude Include="..\tests\test_UtilsMisc.hpp" />
+    <ClInclude Include="..\include\geometry\3rd-party\tinyxml2.h" />
+    <ClInclude Include="..\include\geometry\artifacts\CASR.hpp" />
+    <ClInclude Include="..\include\geometry\classifier\CBias.hpp" />
+    <ClInclude Include="..\include\geometry\classifier\CMatrixClassifierFgMDMRT.hpp" />
+    <ClInclude Include="..\include\geometry\classifier\CMatrixClassifierFgMDM.hpp" />
+    <ClInclude Include="..\include\geometry\classifier\CMatrixClassifierFgMDMRTRebias.hpp" />
+    <ClInclude Include="..\include\geometry\classifier\CMatrixClassifierMDM.hpp" />
+    <ClInclude Include="..\include\geometry\classifier\CMatrixClassifierMDMRebias.hpp" />
+    <ClInclude Include="..\include\geometry\classifier\IMatrixClassifier.hpp" />
+    <ClInclude Include="..\include\geometry\Basics.hpp" />
+    <ClInclude Include="..\include\geometry\Classification.hpp" />
+    <ClInclude Include="..\include\geometry\Covariance.hpp" />
+    <ClInclude Include="..\include\geometry\Distance.hpp" />
+    <ClInclude Include="..\include\geometry\Featurization.hpp" />
+    <ClInclude Include="..\include\geometry\Geodesic.hpp" />
+    <ClInclude Include="..\include\geometry\Mean.hpp" />
+    <ClInclude Include="..\include\geometry\Misc.hpp" />
+    <ClInclude Include="..\include\geometry\Metrics.hpp" />
+    <ClInclude Include="..\test\test_ASR.hpp" />
+    <ClInclude Include="..\test\init.hpp" />
+    <ClInclude Include="..\test\misc.hpp" />
+    <ClInclude Include="..\test\test_MatrixClassifier.hpp" />
+    <ClInclude Include="..\test\test_Basics.hpp" />
+    <ClInclude Include="..\test\test_Classifier.hpp" />
+    <ClInclude Include="..\test\test_Covariance.hpp" />
+    <ClInclude Include="..\test\test_Distance.hpp" />
+    <ClInclude Include="..\test\test_Featurization.hpp" />
+    <ClInclude Include="..\test\test_Geodesics.hpp" />
+    <ClInclude Include="..\test\test_Mean.hpp" />
+    <ClInclude Include="..\test\test_Misc.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
