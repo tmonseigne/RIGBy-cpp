@@ -12,10 +12,10 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "test_Misc.hpp"
-#include "test_Init.hpp"
+#include "misc.hpp"
+#include "init.hpp"
 
-#include "utils/Featurization.hpp"
+#include <geometry/Featurization.hpp>
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Featurization : public testing::Test
@@ -23,7 +23,7 @@ class Tests_Featurization : public testing::Test
 protected:
 	std::vector<Eigen::MatrixXd> m_dataSet;
 
-	void SetUp() override { m_dataSet = Vector2DTo1D(InitCovariance::LWF::Reference()); }
+	void SetUp() override { m_dataSet = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference()); }
 };
 //---------------------------------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ TEST_F(Tests_Featurization, TangentSpace)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::RowVectorXd calc;
-		EXPECT_TRUE(Featurization(m_dataSet[i], calc, true, mean)) << "Error During Processing";
+		EXPECT_TRUE(Geometry::Featurization(m_dataSet[i], calc, true, mean)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("TangentSpace Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -49,7 +49,7 @@ TEST_F(Tests_Featurization, UnTangentSpace)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		EXPECT_TRUE(UnFeaturization(ref[i], calc, true, mean)) << "Error During Processing";
+		EXPECT_TRUE(Geometry::UnFeaturization(ref[i], calc, true, mean)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnTangentSpace Sample [" + std::to_string(i) + "]", m_dataSet[i], calc);
 	}
 }
@@ -64,9 +64,9 @@ TEST_F(Tests_Featurization, Squeeze)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::RowVectorXd calc;
-		EXPECT_TRUE(Featurization(m_dataSet[i], calc, false, mean)) << "Error During Processing";
+		EXPECT_TRUE(Geometry::Featurization(m_dataSet[i], calc, false, mean)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", ref[i], calc);
-		EXPECT_TRUE(SqueezeUpperTriangle(m_dataSet[i], calc, false)) << "Error During Processing";
+		EXPECT_TRUE(Geometry::SqueezeUpperTriangle(m_dataSet[i], calc, false)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(refDiag[i], calc)) << ErrorMsg("Squeeze Sample [" + std::to_string(i) + "]", refDiag[i], calc);
 	}
 }
@@ -81,9 +81,9 @@ TEST_F(Tests_Featurization, UnSqueeze)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		EXPECT_TRUE(UnFeaturization(ref[i], calc, false, mean)) << "Error During Processing";
+		EXPECT_TRUE(Geometry::UnFeaturization(ref[i], calc, false, mean)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc);
-		EXPECT_TRUE(UnSqueezeUpperTriangle(refDiag[i], calc, false)) << "Error During Processing";
+		EXPECT_TRUE(Geometry::UnSqueezeUpperTriangle(refDiag[i], calc, false)) << "Error During Processing";
 		EXPECT_TRUE(isAlmostEqual(m_dataSet[i], calc)) << ErrorMsg("UnSqueeze Sample [" + std::to_string(i) + "]", m_dataSet[i], calc);
 	}
 }

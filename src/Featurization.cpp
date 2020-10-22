@@ -1,100 +1,92 @@
-#include "Featurization.hpp"
+#include "geometry/Featurization.hpp"
 #include <unsupported/Eigen/MatrixFunctions>
-#include "Basics.hpp"
+#include "geometry/Basics.hpp"
 
-using namespace Eigen;
-using namespace std;
+namespace Geometry {
 
 #ifndef M_SQRT2
 #define M_SQRT2 1.4142135623730950488016887242097
 #endif
 
 //---------------------------------------------------------------------------------------------------
-bool Featurization(const MatrixXd& matrix, RowVectorXd& rowVector, const bool tangent, const MatrixXd& ref)
+bool Featurization(const Eigen::MatrixXd& in, Eigen::RowVectorXd& out, const bool tangent, const Eigen::MatrixXd& ref)
 {
-	if (tangent) { return TangentSpace(matrix, rowVector, ref); }
-	return SqueezeUpperTriangle(matrix, rowVector, true);
+	if (tangent) { return TangentSpace(in, out, ref); }
+	return SqueezeUpperTriangle(in, out, true);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool UnFeaturization(const RowVectorXd& rowVector, MatrixXd& matrix, const bool tangent, const MatrixXd& ref)
+bool UnFeaturization(const Eigen::RowVectorXd& in, Eigen::MatrixXd& out, const bool tangent, const Eigen::MatrixXd& ref)
 {
-	if (tangent) { return UnTangentSpace(rowVector, matrix, ref); }
-	return UnSqueezeUpperTriangle(rowVector, matrix, true);
+	if (tangent) { return UnTangentSpace(in, out, ref); }
+	return UnSqueezeUpperTriangle(in, out, true);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool SqueezeUpperTriangle(const MatrixXd& matrix, RowVectorXd& rowVector, const bool rowMajor)
+bool SqueezeUpperTriangle(const Eigen::MatrixXd& in, Eigen::RowVectorXd& out, const bool rowMajor)
 {
-	if (!IsSquare(matrix)) { return false; }					// Verification
-	const size_t n = matrix.rows();								// Number of Features			=> N
-	rowVector.resize(n * (n + 1) / 2);							// Resize
+	if (!IsSquare(in)) { return false; }						// Verification
+	const size_t n = in.rows();									// Number of Features			=> N
+	out.resize(n * (n + 1) / 2);								// Resize
 
 	size_t idx = 0;												// Row Index					=> idx
-	if (rowMajor)												// Row Major Method
-	{
-		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(i, j); } }
-	}
-	else														// Diagonal Method
-	{
-		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { rowVector[idx++] = matrix(j, j - i); } }
-	}
+	// Row Major or Diagonal Method
+	if (rowMajor) { for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { out[idx++] = in(i, j); } } }
+	else { for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { out[idx++] = in(j, j - i); } } }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool UnSqueezeUpperTriangle(const RowVectorXd& rowVector, MatrixXd& matrix, const bool rowMajor)
+bool UnSqueezeUpperTriangle(const Eigen::RowVectorXd& in, Eigen::MatrixXd& out, const bool rowMajor)
 {
-	const size_t nR = rowVector.size(),							// Size of Row					=> Nr
+	const size_t nR = in.size(),								// Size of Row					=> Nr
 				 n  = int((sqrt(1 + 8 * nR) - 1) / 2);			// Number of Features			=> N
 	if (n == 0) { return false; }								// Verification
-	matrix.setZero(n, n);										// Init
+	out.setZero(n, n);											// Init
 
 	size_t idx = 0;												// Row Index					=> idx
-	if (rowMajor)												// Row Major Method
-	{
-		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { matrix(j, i) = matrix(i, j) = rowVector[idx++]; } }
-	}
-	else														// Diagonal Method
-	{
-		for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { matrix(j - i, j) = matrix(j, j - i) = rowVector[idx++]; } }
-	}
+	// Row Major or Diagonal Method
+	if (rowMajor) { for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { out(j, i) = out(i, j) = in[idx++]; } } }
+	else { for (size_t i = 0; i < n; ++i) { for (size_t j = i; j < n; ++j) { out(j - i, j) = out(j, j - i) = in[idx++]; } } }
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool TangentSpace(const MatrixXd& matrix, RowVectorXd& rowVector, const MatrixXd& ref)
+bool TangentSpace(const Eigen::MatrixXd& in, Eigen::RowVectorXd& out, const Eigen::MatrixXd& ref)
 {
-	if (!IsSquare(matrix)) { return false; }					// Verification
-	const size_t n = matrix.rows();								// Number of Features			=> N
+	if (!IsSquare(in)) { return false; }						// Verification
+	const size_t n = in.rows();									// Number of Features			=> N
 
-	const MatrixXd sC      = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
-				   isC     = sC.inverse(),						// Inverse Square root of ref	=> isC
-				   mJ      = (isC * matrix * isC).log(),		// Transformation Matrix		=> mJ
-				   mCoeffs = M_SQRT2 * MatrixXd(MatrixXd::Ones(n, n).triangularView<StrictlyUpper>()) + MatrixXd::Identity(n, n);
+	const Eigen::MatrixXd sC      = (ref.size() == 0) ? Eigen::MatrixXd::Identity(n, n) : Eigen::MatrixXd(ref.sqrt()),
+						  isC     = sC.inverse(),				// Inverse Square root of ref	=> isC
+						  mJ      = (isC * in * isC).log(),		// Transformation Matrix		=> mJ
+						  mCoeffs = M_SQRT2 * Eigen::MatrixXd(Eigen::MatrixXd::Ones(n, n).triangularView<Eigen::StrictlyUpper>())
+									+ Eigen::MatrixXd::Identity(n, n);
 
-	RowVectorXd vJ, vCoeffs;
+	Eigen::RowVectorXd vJ, vCoeffs;
 	if (!SqueezeUpperTriangle(mJ, vJ, true)) { return false; }	// Get upper triangle of J		=> vJ
 	if (!SqueezeUpperTriangle(mCoeffs, vCoeffs, true)) { return false; }	// ... of Coefs		=> vCoeffs
-	rowVector = vCoeffs.cwiseProduct(vJ);						// element-wise multiplication
+	out = vCoeffs.cwiseProduct(vJ);								// element-wise multiplication
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool UnTangentSpace(const RowVectorXd& rowVector, MatrixXd& matrix, const MatrixXd& ref)
+bool UnTangentSpace(const Eigen::RowVectorXd& in, Eigen::MatrixXd& out, const Eigen::MatrixXd& ref)
 {
-	const size_t n = matrix.rows();								// Number of Features			=> N
-	if (!UnSqueezeUpperTriangle(rowVector, matrix)) { return false; }
+	const size_t n = out.rows();								// Number of Features			=> N
+	if (!UnSqueezeUpperTriangle(in, out)) { return false; }
 
-	const MatrixXd sC     = (ref.size() == 0) ? MatrixXd::Identity(n, n) : MatrixXd(ref.sqrt()),
-				   coeffs = MatrixXd(matrix.triangularView<StrictlyUpper>()) / M_SQRT2;
+	const Eigen::MatrixXd sC     = (ref.size() == 0) ? Eigen::MatrixXd::Identity(n, n) : Eigen::MatrixXd(ref.sqrt()),
+						  coeffs = Eigen::MatrixXd(out.triangularView<Eigen::StrictlyUpper>()) / M_SQRT2;
 
-	matrix = sC * (MatrixXd(matrix.diagonal().asDiagonal()) + coeffs + coeffs.transpose()).exp() * sC;
+	out = sC * (Eigen::MatrixXd(out.diagonal().asDiagonal()) + coeffs + coeffs.transpose()).exp() * sC;
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
+
+}  // namespace Geometry

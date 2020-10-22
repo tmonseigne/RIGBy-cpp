@@ -11,11 +11,13 @@
 
 #pragma once
 
-#include "CMatrixClassifierFgMDMRT.hpp"
+#include "geometry/classifier/CMatrixClassifierFgMDMRT.hpp"
+
+namespace Geometry {
 
 /// <summary>	Class of Minimum Distance to Mean with geodesic filtering (FgMDM) Classifier. </summary>
 /// <seealso cref="CMatrixClassifierMDM" />
-class CMatrixClassifierFgMDM : public CMatrixClassifierFgMDMRT
+class CMatrixClassifierFgMDM final : public CMatrixClassifierFgMDMRT
 {
 public:
 	//***********************	
@@ -37,9 +39,15 @@ public:
 	explicit CMatrixClassifierFgMDM(const size_t nbClass, const EMetric metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
-	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix and the <see cref="m_Datasets"/> member. </remarks>
+	/// <remarks>	clear the <see cref="m_means"/> vector of Matrix and the <see cref="m_datasets"/> member. </remarks>
 	~CMatrixClassifierFgMDM() override;
 
+	//***************************
+	//***** Getter / Setter *****
+	//***************************
+	const std::vector<std::vector<Eigen::MatrixXd>>& getDatasets() const { return m_datasets; }
+	void setDatasets(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) { m_datasets = datasets; }
+	
 	//**********************
 	//***** Classifier *****
 	//**********************
@@ -80,13 +88,14 @@ public:
 		return os;
 	}
 
+protected:
+	///<summary> train with the actual datasets (<see cref="m_datasets"/>). </summary>
+	bool train() { return CMatrixClassifierFgMDMRT::train(m_datasets); }
+
 	//*********************
 	//***** Variables *****
 	//*********************
-	///<summary> Data set for train and adaptation (it can quickly rise). </summary>
-	std::vector<std::vector<Eigen::MatrixXd>> m_Datasets;
-
-private:
-	///<summary> train with the actual datasets (<see cref="m_Datasets"/>). </summary>
-	bool train() { return CMatrixClassifierFgMDMRT::train(m_Datasets); }
+	std::vector<std::vector<Eigen::MatrixXd>> m_datasets;	///< Data set for train and adaptation (it can quickly rise).
 };
+
+}  // namespace Geometry

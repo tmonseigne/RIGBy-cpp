@@ -11,7 +11,9 @@
 
 #pragma once
 
-#include "CMatrixClassifierMDM.hpp"
+#include "geometry/classifier/CMatrixClassifierMDM.hpp"
+
+namespace Geometry {
 
 /// <summary>	Class of Minimum Distance to Mean with geodesic filtering (FgMDM) Classifier RT (adaptation is Real Time Assumed). </summary>
 /// <seealso cref="CMatrixClassifierMDM" />
@@ -33,15 +35,24 @@ public:
 	explicit CMatrixClassifierFgMDMRT(const size_t nbClass, const EMetric metric) : CMatrixClassifierMDM(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDMRT"/> class. </summary>
-	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
+	/// <remarks>	clear the <see cref="m_means"/> vector of Matrix. </remarks>
 	~CMatrixClassifierFgMDMRT() override = default;
+
+	//***************************
+	//***** Getter / Setter *****
+	//***************************
+	const Eigen::MatrixXd& getRef() const { return m_ref; }
+	void setRef(const Eigen::MatrixXd& ref) { m_ref = ref; }
+
+	const Eigen::MatrixXd& getWeight() const { return m_weight; }
+	void setWeight(const Eigen::MatrixXd& weight) { m_weight = weight; }
 
 	//**********************
 	//***** Classifier *****
 	//**********************
 	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	/// <summary>	
-	/// -# Compute the Riemann mean of all trials as reference and store this in <see cref="m_Ref"/> member.
+	/// -# Compute the Riemann mean of all trials as reference and store this in <see cref="m_ref"/> member.
 	/// -# Set the good number of classes
 	/// -# Trasnform data to the Tangent Space with the reference
 	/// -# Compute the FgDA Weight (<see cref="FgDACompute" />).
@@ -92,12 +103,12 @@ public:
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierFgMDMRT"/> are equals. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierFgMDMRT"/> are equals. </returns>
 	bool operator==(const CMatrixClassifierFgMDMRT& obj) const { return isEqual(obj); }
 
 	/// <summary>	Override the not egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierFgMDMRT"/> are diffrents. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierFgMDMRT"/> are diffrents. </returns>
 	bool operator!=(const CMatrixClassifierFgMDMRT& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>
@@ -110,24 +121,27 @@ public:
 		return os;
 	}
 
-	//*********************
-	//***** Variables *****
-	//*********************
-	Eigen::MatrixXd m_Ref, m_Weight;
-
 protected:
 	//***********************
 	//***** XML Manager *****
 	//***********************
 	/// <summary>	Save Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
 
 	/// <summary>	Load Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool loadAdditional(tinyxml2::XMLElement* data) override;
 
 	/// <summary>	Prints the Additional informations (Reference and LDA Weight). </summary>
 	/// <returns>	Additional informations in stringstream</returns>
 	std::stringstream printAdditional() const override;
+
+	//*********************
+	//***** Variables *****
+	//*********************
+	Eigen::MatrixXd m_ref;		///< Référence matrix of tanget space.
+	Eigen::MatrixXd m_weight;	///< Weght matrix of Filter Geodesic Discriminant Analysis.
 };
+
+}  // namespace Geometry

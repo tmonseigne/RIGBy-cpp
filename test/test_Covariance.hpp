@@ -12,10 +12,10 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "test_Misc.hpp"
-#include "test_Init.hpp"
+#include "misc.hpp"
+#include "init.hpp"
 
-#include "utils/Covariance.hpp"
+#include <geometry/Covariance.hpp>
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Covariances : public testing::Test
@@ -37,7 +37,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COR)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::COR, EStandardization::None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Geometry::EEstimator::COR, Geometry::EStandardization::None);
 			const std::string title = "Covariance Matrix COR Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
@@ -55,7 +55,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_COV)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::COV, EStandardization::None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Geometry::EEstimator::COV, Geometry::EStandardization::None);
 			const std::string title = "Covariance Matrix COV Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
@@ -73,7 +73,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_LWF)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::LWF, EStandardization::Center);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Geometry::EEstimator::LWF, Geometry::EStandardization::Center);
 			const std::string title = "Covariance Matrix LWF Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
@@ -93,7 +93,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_MCD)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::MCD, EStandardization::Center);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Geometry::EEstimator::MCD, Geometry::EStandardization::Center);
 			//const std::string title = "Covariance Matrix MCD Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			//EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
@@ -111,7 +111,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_OAS)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::OAS, EStandardization::Center);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Geometry::EEstimator::OAS, Geometry::EStandardization::Center);
 			const std::string title = "Covariance Matrix OAS Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
@@ -129,7 +129,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_SCM)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::SCM, EStandardization::None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Geometry::EEstimator::SCM, Geometry::EStandardization::None);
 			const std::string title = "Covariance Matrix SCM Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref[k][i], calc[k][i])) << ErrorMsg(title, ref[k][i], calc[k][i]);
 		}
@@ -148,7 +148,7 @@ TEST_F(Tests_Covariances, Covariance_Matrix_IDE)
 		calc[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			CovarianceMatrix(m_dataSet[k][i], calc[k][i], EEstimator::IDE, EStandardization::None);
+			CovarianceMatrix(m_dataSet[k][i], calc[k][i], Geometry::EEstimator::IDE, Geometry::EStandardization::None);
 			const std::string title = "Covariance Matrix IDE Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(ref, calc[k][i])) << ErrorMsg(title, ref, calc[k][i]);
 		}

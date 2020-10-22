@@ -17,10 +17,12 @@
 #include <vector>
 #include <Eigen/Dense>
 
+namespace Geometry {
+
 /// <summary>	 Compute the weight of Linear Discriminant Analysis with Least squares (LSQR) Solver. </summary>
 /// <param name="datasets">	The datasets one class by row and trials on colums. </param>
 /// <param name="weight">	The Weight to apply. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks>	Inspired by <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html">LinearDiscriminantAnalysis</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
 bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
 
@@ -29,7 +31,7 @@ bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::M
 /// </summary>
 /// <param name="datasets">	The data set one class by row and trials on colums. </param>
 /// <param name="weight">	The Weight to apply. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks>	Method inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>).</remarks>
 bool FgDACompute(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
 
@@ -37,6 +39,8 @@ bool FgDACompute(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, E
 /// <param name="in">		Sample to transform. </param>
 /// <param name="out">		Transformed Sample. </param>
 /// <param name="weight">	The Weight to apply. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks>	Method inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>).</remarks>
 bool FgDAApply(const Eigen::RowVectorXd& in, Eigen::RowVectorXd& out, const Eigen::MatrixXd& weight);
+
+}  // namespace Geometry

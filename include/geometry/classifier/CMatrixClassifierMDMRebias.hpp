@@ -11,13 +11,15 @@
 
 #pragma once
 
-#include "CMatrixClassifierMDM.hpp"
-#include "utils/Metrics.hpp"
-#include "CBias.hpp"
+#include "geometry/classifier/CMatrixClassifierMDM.hpp"
+#include "geometry/Metrics.hpp"
+#include "geometry/classifier/CBias.hpp"
+
+namespace Geometry {
 
 /// <summary>	Class of Minimum Distance to Mean (MDM) Classifier with Rebias. </summary>
 /// <seealso cref="IMatrixClassifier" />
-class CMatrixClassifierMDMRebias : public CMatrixClassifierMDM
+class CMatrixClassifierMDMRebias final : public CMatrixClassifierMDM
 {
 public:
 	//***********************	
@@ -37,13 +39,19 @@ public:
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDMRebias"/> class. </summary>
 	~CMatrixClassifierMDMRebias() override = default;
 
+	//***************************
+	//***** Getter / Setter *****
+	//***************************
+	const CBias& getBias() const { return m_bias; }
+	void setBias(const CBias& bias) { m_bias = bias; }
+	
 	//**********************
 	//***** Classifier *****
 	//**********************
 
 	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	/// <summary>	
-	/// -# Compute the mean of all trials with the metric (<see cref="EMetric" />) in <see cref="m_Metric"/> member as reference and store this in <see cref="m_Rebias"/> member.
+	/// -# Compute the mean of all trials with the metric (<see cref="EMetric" />) in <see cref="m_Metric"/> member as reference and store this in <see cref="m_bias"/> member.
 	/// -# Set the good number of classes
 	/// -# Apply an affine transformation on each trials with the reference : \f$ S_\text{new} = R^{-1/2} * S * {R^{-1/2}}^{\mathsf{T}} \f$
 	/// -# Compute the mean of each class (row), on transformed trials, with the metric (<see cref="EMetric" />) in <see cref="m_Metric"/> member.
@@ -87,12 +95,12 @@ public:
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDMRebias"/> are equals. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierMDMRebias"/> are equals. </returns>
 	bool operator==(const CMatrixClassifierMDMRebias& obj) const { return isEqual(obj); }
 
 	/// <summary>	Override the not egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDMRebias"/> are diffrents. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierMDMRebias"/> are diffrents. </returns>
 	bool operator!=(const CMatrixClassifierMDMRebias& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>
@@ -105,23 +113,25 @@ public:
 		return os;
 	}
 
-	//*********************
-	//***** Variables *****
-	//*********************
-	/// <summary>	Rebias Method. </summary>
-	CBias m_Rebias;
-
 protected:
 
 	/// <summary>	Save Additionnal informations (reference and number of classification). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
 
 	/// <summary>	Load Additionnal informations (reference and number of classification). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool loadAdditional(tinyxml2::XMLElement* data) override;
 
 	/// <summary>	Prints the Additional informations (reference and number of classification). </summary>
 	/// <returns>	Additional informations in stringstream</returns>
 	std::stringstream printAdditional() const override;
+
+	//*********************
+	//***** Variables *****
+	//*********************
+	/// <summary>	Rebias Method. </summary>
+	CBias m_bias;
 };
+
+}  // namespace Geometry

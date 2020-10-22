@@ -13,10 +13,12 @@
 #include <string>
 #include <vector>
 #include <Eigen/Dense>
-#include "3rd-party/tinyxml2.h"
-#include "utils/Metrics.hpp"
-#include "utils/Misc.hpp"
+#include "geometry/3rd-party/tinyxml2.h"
+#include "geometry/Metrics.hpp"
+#include "geometry/Misc.hpp"
 
+
+namespace Geometry {
 
 class CASR
 {
@@ -54,20 +56,20 @@ public:
 	//***********************
 	/// <summary>	Saves the Bias information in an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool saveXML(const std::string& filename) const;
 
 	/// <summary>	Loads the Bias information from an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool loadXML(const std::string& filename);
 
 	/// <summary>	Save informations in xml element (Bias and number of classification). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const;
 
 	/// <summary>	Load informations in xml element (Bias and number of classification). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool loadAdditional(tinyxml2::XMLElement* data);
 */
 	//***************************
@@ -115,12 +117,12 @@ public:
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CASR"/> are equals. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CASR"/> are equals. </returns>
 	bool operator==(const CASR& obj) const { return isEqual(obj); }
 
 	/// <summary>	Override the not egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CASR"/> are diffrents. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CASR"/> are diffrents. </returns>
 	bool operator!=(const CASR& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>
@@ -147,3 +149,5 @@ protected:
 	Eigen::MatrixXd m_r;						///< Last Reconstruction matrix
 	Eigen::MatrixXd m_cov;						///< Last Covariance matrix
 };
+
+}  // namespace Geometry

@@ -1,17 +1,16 @@
-#include "Classification.hpp"
-#include "Covariance.hpp"
-#include "Basics.hpp"
+#include "geometry/Classification.hpp"
+#include "geometry/Covariance.hpp"
+#include "geometry/Basics.hpp"
 
-using namespace std;
-using namespace Eigen;
+namespace Geometry {
 
 ///-------------------------------------------------------------------------------------------------
-bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weight)
+bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight)
 {
 	// Precomputation
 	if (datasets.empty()) { return false; }
 	const size_t nbClass = datasets.size(), nbFeatures = datasets[0][0].size();
-	vector<size_t> nbSample(nbClass);
+	std::vector<size_t> nbSample(nbClass);
 	size_t totalSample = 0;
 	for (size_t k = 0; k < nbClass; ++k)
 	{
@@ -21,7 +20,7 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 	}
 
 	// Compute Class Euclidian mean
-	MatrixXd mean = MatrixXd::Zero(nbClass, nbFeatures);
+	Eigen::MatrixXd mean = Eigen::MatrixXd::Zero(nbClass, nbFeatures);
 	for (size_t k = 0; k < nbClass; ++k)
 	{
 		for (size_t i = 0; i < nbSample[k]; ++i) { mean.row(k) += datasets[k][i]; }
@@ -29,19 +28,19 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 	}
 
 	// Compute Class Covariance
-	MatrixXd cov = MatrixXd::Zero(nbFeatures, nbFeatures);
+	Eigen::MatrixXd cov = Eigen::MatrixXd::Zero(nbFeatures, nbFeatures);
 	for (size_t k = 0; k < nbClass; ++k)
 	{
 		//Fit Data to existing covariance matrix method
-		MatrixXd classData(nbFeatures, nbSample[k]);
+		Eigen::MatrixXd classData(nbFeatures, nbSample[k]);
 		for (size_t i = 0; i < nbSample[k]; ++i) { classData.col(i) = datasets[k][i]; }
 
 		// Standardize Features
-		RowVectorXd scale;
+		Eigen::RowVectorXd scale;
 		MatrixStandardScaler(classData, scale);
 
 		//Compute Covariance of this class
-		MatrixXd classCov;
+		Eigen::MatrixXd classCov;
 		if (!CovarianceMatrix(classData, classCov, EEstimator::LWF)) { return false; }
 
 		// Rescale
@@ -60,33 +59,35 @@ bool LSQR(const std::vector<std::vector<RowVectorXd>>& datasets, MatrixXd& weigh
 	// Treat binary case as a special case
 	if (nbClass == 2)
 	{
-		const MatrixXd tmp = weight.row(1) - weight.row(0);	// Need to use a tmp variable otherwise sometimes error
-		weight             = tmp;
+		const Eigen::MatrixXd tmp = weight.row(1) - weight.row(0);	// Need to use a tmp variable otherwise sometimes error
+		weight                    = tmp;
 	}
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool FgDACompute(const vector<vector<RowVectorXd>>& datasets, MatrixXd& weight)
+bool FgDACompute(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight)
 {
 	// Compute LSQR Weight
-	MatrixXd w;
+	Eigen::MatrixXd w;
 	if (!LSQR(datasets, w)) { return false; }
 	const size_t nbClass = w.rows();
 
 	// Transform to FgDA Weight
-	const MatrixXd wT = w.transpose();
-	weight            = (wT * (w * wT).colPivHouseholderQr().solve(MatrixXd::Identity(nbClass, nbClass))) * w;
+	const Eigen::MatrixXd wT = w.transpose();
+	weight                   = (wT * (w * wT).colPivHouseholderQr().solve(Eigen::MatrixXd::Identity(nbClass, nbClass))) * w;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool FgDAApply(const RowVectorXd& in, RowVectorXd& out, const MatrixXd& weight)
+bool FgDAApply(const Eigen::RowVectorXd& in, Eigen::RowVectorXd& out, const Eigen::MatrixXd& weight)
 {
 	if (in.cols() != weight.rows()) { return false; }
 	out = in * weight;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
+
+}  // namespace Geometry

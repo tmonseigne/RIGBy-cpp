@@ -12,10 +12,10 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "test_Misc.hpp"
-#include "test_Init.hpp"
+#include "misc.hpp"
+#include "init.hpp"
 
-#include "utils/Geodesic.hpp"
+#include <geometry/Geodesic.hpp>
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Geodesic : public testing::Test
@@ -23,7 +23,7 @@ class Tests_Geodesic : public testing::Test
 protected:
 	std::vector<Eigen::MatrixXd> m_dataSet;
 
-	void SetUp() override { m_dataSet = Vector2DTo1D(InitCovariance::LWF::Reference()); }
+	void SetUp() override { m_dataSet = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference()); }
 };
 //---------------------------------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ TEST_F(Tests_Geodesic, Euclidian)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		Geodesic(mean, m_dataSet[i], calc, EMetric::Euclidian, 0.5);
+		Geodesic(mean, m_dataSet[i], calc, Geometry::EMetric::Euclidian, 0.5);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic Euclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -49,7 +49,7 @@ TEST_F(Tests_Geodesic, LogEuclidian)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		Geodesic(mean, m_dataSet[i], calc, EMetric::LogEuclidian, 0.5);
+		Geodesic(mean, m_dataSet[i], calc, Geometry::EMetric::LogEuclidian, 0.5);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic LogEuclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -63,7 +63,7 @@ TEST_F(Tests_Geodesic, Riemann)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		Geodesic(mean, m_dataSet[i], calc, EMetric::Riemann, 0.5);
+		Geodesic(mean, m_dataSet[i], calc, Geometry::EMetric::Riemann, 0.5);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Geodesic Riemann Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -76,7 +76,7 @@ TEST_F(Tests_Geodesic, Identity)
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
 		Eigen::MatrixXd calc;
-		Geodesic(mean, m_dataSet[i], calc, EMetric::Identity, 0.5);
+		Geodesic(mean, m_dataSet[i], calc, Geometry::EMetric::Identity, 0.5);
 		EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Geodesic Identity Sample [" + std::to_string(i) + "]", ref, calc);
 	}
 }

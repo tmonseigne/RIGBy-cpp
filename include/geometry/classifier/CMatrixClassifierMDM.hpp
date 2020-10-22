@@ -11,8 +11,10 @@
 
 #pragma once
 
-#include "IMatrixClassifier.hpp"
-#include "utils/Metrics.hpp"
+#include "geometry/classifier/IMatrixClassifier.hpp"
+#include "geometry/Metrics.hpp"
+
+namespace Geometry {
 
 /// <summary>	Class of Minimum Distance to Mean (MDM) Classifier. </summary>
 /// <seealso cref="IMatrixClassifier" />
@@ -23,7 +25,7 @@ public:
 	//***** Constructor *****
 	//***********************	
 	/// <summary>	Default constructor. Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
-	CMatrixClassifierMDM();
+	CMatrixClassifierMDM() { CMatrixClassifierMDM::setClassCount(m_nbClass); }
 
 	/// <summary>	Default Copy constructor. Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
 	/// <param name="obj">	Initial object. </param>
@@ -34,14 +36,23 @@ public:
 	explicit CMatrixClassifierMDM(size_t nbClass, EMetric metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
-	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
+	/// <remarks>	clear the <see cref="m_means"/> vector of Matrix. </remarks>
 	~CMatrixClassifierMDM() override;
+
+	//***************************
+	//***** Getter / Setter *****
+	//***************************
+	const std::vector<Eigen::MatrixXd>& getMeans() const { return m_means; }
+	void setMeans(const std::vector<Eigen::MatrixXd>& means) { m_means = means; }
+
+	const std::vector<size_t>& getTrialNumbers() const { return m_nbTrials; }
+	void setTrialNumbers(const std::vector<size_t>& nbTrials) { m_nbTrials = nbTrials; }
 
 	//**********************
 	//***** Classifier *****
 	//**********************
 	/// \copydoc IMatrixClassifier::setClassCount(const size_t)
-	/// <remarks>	resize the <see cref="m_Means"/> vector of Matrix. </remarks>
+	/// <remarks>	resize the <see cref="m_means"/> vector of Matrix. </remarks>
 	void setClassCount(size_t nbClass) override;
 
 	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
@@ -99,12 +110,12 @@ public:
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are equals. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierMDM"/> are equals. </returns>
 	bool operator==(const CMatrixClassifierMDM& obj) const { return isEqual(obj); }
 
 	/// <summary>	Override the not egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierMDM"/> are diffrents. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierMDM"/> are diffrents. </returns>
 	bool operator!=(const CMatrixClassifierMDM& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>
@@ -117,28 +128,28 @@ public:
 		return os;
 	}
 
-	//*********************
-	//***** Variables *****
-	//*********************
-	/// <summary>	Mean Matrix of each class. </summary>
-	std::vector<Eigen::MatrixXd> m_Means;
-	/// <summary>	Number of trials of each class. </summary>
-	std::vector<size_t> m_NbTrials;
-
 protected:
 	//***********************
 	//***** XML Manager *****
 	//***********************
 	/// <summary>	Save Classes informations (Mean and number of trials of each class). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool saveClasses(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
 
 	/// <summary>	Load Classes informations (Mean and number of trials of each class). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool loadClasses(tinyxml2::XMLElement* data) override;
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
 	std::stringstream printClasses() const override;
+
+	//*********************
+	//***** Variables *****
+	//*********************
+	std::vector<Eigen::MatrixXd> m_means;	///< Mean Matrix of each class.
+	std::vector<size_t> m_nbTrials;			///< Number of trials of each class.
 };
+
+}  // namespace Geometry

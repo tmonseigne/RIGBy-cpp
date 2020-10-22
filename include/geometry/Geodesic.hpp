@@ -13,8 +13,10 @@
 
 #pragma once
 
-#include "Metrics.hpp"
+#include "geometry/Metrics.hpp"
 #include <Eigen/Dense>
+
+namespace Geometry {
 
 /// <summary>	Compute the matrix at the position alpha on the geodesic between A and B with the selected \p metric.\n
 /// - Allowed Metrics : <see cref="EMetric::Riemann"/>, <see cref="EMetric::Euclidian"/>, <see cref="EMetric::LogEuclidian"/>, <see cref="EMetric::Identity"/>
@@ -24,7 +26,7 @@
 /// <param name="g">		The Geodesic. </param>
 /// <param name="metric">	(Optional) The metric (see <see cref="EMetric"/>). </param>
 /// <param name="alpha"> 	(Optional) Position on the Geodesic : \f$ 0\leq \text{alpha} \leq 1\f$. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool Geodesic(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, Eigen::MatrixXd& g, EMetric metric = EMetric::Riemann, double alpha = 0.5);
 
 /// <summary>	Compute the matrix at the position alpha on the Riemannian geodesic between A and B. \n
@@ -34,7 +36,7 @@ bool Geodesic(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, Eigen::MatrixX
 /// <param name="b">		The Second Covariance matrix. </param>
 /// <param name="g">		The Geodesic. </param>
 /// <param name="alpha">	(Optional) Position on the Geodesic : \f$ 0\leq \text{alpha} \leq 1\f$. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool GeodesicRiemann(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, Eigen::MatrixXd& g, double alpha = 0.5);
 
 /// <summary>	Compute the matrix at the position alpha on the Euclidean geodesic between A and B.\n
@@ -54,3 +56,5 @@ bool GeodesicLogEuclidian(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, Ei
 /// </summary>
 /// \copydetails GeodesicRiemann(const Eigen::MatrixXd&, const Eigen::MatrixXd&, Eigen::MatrixXd&, double)
 bool GeodesicIdentity(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b, Eigen::MatrixXd& g, double alpha = 0.5);
+
+}  // namespace Geometry

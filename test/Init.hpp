@@ -17,18 +17,19 @@
 #include <vector>
 #include <unsupported/Eigen/MatrixFunctions>	// SQRT of Matrix
 
-#include "classifier/CMatrixClassifierMDM.hpp"
-#include "classifier/CMatrixClassifierFgMDMRT.hpp"
-#include "classifier/CMatrixClassifierMDMRebias.hpp"
-#include "classifier/CMatrixClassifierFgMDM.hpp"
-#include "classifier/CMatrixClassifierFgMDMRTRebias.hpp"
+#include <geometry/classifier/CMatrixClassifierMDM.hpp>
+#include <geometry/classifier/CMatrixClassifierFgMDMRT.hpp>
+#include <geometry/classifier/CMatrixClassifierMDMRebias.hpp>
+#include <geometry/classifier/CMatrixClassifierFgMDM.hpp>
+#include <geometry/classifier/CMatrixClassifierFgMDMRTRebias.hpp>
 
 #define NB_CLASS	02
 #define NB_CHAN		03
 #define NB_SAMPLE	10
 #define NB_TRIALS1	07
 #define NB_TRIALS2	05
-#define NB_TRIALS	12
+#define NB_TRIALS	12	// NB_TRIALS1 + NB_TRIALS2
+#define NB_FEATURES	06	// NB_CHAN * (NB_CHAN + 1) / 2
 
 //*********************************************
 //********** Initialisation Datasets **********
@@ -1174,8 +1175,7 @@ namespace TangentSpace {
 inline std::vector<Eigen::RowVectorXd> Reference()
 {
 	std::vector<Eigen::RowVectorXd> result(NB_TRIALS);
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	for (auto& m : result) { m.resize(nbFeatures); }
+	for (auto& m : result) { m.resize(NB_FEATURES); }
 
 	result[0] << 0.19923529, 0.81954961, 0.45583261, 0.06265258, 0.53984445, -0.74189243;
 	result[1] << 0.08020799, -0.56380364, -0.19863986, -0.12711376, -0.00487228, -0.24993702;
@@ -1198,8 +1198,7 @@ namespace Squeeze {
 inline std::vector<Eigen::RowVectorXd> Reference()
 {
 	std::vector<Eigen::RowVectorXd> result(NB_TRIALS);
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	for (auto& m : result) { m.resize(nbFeatures); }
+	for (auto& m : result) { m.resize(NB_FEATURES); }
 
 	result[0] << 2.58492880, 1.33543611, 0.511092833, 2.19748746, 0.527579698, 0.507583739;
 	result[1] << 1.99839975, -0.650968006, -0.150223386, 1.52895167, 0.0688523853, 0.652648582;
@@ -1222,8 +1221,7 @@ namespace SqueezeDiag {
 inline std::vector<Eigen::RowVectorXd> Reference()
 {
 	std::vector<Eigen::RowVectorXd> result(NB_TRIALS);
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	for (auto& m : result) { m.resize(nbFeatures); }
+	for (auto& m : result) { m.resize(NB_FEATURES); }
 
 	result[0] << 2.5849288, 2.19748746, 0.507583739, 1.33543611, 0.527579698, 0.511092833;
 	result[1] << 1.99839975, 1.52895167, 0.652648582, -0.650968006, 0.0688523853, -0.150223386;
@@ -1253,8 +1251,7 @@ namespace InitClassif {
 namespace LSQR {
 inline Eigen::MatrixXd Reference()
 {
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	Eigen::MatrixXd result(1, nbFeatures);
+	Eigen::MatrixXd result(1, NB_FEATURES);
 	result << -5.62849964, 2.57528317, -0.41393163, 3.79788328, -1.7915752, 3.63071567;
 	return result;
 }
@@ -1266,8 +1263,7 @@ inline Eigen::MatrixXd Reference()
 namespace FgDACompute {
 inline Eigen::MatrixXd Reference()
 {
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	Eigen::MatrixXd result(nbFeatures, nbFeatures);
+	Eigen::MatrixXd result(NB_FEATURES, NB_FEATURES);
 	result << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
 			-0.20916523, 0.09570218, -0.01538245, 0.14113622, -0.06657818, 0.13492396,
 			0.03361964, -0.01538245, 0.00247246, -0.02268517, 0.01070127, -0.02168666,
@@ -1284,79 +1280,76 @@ inline Eigen::MatrixXd Reference()
 //*****************************************************************************
 namespace InitMatrixClassif {
 namespace MDM {
-inline CMatrixClassifierMDM Reference()
+inline Geometry::CMatrixClassifierMDM Reference()
 {
-	CMatrixClassifierMDM result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDM result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.92849739, -0.1538202, 0.01072518,
+	means[0] << 1.92849739, -0.1538202, 0.01072518,
 			-0.1538202, 1.41817199, 0.06326929,
 			0.01072518, 0.06326929, 0.6661666;
 
-	result.m_Means[1] << 1.46525466, 0.258979, 0.03170221,
+	means[1] << 1.46525466, 0.258979, 0.03170221,
 			0.258979, 1.94533383, 0.03574208,
 			0.03170221, 0.03574208, 1.13153112;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
+	result.setMeans(means);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
 	return result;
 }
 
-inline CMatrixClassifierMDM ReferenceMatlab()			//The estimation method of riemann mean in matlab is different of the python and c++ method 
+//The estimation method of riemann mean in matlab is different of the python and c++ method 
+inline Geometry::CMatrixClassifierMDM ReferenceMatlab()
 {
-	CMatrixClassifierMDM result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDM result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.928499437649616, -0.153827038574370, 0.010747690754065,
+	means[0] << 1.928499437649616, -0.153827038574370, 0.010747690754065,
 			-0.153827038574370, 1.418162423365369, 0.063273476393445,
 			0.010747690754065, 0.063273476393445, 0.666171737852679;
 
-	result.m_Means[1] << 1.465253745853043, 0.258978164753603, 0.031701951674564,
+	means[1] << 1.465253745853043, 0.258978164753603, 0.031701951674564,
 			0.258978164753603, 1.945334998390171, 0.035741956583496,
 			0.031701951674564, 0.035741956583496, 1.131530964874486;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
+	result.setMeans(means);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
 	return result;
 }
 
-inline CMatrixClassifierMDM AfterSupervised()
+inline Geometry::CMatrixClassifierMDM AfterSupervised()
 {
-	CMatrixClassifierMDM result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDM result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.928350313881734, -0.154041423123185, 0.010701374534393,
+	means[0] << 1.928350313881734, -0.154041423123185, 0.010701374534393,
 			-0.154041423123186, 1.418273608417471, 0.063257455871936,
 			0.010701374534394, 0.063257455871936, 0.666184815487807;
 
-	result.m_Means[1] << 1.465233762087830, 0.258934832669209, 0.031704171892215,
+	means[1] << 1.465233762087830, 0.258934832669209, 0.031704171892215,
 			0.258934832669209, 1.945307843854343, 0.035766052240045,
 			0.031704171892215, 0.035766052240044, 1.131554685966728;
 
-	result.m_NbTrials[0] = 2 * NB_TRIALS1;
-	result.m_NbTrials[1] = 2 * NB_TRIALS2;
-
+	result.setMeans(means);
+	result.setTrialNumbers({ 2 * NB_TRIALS1, 2 * NB_TRIALS2 });
 	return result;
 }
 
-inline CMatrixClassifierMDM AfterUnSupervised()
+inline Geometry::CMatrixClassifierMDM AfterUnSupervised()
 {
-	CMatrixClassifierMDM result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDM result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.950943868870711, -0.167140250323899, 0.003222724880780,
+	means[0] << 1.950943868870711, -0.167140250323899, 0.003222724880780,
 			-0.167140250323900, 1.360332213689968, 0.069395646598480,
 			0.003222724880780, 0.069395646598480, 0.612498166151011;
 
-	result.m_Means[1] << 1.512203012203314, 0.207413861919226, 0.036590552326957,
+	means[1] << 1.512203012203314, 0.207413861919226, 0.036590552326957,
 			0.207413861919226, 1.921307138623116, 0.030422979119863,
 			0.036590552326957, 0.030422979119864, 1.127225044244057;
 
-	result.m_NbTrials[0] = NB_TRIALS1 + 5;	// Find 5 times in Prediction
-	result.m_NbTrials[1] = NB_TRIALS2 + 7;	// Find 7 times in Prediction
-
+	result.setMeans(means);
+	result.setTrialNumbers({ NB_TRIALS1 + 5, NB_TRIALS2 + 7 });// Find 5 & 7 times in Prediction
 	return result;
 }
 
@@ -1421,93 +1414,42 @@ inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
 }  // namespace MDM
 
 namespace FgMDMRT {
-inline CMatrixClassifierFgMDMRT Reference()
+inline Geometry::CMatrixClassifierFgMDMRT Reference()
 {
-	CMatrixClassifierFgMDMRT result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierFgMDMRT result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 2.08042432, -0.08968098, 0.03145977,
+	means[0] << 2.08042432, -0.08968098, 0.03145977,
 			-0.08968098, 1.41163613, 0.09127538,
 			0.03145977, 0.09127538, 0.734828;
 
-	result.m_Means[1] << 1.30840283, 0.15716713, 0.00232698,
+	means[1] << 1.30840283, 0.15716713, 0.00232698,
 			0.15716713, 1.93455782, -0.01963492,
 			0.00232698, -0.01963492, 0.98852719;
 
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 1.70952664, 0.01674082, 0.02077766,
+	Eigen::MatrixXd ref(NB_CHAN, NB_CHAN);
+	ref << 1.70952664, 0.01674082, 0.02077766,
 			0.01674082, 1.60344581, 0.05423902,
 			0.02077766, 0.05423902, 0.8303257;
 
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
+	Eigen::MatrixXd weight = Eigen::MatrixXd(NB_FEATURES, NB_FEATURES);
+	weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
 			-0.20916523, 0.09570218, -0.01538245, 0.14113622, -0.06657818, 0.13492396,
 			0.03361964, -0.01538245, 0.00247246, -0.02268517, 0.01070127, -0.02168666,
 			-0.30846516, 0.14113622, -0.02268517, 0.20813978, -0.09818576, 0.1989783,
 			0.14551225, -0.06657818, 0.01070127, -0.09818576, 0.04631716, -0.09386402,
 			-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
 
+	result.setMeans(means);
+	result.setRef(ref);
+	result.setWeight(weight);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
 	return result;
 }
 
-inline CMatrixClassifierFgMDMRT AfterSupervised()
-{
-	CMatrixClassifierFgMDMRT result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
-
-	result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	return result;
-}
-
-inline CMatrixClassifierFgMDMRT AfterUnSupervised()
-{
-	CMatrixClassifierFgMDMRT result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
-
-	result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	return result;
-}
-
+inline Geometry::CMatrixClassifierFgMDMRT AfterSupervised() { return Geometry::CMatrixClassifierFgMDMRT(NB_CLASS, Geometry::EMetric::Riemann); }
+inline Geometry::CMatrixClassifierFgMDMRT AfterUnSupervised() { return Geometry::CMatrixClassifierFgMDMRT(NB_CLASS, Geometry::EMetric::Riemann); }
 inline std::vector<size_t> Prediction() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
 inline std::vector<size_t> PredictionSupervised() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
 inline std::vector<size_t> PredictionUnSupervised() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
@@ -1530,149 +1472,116 @@ inline std::vector<std::vector<double>> PredictionDistance()
 	return result;
 }
 
-inline std::vector<std::vector<double>> PredictionDistanceSupervised()
-{
-	std::vector<std::vector<double>> result(NB_TRIALS);
-	result[0]  = { 0, 0 };
-	result[1]  = { 0, 0 };
-	result[2]  = { 0, 0 };
-	result[3]  = { 0, 0 };
-	result[4]  = { 0, 0 };
-	result[5]  = { 0, 0 };
-	result[6]  = { 0, 0 };
-	result[7]  = { 0, 0 };
-	result[8]  = { 0, 0 };
-	result[9]  = { 0, 0 };
-	result[10] = { 0, 0 };
-	result[11] = { 0, 0 };
-	return result;
-}
-
-inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
-{
-	std::vector<std::vector<double>> result(NB_TRIALS);
-	result[0]  = { 0, 0 };
-	result[1]  = { 0, 0 };
-	result[2]  = { 0, 0 };
-	result[3]  = { 0, 0 };
-	result[4]  = { 0, 0 };
-	result[5]  = { 0, 0 };
-	result[6]  = { 0, 0 };
-	result[7]  = { 0, 0 };
-	result[8]  = { 0, 0 };
-	result[9]  = { 0, 0 };
-	result[10] = { 0, 0 };
-	result[11] = { 0, 0 };
-	return result;
-}
+inline std::vector<std::vector<double>> PredictionDistanceSupervised() { return std::vector<std::vector<double>>(NB_TRIALS, { 0, 0 }); }
+inline std::vector<std::vector<double>> PredictionDistanceUnSupervised() { return std::vector<std::vector<double>>(NB_TRIALS, { 0, 0 }); }
 }  // namespace FgMDMRT
 
 namespace MDMRebias {
-inline CMatrixClassifierMDMRebias Reference()
+inline Geometry::CMatrixClassifierMDMRebias Reference()
 {
-	CMatrixClassifierMDMRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDMRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.129204848898484, -0.103109478655884, -0.005579207794177,
+	means[0] << 1.129204848898484, -0.103109478655884, -0.005579207794177,
 			-0.103109478655884, 0.884890317836479, 0.015961516899074,
 			-0.005579207794177, 0.015961516899074, 0.801503003117589;
 
-	result.m_Means[1] << 0.855588028031272, 0.146119935000422, 0.004175889722330,
+	means[1] << 0.855588028031272, 0.146119935000422, 0.004175889722330,
 			0.146119935000422, 1.212891172460091, -0.030535218161296,
 			0.004175889722330, -0.030535218161296, 1.364418888484737;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Rebias.m_N = 0;
-
-	Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
-	bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
+	Geometry::CBias bias;
+	bias.setClassificationNumber(0);
+	Eigen::MatrixXd m(NB_CHAN, NB_CHAN);
+	m << 1.709522177383279, 0.016735943232583, 0.020785623695383,
 			0.016735943232582, 1.603446473585329, 0.054241640196169,
 			0.020785623695383, 0.054241640196169, 0.830327834469631;
-	result.m_Rebias.setBias(bias);
-
+	bias.setBias(m);
+	
+	result.setMeans(means);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
+	result.setBias(bias);
 	return result;
 }
 
-inline CMatrixClassifierMDMRebias After()
+inline Geometry::CMatrixClassifierMDMRebias After()
 {
-	CMatrixClassifierMDMRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDMRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.129204848898484, -0.103109478655884, -0.005579207794177,
+	means[0] << 1.129204848898484, -0.103109478655884, -0.005579207794177,
 			-0.103109478655884, 0.884890317836479, 0.015961516899074,
 			-0.005579207794177, 0.015961516899074, 0.801503003117589;
 
-	result.m_Means[1] << 0.855588028031272, 0.146119935000422, 0.004175889722330,
+	means[1] << 0.855588028031272, 0.146119935000422, 0.004175889722330,
 			0.146119935000422, 1.212891172460091, -0.030535218161296,
 			0.004175889722330, -0.030535218161296, 1.364418888484737;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Rebias.m_N = NB_TRIALS;
-
-	Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
-	bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
+	Geometry::CBias bias;
+	bias.setClassificationNumber(NB_TRIALS);
+	Eigen::MatrixXd m(NB_CHAN, NB_CHAN);
+	m << 1.705589799010000, 0.015745816879592, 0.019622109841865,
 			0.015745816879592, 1.606186296382902, 0.055107313019667,
 			0.019622109841864, 0.055107313019667, 0.830841812602058;
-	result.m_Rebias.setBias(bias);
+	bias.setBias(m);
 
+	result.setMeans(means);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
+	result.setBias(bias);
 	return result;
 }
 
-inline CMatrixClassifierMDMRebias AfterSupervised()
+inline Geometry::CMatrixClassifierMDMRebias AfterSupervised()
 {
-	CMatrixClassifierMDMRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDMRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.077801701232086, -0.135609812697659, -0.032311282008452,
+	means[0] << 1.077801701232086, -0.135609812697659, -0.032311282008452,
 			-0.135609812697659, 0.947469327241560, -0.034394668642257,
 			-0.032311282008452, -0.034394668642258, 0.986389056463633;
 
-	result.m_Means[1] << 0.846602361879856, 0.168419115431573, 0.000436175648620,
+	means[1] << 0.846602361879856, 0.168419115431573, 0.000436175648620,
 			0.168419115431572, 1.264667771319573, -0.037722396726046,
 			0.000436175648620, -0.037722396726045, 1.474562819298618;
 
-	result.m_NbTrials[0] = 2 * NB_TRIALS1;
-	result.m_NbTrials[1] = 2 * NB_TRIALS2;
-
-	result.m_Rebias.m_N = NB_TRIALS;
-
-	Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
-	bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
+	Geometry::CBias bias;
+	bias.setClassificationNumber(NB_TRIALS);
+	Eigen::MatrixXd m(NB_CHAN, NB_CHAN);
+	m << 1.705589799010000, 0.015745816879592, 0.019622109841865,
 			0.015745816879592, 1.606186296382902, 0.055107313019667,
 			0.019622109841864, 0.055107313019667, 0.830841812602058;
-	result.m_Rebias.setBias(bias);
+	bias.setBias(m);
 
+	result.setMeans(means);
+	result.setTrialNumbers({ 2 * NB_TRIALS1, 2 * NB_TRIALS2 });
+	result.setBias(bias);
 	return result;
 }
 
-inline CMatrixClassifierMDMRebias AfterUnSupervised()
+inline Geometry::CMatrixClassifierMDMRebias AfterUnSupervised()
 {
-	CMatrixClassifierMDMRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierMDMRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.163328386007378, -0.071528982784288, 0.003415904977547,
+	means[0] << 1.163328386007378, -0.071528982784288, 0.003415904977547,
 			-0.071528982784288, 0.865367469644902, 0.037539841921305,
 			0.003415904977547, 0.037539841921304, 0.725209905616625;
 
-	result.m_Means[1] << 0.867551363970510, 0.027654580821275, -0.039319369201831,
+	means[1] << 0.867551363970510, 0.027654580821275, -0.039319369201831,
 			0.027654580821275, 1.192704425561919, -0.114920170106705,
 			-0.039319369201831, -0.114920170106704, 1.554798562413437;
 
-	result.m_NbTrials[0] = NB_TRIALS1 + 2;	// Find 2 times in Prediction
-	result.m_NbTrials[1] = NB_TRIALS2 + 10;	// Find 10 times in Prediction
-
-	result.m_Rebias.m_N = NB_TRIALS;
-
-	Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
-	bias << 1.705589799010000, 0.015745816879592, 0.019622109841865,
+	Geometry::CBias bias;
+	bias.setClassificationNumber(NB_TRIALS);
+	Eigen::MatrixXd m(NB_CHAN, NB_CHAN);
+	m << 1.705589799010000, 0.015745816879592, 0.019622109841865,
 			0.015745816879592, 1.606186296382902, 0.055107313019667,
 			0.019622109841864, 0.055107313019667, 0.830841812602058;
-	result.m_Rebias.setBias(bias);
+	bias.setBias(m);
 
+	result.setMeans(means);
+	result.setTrialNumbers({ NB_TRIALS1 + 2, NB_TRIALS2 + 10 });// Find 2 & 10 times in Prediction
+	result.setBias(bias);
 	return result;
 }
 
@@ -1736,283 +1645,170 @@ inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
 }  // namespace MDMRebias
 
 namespace FgMDM {
-inline CMatrixClassifierFgMDM Reference()
+inline Geometry::CMatrixClassifierFgMDM Reference()
 {
-	CMatrixClassifierFgMDM result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierFgMDM result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 2.08042432, -0.08968098, 0.03145977,
+	means[0] << 2.08042432, -0.08968098, 0.03145977,
 			-0.08968098, 1.41163613, 0.09127538,
 			0.03145977, 0.09127538, 0.734828;
 
-	result.m_Means[1] << 1.30840283, 0.15716713, 0.00232698,
+	means[1] << 1.30840283, 0.15716713, 0.00232698,
 			0.15716713, 1.93455782, -0.01963492,
 			0.00232698, -0.01963492, 0.98852719;
 
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 1.70952664, 0.01674082, 0.02077766,
+	Eigen::MatrixXd ref(NB_CHAN, NB_CHAN);
+	ref << 1.70952664, 0.01674082, 0.02077766,
 			0.01674082, 1.60344581, 0.05423902,
 			0.02077766, 0.05423902, 0.8303257;
 
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
+	Eigen::MatrixXd weight = Eigen::MatrixXd(NB_FEATURES, NB_FEATURES);
+	weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
 			-0.20916523, 0.09570218, -0.01538245, 0.14113622, -0.06657818, 0.13492396,
 			0.03361964, -0.01538245, 0.00247246, -0.02268517, 0.01070127, -0.02168666,
 			-0.30846516, 0.14113622, -0.02268517, 0.20813978, -0.09818576, 0.1989783,
 			0.14551225, -0.06657818, 0.01070127, -0.09818576, 0.04631716, -0.09386402,
 			-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Datasets = InitCovariance::LWF::Reference();
-
+	result.setMeans(means);
+	result.setRef(ref);
+	result.setWeight(weight);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
+	result.setDatasets(InitCovariance::LWF::Reference());
 	return result;
 }
 
-inline CMatrixClassifierFgMDM AfterSupervised()
-{
-	CMatrixClassifierFgMDM result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+inline Geometry::CMatrixClassifierFgMDM AfterSupervised() { return Geometry::CMatrixClassifierFgMDM(NB_CLASS, Geometry::EMetric::Riemann); }
 
-	result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Datasets = InitCovariance::LWF::Reference();
-
-	return result;
-}
-
-inline CMatrixClassifierFgMDM AfterUnSupervised()
-{
-	CMatrixClassifierFgMDM result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
-
-	result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Datasets = InitCovariance::LWF::Reference();
-
-	return result;
-}
+inline Geometry::CMatrixClassifierFgMDM AfterUnSupervised() { return Geometry::CMatrixClassifierFgMDM(NB_CLASS, Geometry::EMetric::Riemann); }
 
 inline std::vector<size_t> PredictionSupervised() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
 inline std::vector<size_t> PredictionUnSupervised() { return std::vector<size_t>{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 }; }
 
-inline std::vector<std::vector<double>> PredictionDistanceSupervised()
-{
-	std::vector<std::vector<double>> result(NB_TRIALS);
-	result[0]  = { 0, 0 };
-	result[1]  = { 0, 0 };
-	result[2]  = { 0, 0 };
-	result[3]  = { 0, 0 };
-	result[4]  = { 0, 0 };
-	result[5]  = { 0, 0 };
-	result[6]  = { 0, 0 };
-	result[7]  = { 0, 0 };
-	result[8]  = { 0, 0 };
-	result[9]  = { 0, 0 };
-	result[10] = { 0, 0 };
-	result[11] = { 0, 0 };
-	return result;
-}
+inline std::vector<std::vector<double>> PredictionDistanceSupervised() { return std::vector<std::vector<double>>(NB_TRIALS, { 0, 0 }); }
 
-inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
-{
-	std::vector<std::vector<double>> result(NB_TRIALS);
-	result[0]  = { 0, 0 };
-	result[1]  = { 0, 0 };
-	result[2]  = { 0, 0 };
-	result[3]  = { 0, 0 };
-	result[4]  = { 0, 0 };
-	result[5]  = { 0, 0 };
-	result[6]  = { 0, 0 };
-	result[7]  = { 0, 0 };
-	result[8]  = { 0, 0 };
-	result[9]  = { 0, 0 };
-	result[10] = { 0, 0 };
-	result[11] = { 0, 0 };
-	return result;
-}
+inline std::vector<std::vector<double>> PredictionDistanceUnSupervised() { return std::vector<std::vector<double>>(NB_TRIALS, { 0, 0 }); }
 }  // namespace FgMDM
 
 namespace FgMDMRTRebias {
-inline CMatrixClassifierFgMDMRTRebias Reference()
+inline Geometry::CMatrixClassifierFgMDMRTRebias Reference()
 {
-	CMatrixClassifierFgMDMRTRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 1.21749102419878, -0.065244040475294, 0.00919064364644959,
+	means[0] << 1.21749102419878, -0.065244040475294, 0.00919064364644959,
 			-0.0652440404752944, 0.879520180058735, 0.0383106920991925,
 			0.00919064364644961, 0.0383106920991925, 0.882712321945327;
 
-	result.m_Means[1] << 0.764724285777722, 0.0858374005624361, -0.0164757238732658,
+	means[1] << 0.764724285777722, 0.0858374005624361, -0.0164757238732658,
 			0.0858374005624357, 1.20857271214632, -0.0743441311282506,
 			-0.0164757238732657, -0.0743441311282506, 1.19491180388651;
 
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 1.0, 0.0, 0.0,
-			0.0, 1.0, 0.0,
-			0.0, 0.0, 1.0;
-
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.457148328143448, -0.209165242331525, 0.0336196848430174, -0.308465155960592, 0.145512230780716, -0.294887759430561,
+	const Eigen::MatrixXd ref = Eigen::MatrixXd::Identity(NB_CHAN, NB_CHAN);
+	Eigen::MatrixXd weight    = Eigen::MatrixXd(NB_FEATURES, NB_FEATURES);
+	weight << 0.457148328143448, -0.209165242331525, 0.0336196848430174, -0.308465155960592, 0.145512230780716, -0.294887759430561,
 			-0.209165242331525, 0.0957021953405835, -0.0153824679964544, 0.141136224558352, -0.0665781741717288, 0.134923975140382,
 			0.0336196848430174, -0.0153824679964544, 0.00247246492956471, -0.0226852001637271, 0.0107012867344819, -0.0216866888180067,
 			-0.308465155960592, 0.141136224558352, -0.0226852001637271, 0.208139779988291, -0.098185753285447, 0.19897830332888,
 			0.145512230780716, -0.0665781741717288, 0.0107012867344819, -0.098185753285447, 0.0463171535435127, -0.0938640110069554,
 			-0.294887759430561, 0.134923975140382, -0.0216866888180067, 0.19897830332888, -0.0938640110069554, 0.190220078054599;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Rebias.m_N = 0;
-
-	Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
-	bias << 1.70952703700155, 0.0167406580855047, 0.0207774590925802,
+	Geometry::CBias bias;
+	bias.setClassificationNumber(0);
+	Eigen::MatrixXd m(NB_CHAN, NB_CHAN);
+	m << 1.70952703700155, 0.0167406580855047, 0.0207774590925802,
 			0.0167406580855047, 1.60344585621418, 0.0542388460600326,
 			0.0207774590925802, 0.0542388460600327, 0.830325461380695;
-	result.m_Rebias.setBias(bias);
+	bias.setBias(m);
 
+	result.setMeans(means);
+	result.setRef(ref);
+	result.setWeight(weight);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
+	result.setBias(bias);
 	return result;
 }
 
-inline CMatrixClassifierFgMDMRTRebias After()
+inline Geometry::CMatrixClassifierFgMDMRTRebias After()
 {
-	CMatrixClassifierFgMDMRTRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd(NB_CHAN, NB_CHAN));
 
-	result.m_Means[0] << 2.08042432, -0.08968098, 0.03145977,
+	means[0] << 2.08042432, -0.08968098, 0.03145977,
 			-0.08968098, 1.41163613, 0.09127538,
 			0.03145977, 0.09127538, 0.734828;
 
-	result.m_Means[1] << 1.30840283, 0.15716713, 0.00232698,
+	means[1] << 1.30840283, 0.15716713, 0.00232698,
 			0.15716713, 1.93455782, -0.01963492,
 			0.00232698, -0.01963492, 0.98852719;
 
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 1.70952664, 0.01674082, 0.02077766,
+	Eigen::MatrixXd ref(NB_CHAN, NB_CHAN);
+	ref << 1.70952664, 0.01674082, 0.02077766,
 			0.01674082, 1.60344581, 0.05423902,
 			0.02077766, 0.05423902, 0.8303257;
 
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
+	Eigen::MatrixXd weight = Eigen::MatrixXd(NB_FEATURES, NB_FEATURES);
+	weight << 0.45714834, -0.20916523, 0.03361964, -0.30846516, 0.14551225, -0.29488776,
 			-0.20916523, 0.09570218, -0.01538245, 0.14113622, -0.06657818, 0.13492396,
 			0.03361964, -0.01538245, 0.00247246, -0.02268517, 0.01070127, -0.02168666,
 			-0.30846516, 0.14113622, -0.02268517, 0.20813978, -0.09818576, 0.1989783,
 			0.14551225, -0.06657818, 0.01070127, -0.09818576, 0.04631716, -0.09386402,
 			-0.29488776, 0.13492396, -0.02168666, 0.1989783, -0.09386402, 0.19022007;
 
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Rebias.m_N = 0;
-
-	Eigen::MatrixXd bias(NB_CHAN, NB_CHAN);
-	bias << 1.709522177383279, 0.016735943232583, 0.020785623695383,
+	Geometry::CBias bias;
+	bias.setClassificationNumber(0);
+	Eigen::MatrixXd m(NB_CHAN, NB_CHAN);
+	m << 1.709522177383279, 0.016735943232583, 0.020785623695383,
 			0.016735943232582, 1.603446473585329, 0.054241640196169,
 			0.020785623695383, 0.054241640196169, 0.830327834469631;
-	result.m_Rebias.setBias(bias);
+	bias.setBias(m);
 
+	result.setMeans(means);
+	result.setRef(ref);
+	result.setWeight(weight);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
+	result.setBias(bias);
 	return result;
 }
 
-inline CMatrixClassifierFgMDMRTRebias AfterSupervised()
+inline Geometry::CMatrixClassifierFgMDMRTRebias AfterSupervised()
 {
-	CMatrixClassifierFgMDMRTRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	const std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN));
+	const Eigen::MatrixXd ref    = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+	const Eigen::MatrixXd weight = Eigen::MatrixXd::Zero(NB_FEATURES, NB_FEATURES);
 
-	result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+	Geometry::CBias bias;
+	bias.setClassificationNumber(0);
+	const Eigen::MatrixXd m = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+	bias.setBias(m);
 
-	result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Rebias.m_N = 0;
-
-	const Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
-	result.m_Rebias.setBias(bias);
-
+	result.setMeans(means);
+	result.setRef(ref);
+	result.setWeight(weight);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
+	result.setBias(bias);
 	return result;
 }
 
-inline CMatrixClassifierFgMDMRTRebias AfterUnSupervised()
+inline Geometry::CMatrixClassifierFgMDMRTRebias AfterUnSupervised()
 {
-	CMatrixClassifierFgMDMRTRebias result(NB_CLASS, EMetric::Riemann);
-	for (auto& m : result.m_Means) { m.resize(NB_CHAN, NB_CHAN); }
+	Geometry::CMatrixClassifierFgMDMRTRebias result(NB_CLASS, Geometry::EMetric::Riemann);
+	const std::vector<Eigen::MatrixXd> means(NB_CLASS, Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN));
+	const Eigen::MatrixXd ref    = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+	const Eigen::MatrixXd weight = Eigen::MatrixXd::Zero(NB_FEATURES, NB_FEATURES);
 
-	result.m_Means[0] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+	Geometry::CBias bias;
+	bias.setClassificationNumber(0);
+	const Eigen::MatrixXd m = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
+	bias.setBias(m);
 
-	result.m_Means[1] << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_Ref.resize(NB_CHAN, NB_CHAN);
-	result.m_Ref << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	const size_t nbFeatures = size_t(NB_CHAN * (NB_CHAN + 1) / 2);
-	result.m_Weight.resize(nbFeatures, nbFeatures);
-	result.m_Weight << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-
-	result.m_NbTrials[0] = NB_TRIALS1;
-	result.m_NbTrials[1] = NB_TRIALS2;
-
-	result.m_Rebias.m_N = 0;
-
-	const Eigen::MatrixXd bias = Eigen::MatrixXd::Zero(NB_CHAN, NB_CHAN);
-	result.m_Rebias.setBias(bias);
-
+	result.setMeans(means);
+	result.setRef(ref);
+	result.setWeight(weight);
+	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
+	result.setBias(bias);
 	return result;
 }
 
@@ -2038,40 +1834,7 @@ inline std::vector<std::vector<double>> PredictionDistance()
 	return result;
 }
 
-inline std::vector<std::vector<double>> PredictionDistanceSupervised()
-{
-	std::vector<std::vector<double>> result(NB_TRIALS);
-	result[0]  = { 0, 0 };
-	result[1]  = { 0, 0 };
-	result[2]  = { 0, 0 };
-	result[3]  = { 0, 0 };
-	result[4]  = { 0, 0 };
-	result[5]  = { 0, 0 };
-	result[6]  = { 0, 0 };
-	result[7]  = { 0, 0 };
-	result[8]  = { 0, 0 };
-	result[9]  = { 0, 0 };
-	result[10] = { 0, 0 };
-	result[11] = { 0, 0 };
-	return result;
-}
-
-inline std::vector<std::vector<double>> PredictionDistanceUnSupervised()
-{
-	std::vector<std::vector<double>> result(NB_TRIALS);
-	result[0]  = { 0, 0 };
-	result[1]  = { 0, 0 };
-	result[2]  = { 0, 0 };
-	result[3]  = { 0, 0 };
-	result[4]  = { 0, 0 };
-	result[5]  = { 0, 0 };
-	result[6]  = { 0, 0 };
-	result[7]  = { 0, 0 };
-	result[8]  = { 0, 0 };
-	result[9]  = { 0, 0 };
-	result[10] = { 0, 0 };
-	result[11] = { 0, 0 };
-	return result;
-}
+inline std::vector<std::vector<double>> PredictionDistanceSupervised() { return std::vector<std::vector<double>>(NB_TRIALS, { 0, 0 }); }
+inline std::vector<std::vector<double>> PredictionDistanceUnSupervised() { return std::vector<std::vector<double>>(NB_TRIALS, { 0, 0 }); }
 }  // namespace FgMDMRTRebias
 }  // namespace InitMatrixClassif

@@ -11,12 +11,14 @@
 
 #pragma once
 
-#include "CMatrixClassifierFgMDMRT.hpp"
-#include "CBias.hpp"
+#include "geometry/classifier/CMatrixClassifierFgMDMRT.hpp"
+#include "geometry/classifier/CBias.hpp"
+
+namespace Geometry {
 
 /// <summary>	Class of Minimum Distance to Mean with geodesic filtering (FgMDM) Classifier RT (adaptation is Real Time Assumed). </summary>
 /// <seealso cref="CMatrixClassifierFgMDMRT" />
-class CMatrixClassifierFgMDMRTRebias : public CMatrixClassifierFgMDMRT
+class CMatrixClassifierFgMDMRTRebias final : public CMatrixClassifierFgMDMRT
 {
 public:
 	//***********************	
@@ -34,15 +36,21 @@ public:
 	explicit CMatrixClassifierFgMDMRTRebias(const size_t nbClass, const EMetric metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDMRTRebias"/> class. </summary>
-	/// <remarks>	clear the <see cref="m_Means"/> vector of Matrix. </remarks>
+	/// <remarks>	clear the <see cref="m_means"/> vector of Matrix. </remarks>
 	~CMatrixClassifierFgMDMRTRebias() override = default;
 
+	//***************************
+	//***** Getter / Setter *****
+	//***************************
+	const CBias& getBias() const { return m_bias; }
+	void setBias(const CBias& bias) { m_bias = bias; }
+	
 	//**********************
 	//***** Classifier *****
 	//**********************
 	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
 	/// <summary>	
-	/// -# Compute the Riemann mean of all trials as reference and store this in <see cref="m_Ref"/> member.
+	/// -# Compute the Riemann mean of all trials as reference and store this in <see cref="m_ref"/> member.
 	/// -# Set the good number of classes
 	/// -# Trasnform data to the Tangent Space with the reference
 	/// -# Compute the FgDA Weight (<see cref="FgDACompute" />).
@@ -67,8 +75,7 @@ public:
 	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
-
-
+	
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
@@ -93,12 +100,12 @@ public:
 
 	/// <summary>	Override the egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierFgMDMRTRebias"/> are equals. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierFgMDMRTRebias"/> are equals. </returns>
 	bool operator==(const CMatrixClassifierFgMDMRTRebias& obj) const { return isEqual(obj); }
 
 	/// <summary>	Override the not egal operator. </summary>
 	/// <param name="obj">	The second object. </param>
-	/// <returns>	True if the two <see cref="CMatrixClassifierFgMDMRTRebias"/> are diffrents. </returns>
+	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierFgMDMRTRebias"/> are diffrents. </returns>
 	bool operator!=(const CMatrixClassifierFgMDMRTRebias& obj) const { return !isEqual(obj); }
 
 	/// <summary>	Override the ostream operator. </summary>
@@ -111,25 +118,27 @@ public:
 		return os;
 	}
 
-	//*********************
-	//***** Variables *****
-	//*********************
-	/// <summary>	Rebias Method. </summary>
-	CBias m_Rebias;
-
 protected:
 	//***********************
 	//***** XML Manager *****
 	//***********************
 	/// <summary>	Save Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
 
 	/// <summary>	Load Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	True if it succeeds, false if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 	bool loadAdditional(tinyxml2::XMLElement* data) override;
 
 	/// <summary>	Prints the Additional informations (Reference and LDA Weight). </summary>
 	/// <returns>	Additional informations in stringstream</returns>
 	std::stringstream printAdditional() const override;
+
+	//*********************
+	//***** Variables *****
+	//*********************
+	CBias m_bias;	///< Rebias Method. 
+
 };
+
+}  // namespace Geometry

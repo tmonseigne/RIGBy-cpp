@@ -12,10 +12,10 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "test_Misc.hpp"
-#include "test_Init.hpp"
+#include "misc.hpp"
+#include "init.hpp"
 
-#include "utils/Classification.hpp"
+#include <geometry/Classification.hpp>
 //---------------------------------------------------------------------------------------------------
 class Tests_Classifier : public testing::Test
 {
@@ -25,7 +25,7 @@ protected:
 	void SetUp() override
 	{
 		const std::vector<Eigen::RowVectorXd> tmp = InitFeaturization::TangentSpace::Reference();
-		m_dataSet                                 = Vector1DTo2D(tmp, { NB_TRIALS1, NB_TRIALS2 });
+		m_dataSet                                 = Geometry::Vector1DTo2D(tmp, { NB_TRIALS1, NB_TRIALS2 });
 	}
 };
 //---------------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ TEST_F(Tests_Classifier, LSQR)
 {
 	const Eigen::MatrixXd ref = InitClassif::LSQR::Reference();
 	Eigen::MatrixXd calc;
-	LSQR(m_dataSet, calc);
+	Geometry::LSQR(m_dataSet, calc);
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("LSQR", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ TEST_F(Tests_Classifier, FgDACompute)
 {
 	const Eigen::MatrixXd ref = InitClassif::FgDACompute::Reference();
 	Eigen::MatrixXd calc;
-	FgDACompute(m_dataSet, calc);
+	Geometry::FgDACompute(m_dataSet, calc);
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("FgDA", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------

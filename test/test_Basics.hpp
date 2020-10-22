@@ -12,11 +12,11 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "test_Init.hpp"
-#include "test_Misc.hpp"
+#include "init.hpp"
+#include "misc.hpp"
 
-#include "utils/Basics.hpp"
-#include "utils/Metrics.hpp"
+#include <geometry/Basics.hpp>
+#include <geometry/Metrics.hpp>
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Basics : public testing::Test
@@ -41,8 +41,8 @@ TEST_F(Tests_Basics, MatrixStandardization)
 		calcS[k].resize(m_dataSet[k].size());
 		for (size_t i = 0; i < m_dataSet[k].size(); ++i)
 		{
-			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcC[k][i], EStandardization::Center)) << "Error During Centerization" << std::endl;
-			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcS[k][i], EStandardization::StandardScale)) << "Error During Standard Scaler" << std::endl;
+			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcC[k][i], Geometry::EStandardization::Center)) << "Error During Centerization" << std::endl;
+			EXPECT_TRUE(MatrixStandardization(m_dataSet[k][i], calcS[k][i], Geometry::EStandardization::StandardScale)) << "Error During Standard Scaler" << std::endl;
 			const std::string title = "Matrix Center Sample [" + std::to_string(k) + "][" + std::to_string(i) + "]";
 			EXPECT_TRUE(isAlmostEqual(refC[k][i], calcC[k][i])) << ErrorMsg(title, refC[k][i], calcC[k][i]);
 			EXPECT_TRUE(isAlmostEqual(refS[k][i], calcS[k][i])) << ErrorMsg(title, refS[k][i], calcS[k][i]);
@@ -57,7 +57,7 @@ TEST_F(Tests_Basics, GetElements)
 	Eigen::RowVectorXd ref(3);
 	const std::vector<size_t> idx{ 0, 4, 7 };
 	ref << -3, -6, -1;
-	const Eigen::RowVectorXd calc = GetElements(m_dataSet[0][0].row(0), idx);
+	const Eigen::RowVectorXd calc = Geometry::GetElements(m_dataSet[0][0].row(0), idx);
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("GetElements", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ TEST_F(Tests_Basics, GetElements)
 TEST_F(Tests_Basics, ARange)
 {
 	const std::vector<size_t> ref{ 1, 3, 5, 7, 9 },
-							  calc = ARange(size_t(1), size_t(10), size_t(2));
+							  calc = Geometry::ARange(size_t(1), size_t(10), size_t(2));
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("ARange", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ TEST_F(Tests_Basics, ARange)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Basics, Vector2DTo1D)
 {
-	std::vector<Eigen::MatrixXd> calc = Vector2DTo1D(m_dataSet);
+	std::vector<Eigen::MatrixXd> calc = Geometry::Vector2DTo1D(m_dataSet);
 	bool egal                         = true;
 	size_t idx                        = 0;
 	for (auto& set : m_dataSet) { for (const auto& data : set) { if (!isAlmostEqual(data, calc[idx++])) { egal = false; } } }
@@ -85,25 +85,25 @@ TEST_F(Tests_Basics, Vector2DTo1D)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Basics, Metrics)
 {
-	EXPECT_TRUE(toString(EMetric::Riemann) == "Riemann");
-	EXPECT_TRUE(toString(EMetric::Euclidian) == "Euclidian");
-	EXPECT_TRUE(toString(EMetric::LogEuclidian) == "Log Euclidian");
-	EXPECT_TRUE(toString(EMetric::LogDet) == "Log Determinant");
-	EXPECT_TRUE(toString(EMetric::Kullback) == "Kullback");
-	EXPECT_TRUE(toString(EMetric::ALE) == "AJD-based log-Euclidean");
-	EXPECT_TRUE(toString(EMetric::Harmonic) == "Harmonic");
-	EXPECT_TRUE(toString(EMetric::Wasserstein) == "Wasserstein");
-	EXPECT_TRUE(toString(EMetric::Identity) == "Identity");
-	EXPECT_TRUE(StringToMetric("Riemann") == EMetric::Riemann);
-	EXPECT_TRUE(StringToMetric("Euclidian") == EMetric::Euclidian);
-	EXPECT_TRUE(StringToMetric("Log Euclidian") == EMetric::LogEuclidian);
-	EXPECT_TRUE(StringToMetric("Log Determinant") == EMetric::LogDet);
-	EXPECT_TRUE(StringToMetric("Kullback") == EMetric::Kullback);
-	EXPECT_TRUE(StringToMetric("AJD-based log-Euclidean") == EMetric::ALE);
-	EXPECT_TRUE(StringToMetric("Harmonic") == EMetric::Harmonic);
-	EXPECT_TRUE(StringToMetric("Wasserstein") == EMetric::Wasserstein);
-	EXPECT_TRUE(StringToMetric("Identity") == EMetric::Identity);
-	EXPECT_TRUE(StringToMetric("") == EMetric::Identity);
+	EXPECT_TRUE(toString(Geometry::EMetric::Riemann) == "Riemann");
+	EXPECT_TRUE(toString(Geometry::EMetric::Euclidian) == "Euclidian");
+	EXPECT_TRUE(toString(Geometry::EMetric::LogEuclidian) == "Log Euclidian");
+	EXPECT_TRUE(toString(Geometry::EMetric::LogDet) == "Log Determinant");
+	EXPECT_TRUE(toString(Geometry::EMetric::Kullback) == "Kullback");
+	EXPECT_TRUE(toString(Geometry::EMetric::ALE) == "AJD-based log-Euclidean");
+	EXPECT_TRUE(toString(Geometry::EMetric::Harmonic) == "Harmonic");
+	EXPECT_TRUE(toString(Geometry::EMetric::Wasserstein) == "Wasserstein");
+	EXPECT_TRUE(toString(Geometry::EMetric::Identity) == "Identity");
+	EXPECT_TRUE(Geometry::StringToMetric("Riemann") == Geometry::EMetric::Riemann);
+	EXPECT_TRUE(Geometry::StringToMetric("Euclidian") == Geometry::EMetric::Euclidian);
+	EXPECT_TRUE(Geometry::StringToMetric("Log Euclidian") == Geometry::EMetric::LogEuclidian);
+	EXPECT_TRUE(Geometry::StringToMetric("Log Determinant") == Geometry::EMetric::LogDet);
+	EXPECT_TRUE(Geometry::StringToMetric("Kullback") == Geometry::EMetric::Kullback);
+	EXPECT_TRUE(Geometry::StringToMetric("AJD-based log-Euclidean") == Geometry::EMetric::ALE);
+	EXPECT_TRUE(Geometry::StringToMetric("Harmonic") == Geometry::EMetric::Harmonic);
+	EXPECT_TRUE(Geometry::StringToMetric("Wasserstein") == Geometry::EMetric::Wasserstein);
+	EXPECT_TRUE(Geometry::StringToMetric("Identity") == Geometry::EMetric::Identity);
+	EXPECT_TRUE(Geometry::StringToMetric("") == Geometry::EMetric::Identity);
 }
 //---------------------------------------------------------------------------------------------------
 
@@ -115,33 +115,32 @@ TEST_F(Tests_Basics, Validation)
 						  m3;
 	std::vector<Eigen::MatrixXd> v;
 
-	EXPECT_TRUE(InRange(1, 0, 2));
-	EXPECT_FALSE(InRange(2, 0, 1));
+	EXPECT_TRUE(Geometry::InRange(1, 0, 2));
+	EXPECT_FALSE(Geometry::InRange(2, 0, 1));
 
-	EXPECT_FALSE(AreNotEmpty(v));
+	EXPECT_FALSE(Geometry::AreNotEmpty(v));
 	v.push_back(m3);
-	EXPECT_FALSE(AreNotEmpty(v));
+	EXPECT_FALSE(Geometry::AreNotEmpty(v));
 	v.push_back(m1);
-	EXPECT_FALSE(AreNotEmpty(v));
+	EXPECT_FALSE(Geometry::AreNotEmpty(v));
 	v.clear();
 	v.push_back(m1);
 	v.push_back(m2);
-	EXPECT_TRUE(AreNotEmpty(v));
+	EXPECT_TRUE(Geometry::AreNotEmpty(v));
 
-	EXPECT_TRUE(HaveSameSize(m1, m1));
-	EXPECT_FALSE(HaveSameSize(m3, m3) && HaveSameSize(m1, m2) && HaveSameSize(m1, m3));
+	EXPECT_TRUE(Geometry::HaveSameSize(m1, m1));
+	EXPECT_FALSE(Geometry::HaveSameSize(m3, m3) && Geometry::HaveSameSize(m1, m2) && Geometry::HaveSameSize(m1, m3));
 
-	EXPECT_FALSE(HaveSameSize(v) && AreSquare(v));
+	EXPECT_FALSE(Geometry::HaveSameSize(v) && Geometry::AreSquare(v));
 	v.clear();
 	v.push_back(m1);
 	v.push_back(m1);
-	EXPECT_TRUE(HaveSameSize(v) && AreSquare(v));
+	EXPECT_TRUE(Geometry::HaveSameSize(v) && Geometry::AreSquare(v));
 
-	MatrixPrint(m1);
-	MatrixPrint(m3);
+	Geometry::MatrixPrint(m1);
+	Geometry::MatrixPrint(m3);
 
-	std::vector<std::string> vs = Split("0,1,2,3.a\n", ",");
-	EXPECT_TRUE(vs.size() == 4 && vs[0] == "0" && vs[1] == "1" && vs[2] == "2" && vs[3] == "3.a") << vs.size() << " " << vs[0] << " " << vs[1] << " " << vs[2]
- << " " << vs[3] << std::endl;
+	std::vector<std::string> vs = Geometry::Split("0,1,2,3.a\n", ",");
+	EXPECT_TRUE(vs.size() == 4 && vs[0] == "0" && vs[1] == "1" && vs[2] == "2" && vs[3] == "3.a") << vs.size() << " " << vs[0] << " " << vs[1] << " " << vs[2] << " " << vs[3] << std::endl;
 }
 //---------------------------------------------------------------------------------------------------

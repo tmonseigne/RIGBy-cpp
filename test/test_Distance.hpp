@@ -12,10 +12,10 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "test_Misc.hpp"
-#include "test_Init.hpp"
+#include "misc.hpp"
+#include "init.hpp"
 
-#include "utils/Distance.hpp"
+#include <geometry/Distance.hpp>
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Distances : public testing::Test
@@ -23,7 +23,7 @@ class Tests_Distances : public testing::Test
 protected:
 	std::vector<Eigen::MatrixXd> m_dataSet;
 
-	void SetUp() override { m_dataSet = Vector2DTo1D(InitCovariance::LWF::Reference()); }
+	void SetUp() override { m_dataSet = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference()); }
 };
 //---------------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ TEST_F(Tests_Distances, Euclidian)
 	const Eigen::MatrixXd mean    = InitMeans::Euclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
-		const double calc = Distance(mean, m_dataSet[i], EMetric::Euclidian);
+		const double calc = Distance(mean, m_dataSet[i], Geometry::EMetric::Euclidian);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Euclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -47,7 +47,7 @@ TEST_F(Tests_Distances, LogEuclidian)
 	const Eigen::MatrixXd mean    = InitMeans::LogEuclidian::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
-		const double calc = Distance(mean, m_dataSet[i], EMetric::LogEuclidian);
+		const double calc = Distance(mean, m_dataSet[i], Geometry::EMetric::LogEuclidian);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogEuclidian Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -60,7 +60,7 @@ TEST_F(Tests_Distances, Riemann)
 	const Eigen::MatrixXd mean    = InitMeans::Riemann::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
-		const double calc = Distance(mean, m_dataSet[i], EMetric::Riemann);
+		const double calc = Distance(mean, m_dataSet[i], Geometry::EMetric::Riemann);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Riemann Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -73,7 +73,7 @@ TEST_F(Tests_Distances, LogDet)
 	const Eigen::MatrixXd mean    = InitMeans::LogDeterminant::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
-		const double calc = Distance(mean, m_dataSet[i], EMetric::LogDet);
+		const double calc = Distance(mean, m_dataSet[i], Geometry::EMetric::LogDet);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance LogDet Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -86,7 +86,7 @@ TEST_F(Tests_Distances, Kullback)
 	const Eigen::MatrixXd mean    = InitMeans::Kullback::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
-		const double calc = Distance(mean, m_dataSet[i], EMetric::Kullback);
+		const double calc = Distance(mean, m_dataSet[i], Geometry::EMetric::Kullback);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Kullback Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -99,7 +99,7 @@ TEST_F(Tests_Distances, Wasserstein)
 	const Eigen::MatrixXd mean    = InitMeans::Wasserstein::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
-		const double calc = Distance(mean, m_dataSet[i], EMetric::Wasserstein);
+		const double calc = Distance(mean, m_dataSet[i], Geometry::EMetric::Wasserstein);
 		EXPECT_TRUE(isAlmostEqual(ref[i], calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", ref[i], calc);
 	}
 }
@@ -111,7 +111,7 @@ TEST_F(Tests_Distances, Identity)
 	const Eigen::MatrixXd mean = InitMeans::Wasserstein::Reference();
 	for (size_t i = 0; i < m_dataSet.size(); ++i)
 	{
-		const double calc = Distance(mean, m_dataSet[i], EMetric::Identity);
+		const double calc = Distance(mean, m_dataSet[i], Geometry::EMetric::Identity);
 		EXPECT_TRUE(isAlmostEqual(1, calc)) << ErrorMsg("Distance Wasserstein Sample [" + std::to_string(i) + "]", 1, calc);
 	}
 }

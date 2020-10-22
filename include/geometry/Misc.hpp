@@ -14,7 +14,9 @@
 
 #include <Eigen/Dense>
 #include <vector>
-#include "Metrics.hpp"
+#include "geometry/Metrics.hpp"
+
+namespace Geometry {
 
 //---------------------------------------------------------------------------
 //------------------------------ Matrix Median ------------------------------
@@ -58,7 +60,7 @@ double Median(const Eigen::MatrixXd& m);
 /// <param name="median">  	The computed median. </param>
 /// <param name="epsilon"> 	(Optional) The epsilon value to stop algorithm. </param>
 /// <param name="maxIter">	(Optional) The maximum iteration allowed to find best Median. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks>  it's an iteratively algorithm, so we have a limit of iteration and an epsilon value to consider the calculation as satisfactory. </remarks>
 bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const int maxIter = 50);
 //-------------------------------------------------------------------------------------------------
@@ -101,7 +103,6 @@ std::vector<size_t> RoundIndexRange(const double begin, const double end, const 
 std::vector<size_t> BinHist(const std::vector<double>& dataset, const size_t n);
 //-------------------------------------------------------------------------------------------------
 
-
 //-------------------------------------------------------------------------------------------------
 /// <summary> Get a Fit distribution. </summary>
 /// <param name="values">		The values.</param>
@@ -114,7 +115,7 @@ std::vector<size_t> BinHist(const std::vector<double>& dataset, const size_t n);
 /// <param name="maxDropout">	</param>
 /// <param name="stepBound">	</param>
 /// <param name="stepScale">	</param>
-/// <returns></returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool FitDistribution(const std::vector<double>& values, double& mu, double& sigma,
 					 const std::vector<double>& betas = doubleRange(1.7, 3.5, 0.15),
 					 const double minQuant            = 0.022, const double maxQuant   = 0.60,
@@ -126,6 +127,7 @@ bool FitDistribution(const std::vector<double>& values, double& mu, double& sigm
 //------------------------------ Riemannian Eigen Values ------------------------------
 //-------------------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------------------------------
 /// <summary>	Compute sorted eigen vector of the matrix. </summary>
 /// <param name="matrix">	the input matrix. </param>
 /// <param name="vectors"> Sorted eigen vectors. </param>
@@ -134,12 +136,15 @@ bool FitDistribution(const std::vector<double>& values, double& mu, double& sigm
 /// <remarks>	Actually only euclidian method is implemented.\n
 /// For Riemmanian metric, we must have some optimisation algorithm. </remarks>
 void sortedEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& vectors, std::vector<double>& values, const EMetric metric = EMetric::Euclidian);
+//-------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------
 /// <summary>	Compute the eigen vector of the input matrix. </summary>
 /// <param name="matrix">  			input Matrix. </param>
 /// <param name="eigenVector">  	Eigen Vector of input input matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks> This algorithm is in <a href="https://sccn.ucsd.edu/eeglab/index.php">EEGLAB</a> plugin and inspired by the paper "A Riemannian Newton Algorithm for Nonlinear Eigenvalue Problems", Zhi Zhao, Zheng - Jian Bai, and Xiao - Qing Jin, SIAM Journal on Matrix Analysisand Applications, 36(2), 752 - 774, 2015. </remarks>
 //bool RiemannianNonLinearEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& eigenVector);
 //-------------------------------------------------------------------------------------------------
+
+}  // namespace Geometry

@@ -14,6 +14,8 @@
 #pragma once
 #include <string>
 
+namespace Geometry {
+
 /// <summary>	Enumeration of metrics. Inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a>. </summary>
 enum class EMetric
 {
@@ -63,3 +65,5 @@ inline EMetric StringToMetric(const std::string& metric)
 	if (metric == "Wasserstein") { return EMetric::Wasserstein; }
 	return EMetric::Identity;
 }
+
+}  // namespace Geometry

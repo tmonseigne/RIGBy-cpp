@@ -16,6 +16,8 @@
 #include <cmath>		// Ceil
 #include <type_traits>	// Template type
 
+namespace Geometry {
+
 /// <summary> Enumeration of Standardization method for features matrix data.</summary>
 enum class EStandardization
 {
@@ -42,37 +44,37 @@ Eigen::MatrixXd AffineTransformation(const Eigen::MatrixXd& ref, const Eigen::Ma
 /// <summary>	Standardize data row by row with selected method (destructive operation). </summary>
 /// <param name="matrix"> 	The matrix to standardize. </param>
 /// <param name="standard">	Standard method. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool MatrixStandardization(Eigen::MatrixXd& matrix, EStandardization standard = EStandardization::None);
 
 /// <summary>	Standardize data row by row with selected method (non destructive operation). </summary>
 /// <param name="in"> 		The matrix to standardize. </param>
 /// <param name="out">		The matrix standardized. </param>
 /// <param name="standard">	Standard method. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool MatrixStandardization(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EStandardization standard = EStandardization::None);
 
 /// <summary>	Removes the mean of each row at the matrix (destructive operation). </summary>
 /// <param name="matrix">	The Matrix to center. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool MatrixCenter(Eigen::MatrixXd& matrix);
 
 /// <summary>	Removes the mean of each row at the matrix (non destructive operation). </summary>
 /// <param name="in">	The Matrix to center. </param>
 /// <param name="out">	The Matrix centered. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool MatrixCenter(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
 /// <summary>	Removes the mean of each row at the matrix and divide by the variance (destructive operation with scale return). </summary>
 /// <param name="matrix">	The Matrix to standardize. </param>
 /// <param name="scale">	The scale vector. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks> Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
 bool MatrixStandardScaler(Eigen::MatrixXd& matrix, Eigen::RowVectorXd& scale);
 
 /// <summary>	Removes the mean of each row at the matrix and divide by the variance (destructive operation). </summary>
 /// <param name="matrix">	The Matrix to standardize. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks> Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
 bool MatrixStandardScaler(Eigen::MatrixXd& matrix);
 
@@ -80,14 +82,14 @@ bool MatrixStandardScaler(Eigen::MatrixXd& matrix);
 /// <param name="in">		The Matrix to standardize. </param>
 /// <param name="out">		The Matrix standardized. </param>
 /// <param name="scale">	The scale vector. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks> Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
 bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, Eigen::RowVectorXd& scale);
 
 /// <summary>	Removes the mean of each row at the matrix and divide by the variance (non destructive operation). </summary>
 /// <param name="in">	The Matrix to standardize. </param>
 /// <param name="out">	The Matrix standardized. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks> Adaptation of <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html">StandardScaler</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
 bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
@@ -169,38 +171,38 @@ std::vector<std::vector<T>> Vector1DTo2D(const std::vector<T>& in, const std::ve
 /// <param name="value">	The value. </param>
 /// <param name="min">		The minimum. </param>
 /// <param name="max">		The maximum. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool InRange(double value, double min, double max);
 
 /// <summary>	Validate if the vector is not empty and the matrices are validate. </summary>
 /// <param name="matrices">	Vector of Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool AreNotEmpty(const std::vector<Eigen::MatrixXd>& matrices);
 
 /// <summary>	Validates if matrix is not empty. </summary>
 /// <param name="matrix">	Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool IsNotEmpty(const Eigen::MatrixXd& matrix);
 
 /// <summary>	Validates if two matrix have same size. </summary>
 /// <param name="a">	Matrix A. </param>
 /// <param name="b">	Matrix B. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool HaveSameSize(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b);
 
 /// <summary>	Validate if the vector is not empty and the matrices have same size. </summary>
 /// <param name="matrices">	Vector of Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool HaveSameSize(const std::vector<Eigen::MatrixXd>& matrices);
 
 /// <summary>	Validates if matrix is square matrix and not empty. </summary>
 /// <param name="matrix">	Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool IsSquare(const Eigen::MatrixXd& matrix);
 
 /// <summary>	Validate if the vector is not empty and the matrices are square matrix and not empty. </summary>
 /// <param name="matrices">	Vector of Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool AreSquare(const std::vector<Eigen::MatrixXd>& matrices);
 
 //********************************************************
@@ -211,3 +213,5 @@ bool AreSquare(const std::vector<Eigen::MatrixXd>& matrices);
 /// <param name="sep">	the separator string which splits.</param>
 /// <returns>	Vector of string part. </returns>
 std::vector<std::string> Split(const std::string& s, const std::string& sep);
+
+}  // namespace Geometry

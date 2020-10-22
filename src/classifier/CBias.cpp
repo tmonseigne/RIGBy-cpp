@@ -1,31 +1,29 @@
-#include "CBias.hpp"
-#include "IMatrixClassifier.hpp"
-#include "utils/Mean.hpp"
-#include "utils/Basics.hpp"
-#include "utils/Geodesic.hpp"
+#include "geometry/classifier/CBias.hpp"
+#include "geometry/classifier/IMatrixClassifier.hpp"
+#include "geometry/Mean.hpp"
+#include "geometry/Basics.hpp"
+#include "geometry/Geodesic.hpp"
 #include <unsupported/Eigen/MatrixFunctions> // SQRT of Matrix
 #include <iostream>
 
-using namespace std;
-using namespace Eigen;
-using namespace tinyxml2;
+namespace Geometry {
 
 ///-------------------------------------------------------------------------------------------------
-bool CBias::computeBias(const std::vector<std::vector<MatrixXd>>& datasets, const EMetric metric) { return computeBias(Vector2DTo1D(datasets), metric); }
+bool CBias::computeBias(const std::vector<std::vector<Eigen::MatrixXd>>& datasets, const EMetric metric) { return computeBias(Vector2DTo1D(datasets), metric); }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CBias::computeBias(const std::vector<MatrixXd>& datasets, const EMetric metric)
+bool CBias::computeBias(const std::vector<Eigen::MatrixXd>& datasets, const EMetric metric)
 {
-	if (!Mean(datasets, m_bias, metric)) { return false; }					// Compute Bias reference
-	m_biasIS = m_bias.sqrt().inverse();										// Inverse Square root of Bias matrix => isR
-	m_N      = 0;
+	if (!Mean(datasets, m_bias, metric)) { return false; }	// Compute Bias reference
+	m_biasIS = m_bias.sqrt().inverse();						// Inverse Square root of Bias matrix => isR
+	m_n      = 0;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-void CBias::applyBias(const std::vector<std::vector<MatrixXd>>& in, std::vector<std::vector<MatrixXd>>& out)
+void CBias::applyBias(const std::vector<std::vector<Eigen::MatrixXd>>& in, std::vector<std::vector<Eigen::MatrixXd>>& out)
 {
 	const size_t n = in.size();
 	out.resize(n);
@@ -34,7 +32,7 @@ void CBias::applyBias(const std::vector<std::vector<MatrixXd>>& in, std::vector<
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-void CBias::applyBias(const std::vector<MatrixXd>& in, std::vector<MatrixXd>& out)
+void CBias::applyBias(const std::vector<Eigen::MatrixXd>& in, std::vector<Eigen::MatrixXd>& out)
 {
 	const size_t n = in.size();
 	out.resize(n);
@@ -43,21 +41,21 @@ void CBias::applyBias(const std::vector<MatrixXd>& in, std::vector<MatrixXd>& ou
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-void CBias::applyBias(const MatrixXd& in, MatrixXd& out) { out = m_biasIS * in * m_biasIS.transpose(); }
+void CBias::applyBias(const Eigen::MatrixXd& in, Eigen::MatrixXd& out) { out = m_biasIS * in * m_biasIS.transpose(); }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-void CBias::updateBias(const MatrixXd& sample, const EMetric metric)
+void CBias::updateBias(const Eigen::MatrixXd& sample, const EMetric metric)
 {
-	m_N++;													// Update number of classify
-	if (m_N == 1) { m_bias = sample; }						// At the first pass we reinitialize the Bias
-	else { Geodesic(m_bias, sample, m_bias, metric, 1.0 / m_N); }
-	m_biasIS = m_bias.sqrt().inverse();								// Inverse Square root of Bias matrix => isR
+	m_n++;													// Update number of classify
+	if (m_n == 1) { m_bias = sample; }						// At the first pass we reinitialize the Bias
+	else { Geodesic(m_bias, sample, m_bias, metric, 1.0 / m_n); }
+	m_biasIS = m_bias.sqrt().inverse();						// Inverse Square root of Bias matrix => isR
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-void CBias::setBias(const MatrixXd& bias)
+void CBias::setBias(const Eigen::MatrixXd& bias)
 {
 	m_bias   = bias;
 	m_biasIS = m_bias.sqrt().inverse();
@@ -67,16 +65,16 @@ void CBias::setBias(const MatrixXd& bias)
 ///-------------------------------------------------------------------------------------------------
 bool CBias::saveXML(const std::string& filename) const
 {
-	XMLDocument xmlDoc;
+	tinyxml2::XMLDocument xmlDoc;
 	// Create Root
-	XMLNode* root = xmlDoc.NewElement("Bias");				// Create root node
-	xmlDoc.InsertFirstChild(root);								// Add root to XML
+	tinyxml2::XMLNode* root = xmlDoc.NewElement("Bias");	// Create root node
+	xmlDoc.InsertFirstChild(root);							// Add root to XML
 
-	XMLElement* data = xmlDoc.NewElement("Bias-data");		// Create data node
-	if (!saveAdditional(xmlDoc, data)) { return false; }		// Save Optionnal Informations
+	tinyxml2::XMLElement* data = xmlDoc.NewElement("Bias-data");	// Create data node
+	if (!saveAdditional(xmlDoc, data)) { return false; }	// Save Optionnal Informations
 
-	root->InsertEndChild(data);									// Add data to root
-	return xmlDoc.SaveFile(filename.c_str()) == 0;				// save XML (if != 0 it means error)
+	root->InsertEndChild(data);								// Add data to root
+	return xmlDoc.SaveFile(filename.c_str()) == 0;			// save XML (if != 0 it means error)
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -84,36 +82,36 @@ bool CBias::saveXML(const std::string& filename) const
 bool CBias::loadXML(const std::string& filename)
 {
 	// Load File
-	XMLDocument xmlDoc;
+	tinyxml2::XMLDocument xmlDoc;
 	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }	// Check File Exist and Loading
 
 	// Load Root
-	XMLNode* root = xmlDoc.FirstChild();							// Get Root Node
-	if (root == nullptr) { return false; }							// Check Root Node Exist
+	tinyxml2::XMLNode* root = xmlDoc.FirstChild();			// Get Root Node
+	if (root == nullptr) { return false; }					// Check Root Node Exist
 
 	// Load Data
-	XMLElement* data = root->FirstChildElement("Bias-data");		// Get Data Node
-	if (!loadAdditional(data)) { return false; }					// Load Optionnal Informations
+	tinyxml2::XMLElement* data = root->FirstChildElement("Bias-data");	// Get Data Node
+	if (!loadAdditional(data)) { return false; }			// Load Optionnal Informations
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CBias::saveAdditional(XMLDocument& doc, XMLElement* data) const
+bool CBias::saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const
 {
-	XMLElement* bias = doc.NewElement("Bias");							// Create Bias node
-	bias->SetAttribute("n", int(m_N));									// Set attribute class number of trials
+	tinyxml2::XMLElement* bias = doc.NewElement("Bias");	// Create Bias node
+	bias->SetAttribute("n", int(m_n));						// Set attribute class number of trials
 	if (!IMatrixClassifier::saveMatrix(bias, m_bias)) { return false; }	// Save class
-	data->InsertEndChild(bias);											// Add class node to data node
+	data->InsertEndChild(bias);								// Add class node to data node
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CBias::loadAdditional(XMLElement* data)
+bool CBias::loadAdditional(tinyxml2::XMLElement* data)
 {
-	XMLElement* bias = data->FirstChildElement("Bias");					// Get LDA Weight Node
-	m_N              = bias->IntAttribute("n");										// Get the number of Trials for this class
+	tinyxml2::XMLElement* bias = data->FirstChildElement("Bias");	// Get LDA Weight Node
+	m_n                        = bias->IntAttribute("n");			// Get the number of Trials for this class
 	if (!IMatrixClassifier::loadMatrix(bias, m_bias)) { return false; }	// Load Reference Matrix
 	m_biasIS = m_bias.sqrt().inverse();
 	return true;
@@ -121,25 +119,28 @@ bool CBias::loadAdditional(XMLElement* data)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool CBias::isEqual(const CBias& obj, const double precision) const { return AreEquals(m_bias, obj.m_bias, precision) && m_N == obj.m_N; }
+bool CBias::isEqual(const CBias& obj, const double precision) const { return AreEquals(m_bias, obj.m_bias, precision) && m_n == obj.m_n; }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
 void CBias::copy(const CBias& obj)
 {
-	m_bias = obj.m_bias;
-	m_N    = obj.m_N;
+	m_bias   = obj.m_bias;
+	m_biasIS = obj.m_biasIS;
+	m_n      = obj.m_n;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
 std::stringstream CBias::print() const
 {
-	stringstream ss;
-	ss << "Number of Classification : " << m_N << endl;
+	std::stringstream ss;
+	ss << "Number of Classification : " << m_n << std::endl;
 	ss << "Bias Matrix : ";
-	if (m_bias.size() != 0) { ss << endl << m_bias.format(MATRIX_FORMAT) << endl; }
-	else { ss << "Not Computed" << endl; }
+	if (m_bias.size() != 0) { ss << std::endl << m_bias.format(MATRIX_FORMAT) << std::endl; }
+	else { ss << "Not Computed" << std::endl; }
 	return ss;
 }
 ///-------------------------------------------------------------------------------------------------
+
+}  // namespace Geometry

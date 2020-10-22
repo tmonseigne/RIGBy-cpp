@@ -1,9 +1,7 @@
-#include "IMatrixClassifier.hpp"
+#include "geometry/classifier/IMatrixClassifier.hpp"
 #include <iostream>
 
-using namespace std;
-using namespace Eigen;
-using namespace tinyxml2;
+namespace Geometry {
 
 //***********************	
 //***** Constructor *****	
@@ -21,9 +19,9 @@ void IMatrixClassifier::setClassCount(const size_t nbClass) { m_nbClass = nbClas
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::classify(const MatrixXd& sample, size_t& classId, const EAdaptations adaptation, const size_t& realClassId)
+bool IMatrixClassifier::classify(const Eigen::MatrixXd& sample, size_t& classId, const EAdaptations adaptation, const size_t& realClassId)
 {
-	vector<double> distance, probability;
+	std::vector<double> distance, probability;
 	return classify(sample, classId, distance, probability, adaptation, realClassId);
 }
 ///-------------------------------------------------------------------------------------------------
@@ -32,14 +30,14 @@ bool IMatrixClassifier::classify(const MatrixXd& sample, size_t& classId, const 
 //***** XML Manager *****
 //***********************
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::saveXML(const string& filename) const
+bool IMatrixClassifier::saveXML(const std::string& filename) const
 {
-	XMLDocument xmlDoc;
+	tinyxml2::XMLDocument xmlDoc;
 	// Create Root
-	XMLNode* root = xmlDoc.NewElement("Classifier");				// Create root node
+	tinyxml2::XMLNode* root = xmlDoc.NewElement("Classifier");		// Create root node
 	xmlDoc.InsertFirstChild(root);									// Add root to XML
 
-	XMLElement* data = xmlDoc.NewElement("Classifier-data");		// Create data node
+	tinyxml2::XMLElement* data = xmlDoc.NewElement("Classifier-data");	// Create data node
 	if (!saveHeader(data)) { return false; }						// Save Header attribute
 	if (!saveAdditional(xmlDoc, data)) { return false; }			// Save Optionnal Informations
 	if (!saveClasses(xmlDoc, data)) { return false; }				// Save Classes
@@ -50,18 +48,18 @@ bool IMatrixClassifier::saveXML(const string& filename) const
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::loadXML(const string& filename)
+bool IMatrixClassifier::loadXML(const std::string& filename)
 {
 	// Load File
-	XMLDocument xmlDoc;
+	tinyxml2::XMLDocument xmlDoc;
 	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }	// Check File Exist and Loading
 
 	// Load Root
-	XMLNode* root = xmlDoc.FirstChild();							// Get Root Node
+	tinyxml2::XMLNode* root = xmlDoc.FirstChild();					// Get Root Node
 	if (root == nullptr) { return false; }							// Check Root Node Exist
 
 	// Load Data
-	XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
+	tinyxml2::XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
 	if (!loadHeader(data)) { return false; }						// Load Header attribute
 	if (!loadAdditional(data)) { return false; }					// Load Optionnal Informations
 	if (!loadClasses(data)) { return false; }						// Load Classes
@@ -71,7 +69,7 @@ bool IMatrixClassifier::loadXML(const string& filename)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::convertMatrixToXMLFormat(const MatrixXd& in, stringstream& out)
+bool IMatrixClassifier::convertMatrixToXMLFormat(const Eigen::MatrixXd& in, std::stringstream& out)
 {
 	out << in.format(MATRIX_FORMAT);
 	return true;
@@ -79,9 +77,9 @@ bool IMatrixClassifier::convertMatrixToXMLFormat(const MatrixXd& in, stringstrea
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::convertXMLFormatToMatrix(stringstream& in, MatrixXd& out, const size_t rows, const size_t cols)
+bool IMatrixClassifier::convertXMLFormatToMatrix(std::stringstream& in, Eigen::MatrixXd& out, const size_t rows, const size_t cols)
 {
-	out = MatrixXd::Identity(rows, cols);				// Init With Identity Matrix (in case of)
+	out = Eigen::MatrixXd::Identity(rows, cols);				// Init With Identity Matrix (in case of)
 	for (size_t i = 0; i < rows; ++i)					// Fill Matrix
 	{
 		for (size_t j = 0; j < cols; ++j) { in >> out(i, j); }
@@ -91,10 +89,10 @@ bool IMatrixClassifier::convertXMLFormatToMatrix(stringstream& in, MatrixXd& out
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::saveMatrix(XMLElement* element, const MatrixXd& matrix)
+bool IMatrixClassifier::saveMatrix(tinyxml2::XMLElement* element, const Eigen::MatrixXd& matrix)
 {
 	element->SetAttribute("size", int(matrix.rows()));	// Set Matrix size NxN
-	stringstream ss;
+	std::stringstream ss;
 	convertMatrixToXMLFormat(matrix, ss);
 	element->SetText(ss.str().c_str());					// Write Means Value
 	return true;
@@ -102,11 +100,11 @@ bool IMatrixClassifier::saveMatrix(XMLElement* element, const MatrixXd& matrix)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::loadMatrix(XMLElement* element, MatrixXd& matrix)
+bool IMatrixClassifier::loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixXd& matrix)
 {
 	const size_t size = element->IntAttribute("size");	// Get number of row/col
 	if (size == 0) { return true; }
-	stringstream ss(element->GetText());				// String stream to parse Matrix value
+	std::stringstream ss(element->GetText());			// String stream to parse Matrix value
 	convertXMLFormatToMatrix(ss, matrix, size, size);
 	return true;
 }
@@ -131,16 +129,16 @@ void IMatrixClassifier::copy(const IMatrixClassifier& obj)
 /// -------------------------------------------------------------------------------------------------
 
 /// -------------------------------------------------------------------------------------------------
-std::stringstream IMatrixClassifier::print() const { return stringstream(printHeader().str() + printAdditional().str() + printClasses().str()); }
+std::stringstream IMatrixClassifier::print() const { return std::stringstream(printHeader().str() + printAdditional().str() + printClasses().str()); }
 /// -------------------------------------------------------------------------------------------------
 
 /// -------------------------------------------------------------------------------------------------
 std::stringstream IMatrixClassifier::printHeader() const
 {
-	stringstream ss;
-	ss << getType() << " Classifier" << endl;
-	ss << "Metric : " << toString(m_Metric) << endl;
-	ss << "Number of Classes : " << m_nbClass << endl;
+	std::stringstream ss;
+	ss << getType() << " Classifier" << std::endl;
+	ss << "Metric : " << toString(m_Metric) << std::endl;
+	ss << "Number of Classes : " << m_nbClass << std::endl;
 	return ss;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -149,23 +147,25 @@ std::stringstream IMatrixClassifier::printHeader() const
 //***** XML Manager (Private Functions) *****
 //*******************************************
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::saveHeader(XMLElement* data) const
+bool IMatrixClassifier::saveHeader(tinyxml2::XMLElement* data) const
 {
-	data->SetAttribute("type", getType().c_str());					// Set attribute classifier type
-	data->SetAttribute("class-count", int(m_nbClass));				// Set attribute class count
+	data->SetAttribute("type", getType().c_str());				// Set attribute classifier type
+	data->SetAttribute("class-count", int(m_nbClass));			// Set attribute class count
 	data->SetAttribute("metric", toString(m_Metric).c_str());	// Set attribute metric
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-bool IMatrixClassifier::loadHeader(XMLElement* data)
+bool IMatrixClassifier::loadHeader(tinyxml2::XMLElement* data)
 {
-	if (data == nullptr) { return false; }							// Check if Node Exist
-	const string classifierType = data->Attribute("type");			// Get type
-	if (classifierType != getType()) { return false; }				// Check Type
-	setClassCount(data->IntAttribute("class-count"));				// Update Number of classes
-	m_Metric = StringToMetric(data->Attribute("metric"));			// Update Metric
+	if (data == nullptr) { return false; }						// Check if Node Exist
+	const std::string classifierType = data->Attribute("type");	// Get type
+	if (classifierType != getType()) { return false; }			// Check Type
+	setClassCount(data->IntAttribute("class-count"));			// Update Number of classes
+	m_Metric = StringToMetric(data->Attribute("metric"));		// Update Metric
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
+
+}  // namespace Geometry

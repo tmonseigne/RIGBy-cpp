@@ -1,14 +1,13 @@
-# include "Covariance.hpp"
-#include <algorithm>    // std::max
+# include "geometry/Covariance.hpp"
+#include <algorithm>		// std::min/max
 
-using namespace Eigen;
-using namespace std;
+namespace Geometry {
 
 //***********************************************************
 //******************** COVARIANCES BASES ********************
 //***********************************************************
 //---------------------------------------------------------------------------------------------------
-double Variance(const RowVectorXd& x)
+double Variance(const Eigen::RowVectorXd& x)
 {
 	const size_t S = x.cols();								// Number of Samples				=> S
 	if (S == 0) { return 0; }								// If false input
@@ -19,7 +18,7 @@ double Variance(const RowVectorXd& x)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-double Covariance(const RowVectorXd& x, const RowVectorXd& y)
+double Covariance(const Eigen::RowVectorXd& x, const Eigen::RowVectorXd& y)
 {
 	const size_t xS = x.cols(), yS = y.cols();				// Number of Samples				=> S
 	if (xS == 0 || xS != yS) { return 0; }					// If false input
@@ -28,7 +27,7 @@ double Covariance(const RowVectorXd& x, const RowVectorXd& y)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool ShrunkCovariance(MatrixXd& cov, const double shrinkage)
+bool ShrunkCovariance(Eigen::MatrixXd& cov, const double shrinkage)
 {
 	if (!InRange(shrinkage, 0, 1)) { return false; }		// Verification
 	const size_t n = cov.rows();							// Number of Features				=> N
@@ -42,7 +41,7 @@ bool ShrunkCovariance(MatrixXd& cov, const double shrinkage)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool ShrunkCovariance(const MatrixXd& in, MatrixXd& out, const double shrinkage)
+bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, const double shrinkage)
 {
 	out = in;
 	return ShrunkCovariance(out, shrinkage);
@@ -50,10 +49,10 @@ bool ShrunkCovariance(const MatrixXd& in, MatrixXd& out, const double shrinkage)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estimator, const EStandardization standard)
+bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, const EEstimator estimator, const EStandardization standard)
 {
 	if (!IsNotEmpty(in)) { return false; }					// Verification
-	MatrixXd sample;
+	Eigen::MatrixXd sample;
 	MatrixStandardization(in, sample, standard);			// Standardization
 	switch (estimator)										// Switch Method
 	{
@@ -76,20 +75,20 @@ bool CovarianceMatrix(const MatrixXd& in, MatrixXd& out, const EEstimator estima
 //******************** COVARIANCES TYPES ********************
 //***********************************************************
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixCOV(const MatrixXd& samples, MatrixXd& cov)
+bool CovarianceMatrixCOV(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov)
 {
 	const size_t n = samples.rows();						// Number of Features				=> N
 
 	cov.resize(n, n);										// Init size of matrix
 	for (size_t i = 0; i < n; ++i)
 	{
-		const RowVectorXd ri = samples.row(i);
-		cov(i, i)            = Variance(ri);				// Diagonal Value
+		const Eigen::RowVectorXd ri = samples.row(i);
+		cov(i, i)                   = Variance(ri);			// Diagonal Value
 
 		for (size_t j = i + 1; j < n; ++j)
 		{
-			const RowVectorXd rj = samples.row(j);
-			cov(i, j)            = cov(j, i) = Covariance(ri, rj);		// Symetric covariance
+			const Eigen::RowVectorXd rj = samples.row(j);
+			cov(i, j)                   = cov(j, i) = Covariance(ri, rj);	// Symetric covariance
 		}
 	}
 	return true;
@@ -97,7 +96,7 @@ bool CovarianceMatrixCOV(const MatrixXd& samples, MatrixXd& cov)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixSCM(const MatrixXd& samples, MatrixXd& cov)
+bool CovarianceMatrixSCM(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov)
 {
 	cov = samples * samples.transpose();					// X*X^T
 	cov /= cov.trace();										// X*X^T / trace(X*X^T)
@@ -106,27 +105,27 @@ bool CovarianceMatrixSCM(const MatrixXd& samples, MatrixXd& cov)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixLWF(const MatrixXd& samples, MatrixXd& cov)
+bool CovarianceMatrixLWF(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov)
 {
 	const size_t n = samples.rows(), S = samples.cols();	// Number of Features & Samples		=> N & S
 
 	CovarianceMatrixCOV(samples, cov);						// Initial Covariance Matrix		=> Cov
-	const double mu = cov.trace() / n;
-	MatrixXd mDelta = cov;									// mDelta = cov - mu * I_n
+	const double mu        = cov.trace() / n;
+	Eigen::MatrixXd mDelta = cov;							// mDelta = cov - mu * I_n
 	for (size_t i = 0; i < n; ++i) { mDelta(i, i) -= mu; }
-	const MatrixXd x2   = samples.cwiseProduct(samples),	// Squared each sample				=> X^2
-				   cov2 = cov.cwiseProduct(cov);			// Squared each element of Cov		=> Cov^2
+	const Eigen::MatrixXd x2   = samples.cwiseProduct(samples),	// Squared each sample				=> X^2
+						  cov2 = cov.cwiseProduct(cov);			// Squared each element of Cov		=> Cov^2
 
 	const double delta     = mDelta.cwiseProduct(mDelta).sum() / n,
 				 beta      = 1. / double(n * S) * (x2 * x2.transpose() / double(S) - cov2).sum(),
-				 shrinkage = min(beta, delta) / delta;		// Assure shrinkage <= 1
+				 shrinkage = std::min(beta, delta) / delta;	// Assure shrinkage <= 1
 
 	return ShrunkCovariance(cov, shrinkage);				// Shrinkage of the matrix
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixOAS(const MatrixXd& samples, MatrixXd& cov)
+bool CovarianceMatrixOAS(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov)
 {
 	const size_t n = samples.rows(), S = samples.cols();	// Number of Features & Samples		=> N & S
 	CovarianceMatrixCOV(samples, cov);						// Initial Covariance Matrix		=> Cov
@@ -137,22 +136,22 @@ bool CovarianceMatrixOAS(const MatrixXd& samples, MatrixXd& cov)
 				 alpha     = cov.cwiseProduct(cov).mean(),
 				 num       = alpha + mu2,
 				 den       = (S + 1) * (alpha - mu2 / n),
-				 shrinkage = (den == 0) ? 1.0 : min(num / den, 1.0);
+				 shrinkage = (den == 0) ? 1.0 : std::min(num / den, 1.0);
 
 	return ShrunkCovariance(cov, shrinkage);				// Shrinkage of the matrix
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixMCD(const MatrixXd& samples, MatrixXd& cov) { return CovarianceMatrixIDE(samples, cov); }
+bool CovarianceMatrixMCD(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov) { return CovarianceMatrixIDE(samples, cov); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixCOR(const MatrixXd& samples, MatrixXd& cov)
+bool CovarianceMatrixCOR(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov)
 {
 	const size_t n = samples.rows();						// Number of Features				=> N
 	CovarianceMatrixCOV(samples, cov);						// Initial Covariance Matrix		=> Cov
-	const MatrixXd d = cov.diagonal().cwiseSqrt();			// Squared root of diagonal
+	const Eigen::MatrixXd d = cov.diagonal().cwiseSqrt();	// Squared root of diagonal
 
 	for (size_t i = 0; i < n; ++i) { for (size_t j = 0; j < n; ++j) { cov(i, j) /= d(i) * d(j); } }
 	return true;
@@ -160,12 +159,14 @@ bool CovarianceMatrixCOR(const MatrixXd& samples, MatrixXd& cov)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool CovarianceMatrixIDE(const MatrixXd& samples, MatrixXd& cov)
+bool CovarianceMatrixIDE(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov)
 {
-	cov = MatrixXd::Identity(samples.rows(), samples.rows());
+	cov = Eigen::MatrixXd::Identity(samples.rows(), samples.rows());
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
 //***********************************************************
 //***********************************************************
 //***********************************************************
+
+}  // namespace Geometry

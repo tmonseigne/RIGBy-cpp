@@ -16,8 +16,10 @@
 
 #pragma once
 
-#include "Basics.hpp"
+#include "geometry/Basics.hpp"
 #include <Eigen/Dense>
+
+namespace Geometry {
 
 //***************************************************
 //******************** CONSTANTS ********************
@@ -89,7 +91,7 @@ double Covariance(const Eigen::RowVectorXd& x, const Eigen::RowVectorXd& y);
 /// </summary>
 /// <param name="cov">			The Covariance Matrix to shrink. </param>
 /// <param name="shrinkage">	(Optional) The shrinkage coefficient : \f$ 0\leq \text{shrinkage} \leq 1\f$. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool ShrunkCovariance(Eigen::MatrixXd& cov, double shrinkage = 0.1);
 
 /// <summary>	Shrunks the Covariance Matrix \f$ M \f$ (non destructive operation).\n
@@ -98,7 +100,7 @@ bool ShrunkCovariance(Eigen::MatrixXd& cov, double shrinkage = 0.1);
 /// <param name="in">			The covariance matrix to shrink. </param>
 /// <param name="out">			The shrunk covariance matrix. </param>
 /// <param name="shrinkage">	(Optional) The shrinkage coefficient : \f$ 0\leq \text{shrinkage} \leq 1\f$. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, double shrinkage = 0.1);
 
 /// <summary>	Select the function to call for the covariance matrix.\n
@@ -109,8 +111,9 @@ bool ShrunkCovariance(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, double sh
 /// <param name="out">			The Covariance Matrix. </param>
 /// <param name="estimator">	(Optional) The selected estimator (see <see cref="EEstimator"/>). </param>
 /// <param name="standard">		(Optional) Standardize the data (see <see cref="EStandardization"/>). </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
-bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = EEstimator::COV, EStandardization standard = EStandardization::Center);
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimator estimator = EEstimator::COV,
+					  EStandardization standard                                             = EStandardization::Center);
 
 //***********************************************************
 //******************** COVARIANCES TYPES ********************
@@ -129,7 +132,7 @@ bool CovarianceMatrix(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, EEstimato
 /// </summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool CovarianceMatrixCOV(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
 /// <summary>	Calculation of the covariance matrix by the method : Normalized Spatial Covariance Matrix (SCM).\n
@@ -137,7 +140,7 @@ bool CovarianceMatrixCOV(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// </summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool CovarianceMatrixSCM(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
 /// <summary>	Calculation of the covariance matrix and shrinkage by the method : Ledoit and Wolf.\n
@@ -163,7 +166,7 @@ bool CovarianceMatrixSCM(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// </summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool CovarianceMatrixLWF(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
 /// <summary> Calculation of the covariance matrix and shrinkage by the method : Oracle Approximating Shrinkage (OAS).\n
@@ -191,13 +194,13 @@ bool CovarianceMatrixLWF(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// </summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool CovarianceMatrixOAS(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
 /// <summary>Calculation of the covariance matrix and shrinkage by the method : Minimum Covariance Determinant (MCD).</summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// \todo Not implemented.
 bool CovarianceMatrixMCD(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
@@ -209,11 +212,13 @@ bool CovarianceMatrixMCD(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 /// </summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool CovarianceMatrixCOR(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
 
 /// <summary> Return the Identity matrix \f$ I_N \f$.</summary>
 /// <param name="samples">	The data set \f$\vec{X}\f$. With \f$ N \f$ Rows (features) and \f$ S \f$ columns (samples). </param>
 /// <param name="cov">	  	The Covariance Matrix. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool CovarianceMatrixIDE(const Eigen::MatrixXd& samples, Eigen::MatrixXd& cov);
+
+}  // namespace Geometry

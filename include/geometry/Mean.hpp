@@ -16,15 +16,17 @@
 
 #pragma once
 
-#include "Metrics.hpp"
+#include "geometry/Metrics.hpp"
 #include <Eigen/Dense>
 #include <vector>
+
+namespace Geometry {
 
 /// <summary>	Compute the mean of vector of covariance matrix with the selected \p metric. </summary>
 /// <param name="covs">  	Vector of Covariance Matrix. </param>
 /// <param name="mean">  	The computed mean. </param>
 /// <param name="metric">	(Optional) The metric (see <see cref="EMetric"/>). </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool Mean(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean, EMetric metric = EMetric::Riemann);
 
 /// <summary>	Approximate Joint Diagonalization based on pham's algorithm.\n 
@@ -34,7 +36,7 @@ bool Mean(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean, EMetr
 /// <param name="ajd">	   	The computed Approximate Joint Diagonalization. </param>
 /// <param name="epsilon"> 	(Optional) The epsilon. </param>
 /// <param name="maxIter">	(Optional) The maximum iterator. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// \todo Not implemented.
 bool AJDPham(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& ajd, double epsilon = 0.0001, int maxIter = 15);
 
@@ -57,7 +59,7 @@ bool AJDPham(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& ajd, dou
 /// </summary>
 /// <param name="covs">	Vector of Covariance Matrix. </param>
 /// <param name="mean">	The mean. </param>
-/// <returns>	True if it succeeds, false if it fails. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 bool MeanRiemann(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 /// <summary>	Compute the Euclidian Mean.\n
@@ -141,3 +143,5 @@ bool MeanHarmonic(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mea
 ///	</summary>
 /// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
 bool MeanIdentity(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
+
+}  // namespace Geometry

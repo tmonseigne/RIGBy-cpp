@@ -13,8 +13,10 @@
 
 #pragma once
 
-#include "Metrics.hpp"
+#include "geometry/Metrics.hpp"
 #include <Eigen/Dense>
+
+namespace Geometry {
 
 /// <summary>	Compute the distance between two matrix with the selected \p metric. </summary>
 /// <param name="a">		The First Covariance matrix. </param>
@@ -81,3 +83,5 @@ double DistanceKullbackSym(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b);
 /// <param name="b">	The Second Covariance matrix. </param>
 /// <returns>	The Wasserstein Distance between A and B. </returns>
 double DistanceWasserstein(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b);
+
+}  // namespace Geometry

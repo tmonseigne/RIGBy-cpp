@@ -1,23 +1,21 @@
-#include "Basics.hpp"
+#include "geometry/Basics.hpp"
 #include <unsupported/Eigen/MatrixFunctions> // SQRT of Matrix
 
-using namespace Eigen;
-using namespace std;
-
+namespace Geometry {
 
 //************************************************
 //******************** Matrix ********************
 //************************************************
 //---------------------------------------------------------------------------------------------------
-MatrixXd AffineTransformation(const MatrixXd& ref, const MatrixXd& matrix)
+Eigen::MatrixXd AffineTransformation(const Eigen::MatrixXd& ref, const Eigen::MatrixXd& matrix)
 {
-	const MatrixXd isR = ref.sqrt().inverse();	// Inverse Square root of Reference matrix => isR
-	return isR * matrix * isR.transpose();		// Affine transformation : isR * sample * isR^T
+	const Eigen::MatrixXd isR = ref.sqrt().inverse();	// Inverse Square root of Reference matrix => isR
+	return isR * matrix * isR.transpose();				// Affine transformation : isR * sample * isR^T
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardization(MatrixXd& matrix, const EStandardization standard)
+bool MatrixStandardization(Eigen::MatrixXd& matrix, const EStandardization standard)
 {
 	if (standard == EStandardization::Center) { return MatrixCenter(matrix); }
 	if (standard == EStandardization::StandardScale) { return MatrixStandardization(matrix); }
@@ -26,7 +24,7 @@ bool MatrixStandardization(MatrixXd& matrix, const EStandardization standard)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardization(const MatrixXd& in, MatrixXd& out, const EStandardization standard)
+bool MatrixStandardization(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, const EStandardization standard)
 {
 	out = in;
 	return MatrixStandardization(out, standard);
@@ -34,7 +32,7 @@ bool MatrixStandardization(const MatrixXd& in, MatrixXd& out, const EStandardiza
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixCenter(MatrixXd& matrix)
+bool MatrixCenter(Eigen::MatrixXd& matrix)
 {
 	for (size_t i = 0, r = matrix.rows(), c = matrix.cols(); i < r; ++i)
 	{
@@ -46,7 +44,7 @@ bool MatrixCenter(MatrixXd& matrix)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixCenter(const MatrixXd& in, MatrixXd& out)
+bool MatrixCenter(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 {
 	out = in;
 	return MatrixCenter(out);
@@ -54,18 +52,18 @@ bool MatrixCenter(const MatrixXd& in, MatrixXd& out)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(MatrixXd& matrix)
+bool MatrixStandardScaler(Eigen::MatrixXd& matrix)
 {
-	RowVectorXd dummyScale;
+	Eigen::RowVectorXd dummyScale;
 	return MatrixStandardScaler(matrix, dummyScale);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(MatrixXd& matrix, RowVectorXd& scale)
+bool MatrixStandardScaler(Eigen::MatrixXd& matrix, Eigen::RowVectorXd& scale)
 {
 	const size_t r = matrix.rows(), c = matrix.cols();
-	vector<double> mu(r, 0), sigma(r, 0);
+	std::vector<double> mu(r, 0), sigma(r, 0);
 	scale.resize(r);
 
 	for (size_t i = 0; i < r; ++i)
@@ -88,7 +86,7 @@ bool MatrixStandardScaler(MatrixXd& matrix, RowVectorXd& scale)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out, RowVectorXd& scale)
+bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out, Eigen::RowVectorXd& scale)
 {
 	out = in;
 	return MatrixStandardScaler(out, scale);
@@ -96,15 +94,15 @@ bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out, RowVectorXd& scale)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool MatrixStandardScaler(const MatrixXd& in, MatrixXd& out)
+bool MatrixStandardScaler(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 {
-	RowVectorXd dummyScale;
+	Eigen::RowVectorXd dummyScale;
 	return MatrixStandardScaler(in, out, dummyScale);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-string MatrixPrint(const MatrixXd& matrix)
+std::string MatrixPrint(const Eigen::MatrixXd& matrix)
 {
 	std::stringstream sstream;
 	sstream << matrix;
@@ -113,7 +111,7 @@ string MatrixPrint(const MatrixXd& matrix)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool AreEquals(const MatrixXd& matrix1, const MatrixXd& matrix2, const double precision)
+bool AreEquals(const Eigen::MatrixXd& matrix1, const Eigen::MatrixXd& matrix2, const double precision)
 {
 	return matrix1.size() == matrix2.size() && (matrix1.size() == 0 || matrix1.isApprox(matrix2, precision));
 }
@@ -127,10 +125,10 @@ bool AreEquals(const MatrixXd& matrix1, const MatrixXd& matrix2, const double pr
 //******************** Index Manipulations ********************
 //*************************************************************
 //---------------------------------------------------------------------------------------------------
-RowVectorXd GetElements(const RowVectorXd& row, const std::vector<size_t>& index)
+Eigen::RowVectorXd GetElements(const Eigen::RowVectorXd& row, const std::vector<size_t>& index)
 {
 	const size_t k = index.size();
-	RowVectorXd result(k);
+	Eigen::RowVectorXd result(k);
 	for (size_t i = 0; i < k; ++i) { result[i] = row[index[i]]; }
 	return result;
 }
@@ -147,7 +145,7 @@ bool InRange(const double value, const double min, const double max) { return (m
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool AreNotEmpty(const vector<MatrixXd>& matrices)
+bool AreNotEmpty(const std::vector<Eigen::MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
 	for (const auto& m : matrices) { if (!IsNotEmpty(m)) { return false; } }
@@ -156,18 +154,18 @@ bool AreNotEmpty(const vector<MatrixXd>& matrices)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool IsNotEmpty(const MatrixXd& matrix) { return (matrix.rows() != 0 && matrix.cols() != 0); }
+bool IsNotEmpty(const Eigen::MatrixXd& matrix) { return (matrix.rows() != 0 && matrix.cols() != 0); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool HaveSameSize(const MatrixXd& a, const MatrixXd& b) { return (IsNotEmpty(a) && a.rows() == b.rows() && a.cols() == b.cols()); }
+bool HaveSameSize(const Eigen::MatrixXd& a, const Eigen::MatrixXd& b) { return (IsNotEmpty(a) && a.rows() == b.rows() && a.cols() == b.cols()); }
 //---------------------------------------------------------------------------------------------------
 
-bool IsSquare(const MatrixXd& matrix) { return (IsNotEmpty(matrix) && matrix.rows() == matrix.cols()); }
+bool IsSquare(const Eigen::MatrixXd& matrix) { return (IsNotEmpty(matrix) && matrix.rows() == matrix.cols()); }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool AreSquare(const vector<MatrixXd>& matrices)
+bool AreSquare(const std::vector<Eigen::MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
 	for (const auto& m : matrices) { if (!IsSquare(m)) { return false; } }
@@ -176,7 +174,7 @@ bool AreSquare(const vector<MatrixXd>& matrices)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool HaveSameSize(const std::vector<MatrixXd>& matrices)
+bool HaveSameSize(const std::vector<Eigen::MatrixXd>& matrices)
 {
 	if (matrices.empty()) { return false; }
 	const size_t r = matrices[0].rows(), c = matrices[0].cols();
@@ -192,13 +190,13 @@ bool HaveSameSize(const std::vector<MatrixXd>& matrices)
 //******************** CSV MANAGEMENT ********************
 //********************************************************
 //---------------------------------------------------------------------------------------------------
-vector<string> Split(const string& s, const string& sep)
+std::vector<std::string> Split(const std::string& s, const std::string& sep)
 {
-	vector<string> result;
-	string::size_type i       = 0, j;
-	const string::size_type n = sep.size();
+	std::vector<std::string> result;
+	std::string::size_type i       = 0, j;
+	const std::string::size_type n = sep.size();
 
-	while ((j = s.find(sep, i)) != string::npos)
+	while ((j = s.find(sep, i)) != std::string::npos)
 	{
 		result.emplace_back(s, i, j - i);			// Add part
 		i = j + n;									// Update pos
@@ -210,3 +208,5 @@ vector<string> Split(const string& s, const string& sep)
 //********************************************************
 //********************************************************
 //********************************************************
+
+}  // namespace Geometry
