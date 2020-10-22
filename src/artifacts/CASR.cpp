@@ -1,14 +1,16 @@
-#include "CASR.hpp"
+#include "geometry/artifacts/CASR.hpp"
 
-#include "utils/Misc.hpp"
-#include "utils/Covariance.hpp"
-#include "utils/Mean.hpp"
+#include "geometry/Misc.hpp"
+#include "geometry/Covariance.hpp"
+#include "geometry/Mean.hpp"
 
 #include <boost/math/special_functions/detail/igamma_inverse.hpp>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include <cmath>
 #include <numeric>
+
+namespace Geometry {
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -63,6 +65,9 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 
 bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 {
+	return false;
+	// Actually eigen dependency version is too lower
+	/*
 	// Check if input data is compatible with train data and if we don't limit so mutch the reconstruction
 	out = in;
 	if (out.rows() != m_nChannel) { return false; }
@@ -119,8 +124,8 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 		m_r = newR;	// Update the reconstruction matrix
 	}
 	m_trivial = trivial;
-
 	return true;
+	*/
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -167,3 +172,5 @@ std::string CASR::toString() const
 	return ss.str();
 }
 ///-------------------------------------------------------------------------------------------------
+
+}  // namespace Geometry
