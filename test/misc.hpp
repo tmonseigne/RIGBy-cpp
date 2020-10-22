@@ -13,11 +13,11 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "test_Init.hpp"
-#include "test_Misc.hpp"
+#include "init.hpp"
+#include "misc.hpp"
 
-#include "utils/Misc.hpp"
-#include "utils/Basics.hpp"
+#include <geometry/Misc.hpp>
+#include <geometry/Basics.hpp>
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Misc : public testing::Test
@@ -33,16 +33,16 @@ class Tests_Misc : public testing::Test
 TEST_F(Tests_Misc, SimpleMedian)
 {
 	std::vector<double> v{ 5, 6, 4, 3, 2, 6, 7, 9, 3 };
-	double calc = Median(v);
+	double calc = Geometry::Median(v);
 	EXPECT_EQ(calc, 5);
 
 	v.pop_back();
-	calc = Median(v);
+	calc = Geometry::Median(v);
 	EXPECT_EQ(calc, 5.5);
 
 	Eigen::MatrixXd m(3, 3);
 	m << 5, 6, 4, 3, 2, 6, 7, 9, 3;
-	calc = Median(m);
+	calc = Geometry::Median(m);
 	EXPECT_EQ(calc, 5);
 }
 //---------------------------------------------------------------------------------------------------
@@ -50,13 +50,13 @@ TEST_F(Tests_Misc, SimpleMedian)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Misc, DatasetMedian)
 {
-	const std::vector<Eigen::MatrixXd> dataSet = Vector2DTo1D(InitCovariance::LWF::Reference());
+	const std::vector<Eigen::MatrixXd> dataSet = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference());
 	Eigen::MatrixXd calc;
 	Eigen::MatrixXd ref(3, 3);
 	ref << 1.749537973777478, 0.002960131606861, 0.020507254841909,
 			0.002960131606861, 1.754563395557952, 0.043042786354499,
 			0.020507254841909, 0.043042786354499, 1.057672472691352;
-	EXPECT_TRUE(Median(dataSet, calc)) << "Error During Median Computes";
+	EXPECT_TRUE(Geometry::Median(dataSet, calc)) << "Error During Median Computes";
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Median of Dataset", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
@@ -64,10 +64,10 @@ TEST_F(Tests_Misc, DatasetMedian)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Misc, DoubleRange)
 {
-	const std::vector<double> calc1 = doubleRange(0, 10, 2), calc2                 = doubleRange(0, 10, 2, false),
-							  calc3 = doubleRange(0.15, 3.05, 0.5), calc4          = doubleRange(0.15, 3.05, 0.5, false),
-							  ref1  = { 0, 2, 4, 6, 8, 10 }, ref2                  = { 0, 2, 4, 6, 8 },
-							  ref3  = { 0.15, 0.65, 1.15, 1.65, 2.15, 2.65 }, ref4 = { 0.15, 0.65, 1.15, 1.65, 2.15, 2.65 };
+	const std::vector<double> calc1 = Geometry::doubleRange(0, 10, 2), calc2        = Geometry::doubleRange(0, 10, 2, false),
+							  calc3 = Geometry::doubleRange(0.15, 3.05, 0.5), calc4 = Geometry::doubleRange(0.15, 3.05, 0.5, false),
+							  ref1  = { 0, 2, 4, 6, 8, 10 }, ref2                   = { 0, 2, 4, 6, 8 },
+							  ref3  = { 0.15, 0.65, 1.15, 1.65, 2.15, 2.65 }, ref4  = { 0.15, 0.65, 1.15, 1.65, 2.15, 2.65 };
 
 	EXPECT_TRUE(isAlmostEqual(ref1, calc1)) << ErrorMsg("Double closed Range with integer value", ref1, calc1);
 	EXPECT_TRUE(isAlmostEqual(ref2, calc2)) << ErrorMsg("Double opened Range with integer value", ref2, calc2);
@@ -79,10 +79,10 @@ TEST_F(Tests_Misc, DoubleRange)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Misc, RoundIndexRange)
 {
-	const std::vector<size_t> calc1 = RoundIndexRange(0, 10, 2), calc2        = RoundIndexRange(0, 10, 2, false),
-							  calc3 = RoundIndexRange(0.15, 3.15, 0.2), calc4 = RoundIndexRange(0.15, 3.05, 0.2, false, false),
-							  ref1  = { 0, 2, 4, 6, 8, 10 }, ref2             = { 0, 2, 4, 6, 8 },
-							  ref3  = { 0, 1, 2, 3 }, ref4                    = { 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3 };
+	const std::vector<size_t> calc1 = Geometry::RoundIndexRange(0, 10, 2), calc2        = Geometry::RoundIndexRange(0, 10, 2, false),
+							  calc3 = Geometry::RoundIndexRange(0.15, 3.15, 0.2), calc4 = Geometry::RoundIndexRange(0.15, 3.05, 0.2, false, false),
+							  ref1  = { 0, 2, 4, 6, 8, 10 }, ref2                       = { 0, 2, 4, 6, 8 },
+							  ref3  = { 0, 1, 2, 3 }, ref4                              = { 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3 };
 
 	EXPECT_TRUE(isAlmostEqual(ref1, calc1)) << ErrorMsg("Round Index closed Range with integer value", ref1, calc1);
 	EXPECT_TRUE(isAlmostEqual(ref2, calc2)) << ErrorMsg("Round Index opened Range with integer value", ref2, calc2);
@@ -95,7 +95,7 @@ TEST_F(Tests_Misc, RoundIndexRange)
 TEST_F(Tests_Misc, binHistogramm)
 {
 	//========== Create Dataset ==========
-	const std::vector<Eigen::MatrixXd> matrices = Vector2DTo1D(InitDataset::Dataset());
+	const std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitDataset::Dataset());
 	std::vector<std::vector<double>> dataset(NB_CHAN);
 	// Transform Dataset to vector per channel
 	for (size_t i = 0; i < NB_CHAN; ++i) { dataset[i].reserve(NB_SAMPLE * matrices.size()); }
@@ -120,7 +120,7 @@ TEST_F(Tests_Misc, binHistogramm)
 	//========== Test ==========
 	for (size_t i = 0; i < NB_CHAN; ++i)
 	{
-		const std::vector<size_t> hist = BinHist(dataset[i], 15);
+		const std::vector<size_t> hist = Geometry::BinHist(dataset[i], 15);
 		EXPECT_TRUE(isAlmostEqual(hist, ref[i])) << ErrorMsg("Bin Histogramm", hist, ref[i]);
 	}
 }
@@ -129,7 +129,7 @@ TEST_F(Tests_Misc, binHistogramm)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Misc, fitDistribution)
 {
-	const std::vector<Eigen::MatrixXd> matrices = Vector2DTo1D(InitDataset::Dataset());
+	const std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitDataset::Dataset());
 	std::vector<std::vector<double>> dataset(NB_CHAN);
 	// Transform Dataset to vector per channel
 	for (size_t i = 0; i < NB_CHAN; ++i) { dataset[i].reserve(NB_SAMPLE * matrices.size()); }
@@ -142,7 +142,7 @@ TEST_F(Tests_Misc, fitDistribution)
 
 	for (size_t i = 0; i < NB_CHAN; ++i)
 	{
-		FitDistribution(dataset[i], mu[i], sigma[i]);
+		Geometry::FitDistribution(dataset[i], mu[i], sigma[i]);
 		EXPECT_TRUE(isAlmostEqual(mu[i], refMu[i])) << ErrorMsg("Fit Distribution Mu", mu[i], refMu[i]);
 		EXPECT_TRUE(isAlmostEqual(sigma[i], refSigma[i])) << ErrorMsg("Fit Distribution Sigma", sigma[i], refSigma[i]);
 	}

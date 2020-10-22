@@ -5,13 +5,13 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include <numeric>	// std::iota
 
-///-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 /// <summary>	Get the sign of the specified value. </summary>
 /// <param name="x">	The value. </param>
 /// <returns>	<c>1</c> if <c>x > 0</c>, <c>0</c> if <c>x == 0</c>, <c>-1</c> if <c>x < 0</c>. </returns>
 template <typename T>
 int sgn(T x) { return (T(0) < x) - (x < T(0)); }
-///-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
 double Median(const Eigen::MatrixXd& m)
@@ -76,9 +76,10 @@ struct SDoubleIota
 		v += inc;
 		return *this;
 	}
-	double v;
-	double inc;
+
+	double v, inc;
 };
+
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
@@ -93,9 +94,10 @@ struct SRoundIndex
 		v += inc;
 		return *this;
 	}
-	double v;
-	double inc;
+
+	double v, inc;
 };
+
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
@@ -110,6 +112,7 @@ std::vector<double> doubleRange(const double begin, const double end, const doub
 
 	return res;
 }
+//---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
 std::vector<size_t> RoundIndexRange(const double begin, const double end, const double step, const bool closed, const bool unique)
@@ -206,7 +209,7 @@ bool FitDistribution(const std::vector<double>& values, double& mu, double& sigm
 	{
 		grid[i].reserve(maxWidth);
 		const auto first = newValues.begin() + bounds[i];
-		std::copy(first, first + maxWidth, std::back_inserter(grid[i]));
+		std::copy_n(first, maxWidth, std::back_inserter(grid[i]));
 		firsts[i] = grid[i][0];
 		for (auto& e : grid[i]) { e -= firsts[i]; }	// Substract first value on all element
 	}
@@ -267,13 +270,15 @@ bool FitDistribution(const std::vector<double>& values, double& mu, double& sigm
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
-void sortedEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& vectors, std::vector<double>& values, const EMetric metric)
+
+//---------------------------------------------------------------------------------------------------
+void sortedEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& vectors, std::vector<double>& values, const EMetric /*metric*/)
 {
 	// Compute Eigen Vector/Values
 	const Eigen::EigenSolver<Eigen::MatrixXd> es(matrix);
 	const Eigen::MatrixXd tmpVec = es.eigenvectors().real();	// It's complex by default but all imaginary part are 0
 	const Eigen::MatrixXd tmpVal = es.eigenvalues().real();		// It's complex by default but all imaginary part are 0
-	values = std::vector<double>(tmpVal.data(), tmpVal.data() + tmpVal.size());
+	values                       = std::vector<double>(tmpVal.data(), tmpVal.data() + tmpVal.size());
 
 	// Get order of eigen values.
 	std::vector<size_t> idx(values.size());

@@ -38,7 +38,7 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 	//========== Compute the ponderate dataset ==========
 	std::vector<Eigen::MatrixXd> newDataset;
 	newDataset.reserve(n);
-	for (const auto& m : dataset) { newDataset.push_back((m.transpose() * eigVector)); }	// Multiply by eigen vector (we transpose to have channels in column
+	for (const auto& m : dataset) { newDataset.push_back((m.transpose() * eigVector)); }	// Multiply by eigen vector (we transpose to have channels in column)
 	for (auto& m : newDataset) { m = m.cwiseProduct(m); }									// Square new signal
 
 	//========== Compute the "fit" distribution ==========
