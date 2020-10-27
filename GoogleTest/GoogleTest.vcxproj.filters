@@ -109,6 +109,12 @@
     <ClInclude Include="..\include\geometry\Misc.hpp">
       <Filter>Fichiers de ressources</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\geometry\Median.hpp">
+      <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\test_Median.hpp">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test\main.cpp" />
@@ -167,6 +173,9 @@
       <Filter>Fichiers de ressources</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Misc.cpp">
+      <Filter>Fichiers de ressources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Median.cpp">
       <Filter>Fichiers de ressources</Filter>
     </ClCompile>
   </ItemGroup>

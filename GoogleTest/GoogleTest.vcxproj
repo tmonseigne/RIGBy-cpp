@@ -161,6 +161,7 @@
     <ClCompile Include="..\src\Featurization.cpp" />
     <ClCompile Include="..\src\Geodesic.cpp" />
     <ClCompile Include="..\src\Mean.cpp" />
+    <ClCompile Include="..\src\Median.cpp" />
     <ClCompile Include="..\src\Misc.cpp" />
     <ClCompile Include="..\test\main.cpp" />
   </ItemGroup>
@@ -181,6 +182,7 @@
     <ClInclude Include="..\include\geometry\Featurization.hpp" />
     <ClInclude Include="..\include\geometry\Geodesic.hpp" />
     <ClInclude Include="..\include\geometry\Mean.hpp" />
+    <ClInclude Include="..\include\geometry\Median.hpp" />
     <ClInclude Include="..\include\geometry\Misc.hpp" />
     <ClInclude Include="..\include\geometry\Metrics.hpp" />
     <ClInclude Include="..\test\test_ASR.hpp" />
@@ -194,6 +196,7 @@
     <ClInclude Include="..\test\test_Featurization.hpp" />
     <ClInclude Include="..\test\test_Geodesics.hpp" />
     <ClInclude Include="..\test\test_Mean.hpp" />
+    <ClInclude Include="..\test\test_Median.hpp" />
     <ClInclude Include="..\test\test_Misc.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

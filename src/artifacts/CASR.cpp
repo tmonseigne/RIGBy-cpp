@@ -1,6 +1,7 @@
 #include "geometry/artifacts/CASR.hpp"
 
 #include "geometry/Misc.hpp"
+#include "geometry/Median.hpp"
 #include "geometry/Covariance.hpp"
 #include "geometry/Mean.hpp"
 

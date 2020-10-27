@@ -4,6 +4,7 @@
 #include "test_Basics.hpp"
 #include "test_Covariance.hpp"
 #include "test_Mean.hpp"
+#include "test_Median.hpp"
 #include "test_Misc.hpp"
 #include "test_Distance.hpp"
 #include "test_Geodesics.hpp"
