@@ -12,7 +12,7 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "init.hpp"
+#include "Init.hpp"
 #include "misc.hpp"
 
 #include <geometry/Basics.hpp>

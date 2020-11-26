@@ -13,11 +13,12 @@
 #pragma once
 
 #include "gtest/gtest.h"
-#include "init.hpp"
+
+#include "Init.hpp"
 #include "misc.hpp"
 
-#include <geometry/Median.hpp>
 #include <geometry/Basics.hpp>
+#include <geometry/Median.hpp>
 
 //---------------------------------------------------------------------------------------------------
 class Tests_Median : public testing::Test

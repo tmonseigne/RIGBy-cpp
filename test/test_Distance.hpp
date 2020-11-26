@@ -13,7 +13,7 @@
 
 #include "gtest/gtest.h"
 #include "misc.hpp"
-#include "init.hpp"
+#include "Init.hpp"
 
 #include <geometry/Distance.hpp>
 

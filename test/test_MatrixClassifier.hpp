@@ -17,7 +17,7 @@
 
 #include "gtest/gtest.h"
 #include "misc.hpp"
-#include "init.hpp"
+#include "Init.hpp"
 
 #include <geometry/classifier/CMatrixClassifierMDM.hpp>
 #include <geometry/classifier/CMatrixClassifierMDMRebias.hpp>
