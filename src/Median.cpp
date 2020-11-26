@@ -1,17 +1,61 @@
 #include "geometry/Median.hpp"
 
+#include <iostream>
+
+#include "geometry/Basics.hpp"
+#include "geometry/Featurization.hpp"
+#include "geometry/Mean.hpp"
+
 namespace Geometry {
 
 //---------------------------------------------------------------------------------------------------
 double Median(const Eigen::MatrixXd& m)
 {
-	std::vector<double> v(m.data(), m.data() + m.rows() * m.cols());
+	const std::vector<double> v(m.data(), m.data() + m.rows() * m.cols());
 	return Median(v);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon, const int maxIter)
+bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon, const size_t maxIter, const EMetric& metric)
+{
+	if (matrices.empty()) { return false; }						// If no matrix in vector
+	if (matrices.size() == 1)									// If just one matrix in vector
+	{
+		median = matrices[0];
+		return true;
+	}
+	if (!HaveSameSize(matrices))								// If different sizes
+	{
+		std::cerr << "Matrices haven't same size." << std::endl;
+		return false;
+	}
+	if (!IsSquare(matrices[0]) && metric == EMetric::Riemann)	// If non square for Riemann metric
+	{
+		std::cerr << "Non Square Matrix is invalid with " << toString(metric) << " metric." << std::endl;
+		return false;
+	}
+
+	switch (metric)
+	{
+		case EMetric::Riemann: return MedianRiemann(matrices, median, epsilon, maxIter);
+		case EMetric::Euclidian: return MedianEuclidian(matrices, median, epsilon, maxIter);
+		case EMetric::Identity: return MedianIdentity(matrices, median);
+		case EMetric::LogEuclidian:
+		case EMetric::LogDet:
+		case EMetric::Kullback:
+		case EMetric::ALE:
+		case EMetric::Harmonic:
+		case EMetric::Wasserstein:
+			std::cerr << toString(metric) << " metric not implemented." << std::endl;
+			return false;
+	}
+	return true;
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool MedianEuclidian(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon, const size_t maxIter)
 {
 	if (matrices.empty() || matrices[0].size() == 0) { return false; }
 	const size_t n = matrices.size();					// Number of sample
@@ -52,5 +96,56 @@ bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& media
 	return true;
 }
 //---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool MedianRiemann(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon, const size_t maxIter)
+{
+	if (matrices.empty() || !IsSquare(matrices[0])) { return false; }
+	const size_t n  = matrices.size();						// Number of sample
+	const size_t nf = matrices[0].rows() * (matrices[0].rows() + 1) / 2;	// Number of Features in tangent space
+	size_t iter     = 0;									// number of iteration
+	if (!MeanEuclidian(matrices, median)) { return false; }	// Initialize Median
+
+	double gain = epsilon;									// Gain since last compute
+	std::vector<Eigen::MatrixXd> mats;
+	mats.reserve(n);
+	for (const auto& m : matrices) { mats.push_back(m); }
+	while (iter < maxIter)
+	{
+		// Compute Tangent space of all matrices & sum of euclidian distance of each transposed matrix
+		std::vector<Eigen::RowVectorXd> ts(n);
+		double sum = 0.0;
+		for (size_t i = 0; i < n; ++i)
+		{
+			if (!TangentSpace(mats[i], ts[i], median)) { return false; }
+			sum += sqrt(ts[i].cwiseAbs2().sum());
+		}
+		if (abs((sum - gain) / gain) < epsilon) { break; }
+
+		// Arithmetic median in tangent space
+		std::vector<std::vector<double>> transposeTs(nf, std::vector<double>(n));
+		Eigen::RowVectorXd featureMedian(nf);
+		for (size_t i = 0; i < n; ++i) { for (size_t j = 0; j < nf; ++j) { transposeTs[j][i] = ts[i][j]; } }
+		for (size_t j = 0; j < nf; ++j) { featureMedian[j] = Median(transposeTs[j]); }
+
+		// back to the manifold
+		Eigen::MatrixXd tmp;
+		if (!UnTangentSpace(featureMedian, tmp, median)) { return false; }
+		gain   = sum;										// Update gain
+		median = tmp;										// Update Median
+		iter++;
+	}
+	return true;
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+bool MedianIdentity(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median)
+{
+	median = Eigen::MatrixXd::Identity(matrices[0].rows(), matrices[0].cols());
+	return true;
+}
+//---------------------------------------------------------------------------------------------------
+
 
 }  // namespace Geometry

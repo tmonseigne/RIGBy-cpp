@@ -28,11 +28,12 @@ namespace Geometry {
 /// <param name="v"> the vector of values. </param>
 /// <returns> The median of matrix. </returns>
 template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-T Median(std::vector<T>& v)
+T Median(const std::vector<T>& v)
 {
-	const size_t n = v.size() / 2;								// Where is the middle (if odd number of value the decimal part is floor by cast)
-	std::nth_element(v.begin(), v.begin() + n + 1, v.end());	// We sort one number more if we have an even number of value
-	return (v.size() % 2 == 0) ? (v[n] + v[n + 1]) / 2 : v[n];	// For Even number of value we take the mean of the two middle value
+	std::vector<T> tmp = v;
+	const size_t n = tmp.size() / 2;									// Where is the middle (if odd number of value the decimal part is floor by cast)
+	std::nth_element(tmp.begin(), tmp.begin() + n, tmp.end());			// We sort only until the limit usefull
+	return (tmp.size() % 2 == 0) ? (tmp[n] + tmp[n - 1]) / 2 : tmp[n];	// For Even number of value we take the mean of the two middle value
 }
 //-------------------------------------------------------------------------------------------------
 
@@ -56,13 +57,33 @@ double Median(const Eigen::MatrixXd& m);
 /// - We sum the the matrices in initial dataset (divided by their own norm) and we normalize the result by the sum of inverse norms.
 /// - We iterate this previous step until we have a difference between the old and new median is under an epsilon or that the number of iterations is above the limit.
 /// </summary>
-/// <param name="matrices">  	Vector of Matrix. </param>
-/// <param name="median">  	The computed median. </param>
-/// <param name="epsilon"> 	(Optional) The epsilon value to stop algorithm. </param>
+/// <param name="matrices">	Vector of Matrix. </param>
+/// <param name="median">	The computed median. </param>
+/// <param name="epsilon">	(Optional) The epsilon value to stop algorithm. </param>
 /// <param name="maxIter">	(Optional) The maximum iteration allowed to find best Median. </param>
 /// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
 /// <remarks>  it's an iteratively algorithm, so we have a limit of iteration and an epsilon value to consider the calculation as satisfactory. </remarks>
-bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const int maxIter = 50);
+bool MedianEuclidian(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const size_t maxIter = 50);
+//-------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------------
+bool MedianRiemann(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const size_t maxIter = 50);
+//-------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------------
+bool MedianIdentity(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median);
+//-------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------------
+/// <summary>	Compute the median of vector of matrix with the Weiszfeld's algorithm for Euclidian Metric and Riemman Barycentre. </summary>
+/// <param name="matrices">	Vector of Matrix. </param>
+/// <param name="median">	The computed median. </param>
+/// <param name="epsilon">	(Optional) The epsilon value to stop algorithm. </param>
+/// <param name="maxIter">	(Optional) The maximum iteration allowed to find best Median. </param>
+/// <param name="metric">	(Optional) THe metric to use. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+/// <remarks>  it's an iteratively algorithm, so we have a limit of iteration and an epsilon value to consider the calculation as satisfactory. </remarks>
+bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const size_t maxIter = 50, const EMetric& metric = EMetric::Euclidian);
 //-------------------------------------------------------------------------------------------------
 
 }  // namespace Geometry

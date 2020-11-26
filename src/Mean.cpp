@@ -16,21 +16,21 @@ static const size_t ITER_MAX = 50;
 bool Mean(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean, const EMetric metric)
 {
 	if (covs.empty()) { return false; }			// If no matrix in vector
-	if (covs.size() == 1)
+	if (covs.size() == 1)						// If just one matrix in vector
 	{
 		mean = covs[0];
 		return true;
-	}	// If just one matrix in vector
+	}
 	if (!HaveSameSize(covs))
 	{
-		std::cout << "Matrices haven't same size." << std::endl;
+		std::cerr << "Matrices haven't same size." << std::endl;
 		return false;
 	}
 
 	// Force Square Matrix for non Euclidian and non Identity metric
-	if (!AreSquare(covs) && (metric != EMetric::Euclidian && metric != EMetric::Identity))
+	if (!IsSquare(covs[0]) && (metric != EMetric::Euclidian && metric != EMetric::Identity))
 	{
-		std::cout << "Non Square Matrix is invalid with " << toString(metric) << " metric." << std::endl;
+		std::cerr << "Non Square Matrix is invalid with " << toString(metric) << " metric." << std::endl;
 		return false;
 	}
 
