@@ -23,14 +23,14 @@ bool Mean(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean, const
 	}
 	if (!HaveSameSize(covs))
 	{
-		std::cerr << "Matrices haven't same size." << std::endl;
+		std::cout << "Matrices haven't same size." << std::endl;
 		return false;
 	}
 
 	// Force Square Matrix for non Euclidian and non Identity metric
 	if (!IsSquare(covs[0]) && (metric != EMetric::Euclidian && metric != EMetric::Identity))
 	{
-		std::cerr << "Non Square Matrix is invalid with " << toString(metric) << " metric." << std::endl;
+		std::cout << "Non Square Matrix is invalid with " << toString(metric) << " metric." << std::endl;
 		return false;
 	}
 

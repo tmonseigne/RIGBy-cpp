@@ -27,12 +27,12 @@ bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& media
 	}
 	if (!HaveSameSize(matrices))								// If different sizes
 	{
-		std::cerr << "Matrices haven't same size." << std::endl;
+		std::cout << "Matrices haven't same size." << std::endl;
 		return false;
 	}
 	if (!IsSquare(matrices[0]) && metric == EMetric::Riemann)	// If non square for Riemann metric
 	{
-		std::cerr << "Non Square Matrix is invalid with " << toString(metric) << " metric." << std::endl;
+		std::cout << "Non Square Matrix is invalid with " << toString(metric) << " metric." << std::endl;
 		return false;
 	}
 
@@ -47,7 +47,7 @@ bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& media
 		case EMetric::ALE:
 		case EMetric::Harmonic:
 		case EMetric::Wasserstein:
-			std::cerr << toString(metric) << " metric not implemented." << std::endl;
+			std::cout << toString(metric) << " metric not implemented." << std::endl;
 			return false;
 	}
 	return true;
