@@ -27,6 +27,7 @@ protected:
 
 	void SetUp() override { m_dataset = Geometry::Vector2DTo1D(InitDataset::Dataset()); }
 };
+
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
@@ -39,22 +40,21 @@ TEST_F(Tests_ASR, trainASR)
 	refMedian << 1.32267188, 0.00105802, 0.00871490,
 			0.00105802, 1.32447262, 0.01829110,
 			0.00871490, 0.01829110, 1.02823244;
-	refTransformation << -0.05738397, -0.12038745, 1.96253197,
-			3.44884211, -1.60796319, 0.00220615,
-			1.31682195, 2.82467797, 0.21177757;
+	refTransformation << -0.05738723, - 0.12041171, 1.96255648,
+			3.44737720, - 1.60950341, 0.00205466,
+			1.31840128, 2.82413924, 0.21182516;
 
 	EXPECT_TRUE(asr.getMetric() == Geometry::EMetric::Euclidian) << "Asr Train Metric : Reference : " << toString(Geometry::EMetric::Euclidian)
 		<< ", \tCompute : " << toString(asr.getMetric());
-	EXPECT_TRUE(isAlmostEqual(asr.getMedian(), refMedian)) << ErrorMsg("Asr Train Median", asr.getMedian(), refMedian);
+	EXPECT_TRUE(isAlmostEqual(asr.getMedian(), refMedian)) << ErrorMsg("Asr Train Median", refMedian, asr.getMedian());
 	EXPECT_TRUE(isAlmostEqual(asr.getTransformMatrix(), refTransformation))
-		<< ErrorMsg("Asr Train Transformation Matrix", asr.getTransformMatrix(), refTransformation);
+		<< ErrorMsg("Asr Train Transformation Matrix", refTransformation, asr.getTransformMatrix());
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_ASR, ProcessASR)
 {
-	/*
 	Geometry::CASR asr;
 	m_dataset = InitDataset::FirstClassDataset();
 	asr.train(m_dataset);
@@ -70,6 +70,5 @@ TEST_F(Tests_ASR, ProcessASR)
 	{
 		EXPECT_FALSE(isAlmostEqual(result[i], testset[i])) << "the sample " + std::to_string(i) + " wasn't reconstructed\n";
 	}
-	*/
 }
 //---------------------------------------------------------------------------------------------------
