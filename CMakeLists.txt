@@ -30,7 +30,7 @@ foreach(child ${children})
 endforeach()
 
 # Basic sources
-file(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/* ${CMAKE_SOURCE_DIR}/tests/*)
+file(GLOB_RECURSE SRC_FILES ${CMAKE_SOURCE_DIR}/src/* ${CMAKE_SOURCE_DIR}/include/* ${CMAKE_SOURCE_DIR}/test/*)
 
 #################################################
 ########## Code Coverage Configuration ##########
@@ -102,8 +102,8 @@ set_property(TARGET ${PROJECT_NAME}
 		${CMAKE_SOURCE_DIR}/dependencies/googletest/googlemock
 		${CMAKE_SOURCE_DIR}/dependencies/googletest/googlemock/include
 		${CMAKE_SOURCE_DIR}/dependencies/eigen
-		${CMAKE_SOURCE_DIR}/tests
-		${CMAKE_SOURCE_DIR}/src
+		${CMAKE_SOURCE_DIR}/test
+		${CMAKE_SOURCE_DIR}/include
 		${GTestSrc} 
 		${GTestSrc}/include 
 		${GMockSrc} 
