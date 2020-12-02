@@ -3,4 +3,4 @@
 	url = https://github.com/abseil/googletest.git
 [submodule "dependencies/eigen"]
 	path = dependencies/eigen
-	url = https://github.com/eigenteam/eigen-git-mirror.git
+	url = https://gitlab.com/libeigen/eigen.git
