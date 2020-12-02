@@ -75,10 +75,10 @@ TEST_F(Tests_Basics, ARange)
 TEST_F(Tests_Basics, Vector2DTo1D)
 {
 	std::vector<Eigen::MatrixXd> calc = Geometry::Vector2DTo1D(m_dataSet);
-	bool egal                         = true;
+	bool equal                        = true;
 	size_t idx                        = 0;
-	for (auto& set : m_dataSet) { for (const auto& data : set) { if (!isAlmostEqual(data, calc[idx++])) { egal = false; } } }
-	EXPECT_TRUE(egal) << "Vector2DTo1D fail";
+	for (auto& set : m_dataSet) { for (const auto& data : set) { if (!isAlmostEqual(data, calc[idx++])) { equal = false; } } }
+	EXPECT_TRUE(equal) << "Vector2DTo1D fail";
 }
 //---------------------------------------------------------------------------------------------------
 

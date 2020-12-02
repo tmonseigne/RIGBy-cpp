@@ -13,10 +13,6 @@
 
 namespace Geometry {
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 ///-------------------------------------------------------------------------------------------------
 bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejectionLimit)
 {
@@ -66,9 +62,6 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 
 bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 {
-	return false;
-	// Actually eigen dependency version is too lower
-	/*
 	// Check if input data is compatible with train data and if we don't limit so mutch the reconstruction
 	out = in;
 	if (out.rows() != m_nChannel) { return false; }
@@ -126,7 +119,6 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 	}
 	m_trivial = trivial;
 	return true;
-	*/
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -151,10 +143,10 @@ void CASR::copy(const CASR& obj)
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
-std::string CASR::toString() const
+std::stringstream CASR::print() const
 {
 	std::stringstream ss;
-	ss << "Metric : " << (m_metric == EMetric::Riemann ? "Riemann" : "Euclidian") << std::endl;	// tostring(EMetrics) doesn't work
+	ss << "Metric : " << toString(EMetric::Riemann) << std::endl;
 	if (m_nChannel == 0) { ss << "Train not done" << std::endl; }
 	else
 	{
@@ -170,7 +162,7 @@ std::string CASR::toString() const
 			ss << "Last Covariance Matrix : " << std::endl << m_cov << std::endl;
 		}
 	}
-	return ss.str();
+	return ss;
 }
 ///-------------------------------------------------------------------------------------------------
 

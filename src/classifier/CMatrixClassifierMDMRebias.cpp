@@ -11,7 +11,7 @@ namespace Geometry {
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDMRebias::train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets)
 {
-	if (!m_bias.computeBias(datasets, m_Metric)) { return false; }
+	if (!m_bias.computeBias(datasets, m_metric)) { return false; }
 	std::vector<std::vector<Eigen::MatrixXd>> newDatasets;
 	m_bias.applyBias(datasets, newDatasets);
 	return CMatrixClassifierMDM::train(newDatasets);			// Train MDM
@@ -25,7 +25,7 @@ bool CMatrixClassifierMDMRebias::classify(const Eigen::MatrixXd& sample, size_t&
 	if (!IsSquare(sample)) { return false; }					// Verification if it's a square matrix 
 	Eigen::MatrixXd newSample;
 	m_bias.applyBias(sample, newSample);
-	m_bias.updateBias(sample, m_Metric);
+	m_bias.updateBias(sample, m_metric);
 	return CMatrixClassifierMDM::classify(newSample, classId, distance, probability, adaptation, realClassId);
 }
 ///-------------------------------------------------------------------------------------------------

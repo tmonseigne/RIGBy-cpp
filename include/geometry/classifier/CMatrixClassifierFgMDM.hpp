@@ -35,7 +35,8 @@ public:
 	explicit CMatrixClassifierFgMDM(const CMatrixClassifierFgMDMRT& obj) { copy(obj); }
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDM"/> class and set base members. </summary>
-	/// \copydetails CMatrixClassifierFgMDMRT(size_t, EMetric)
+	/// <param name="nbClass">	The number of classes. </param>
+	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetric" />). </param>
 	explicit CMatrixClassifierFgMDM(const size_t nbClass, const EMetric metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDM"/> class. </summary>
@@ -45,18 +46,33 @@ public:
 	//***************************
 	//***** Getter / Setter *****
 	//***************************
-	const std::vector<std::vector<Eigen::MatrixXd>>& getDatasets() const { return m_datasets; }
-	void setDatasets(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) { m_datasets = datasets; }
+	void setDatasets(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) { m_datasets = datasets; }	///< Set Datasets.
+	const std::vector<std::vector<Eigen::MatrixXd>>& getDatasets() const { return m_datasets; }				///< Get Datasets.
 	
 	//**********************
 	//***** Classifier *****
 	//**********************
-	/// \copydoc CMatrixClassifierFgMDMRT::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
+	/// <summary>	Train the classifier with the dataset.
+	/// -# Compute the Riemann mean of all trials as reference and store this in <see cref="m_ref"/> member.
+	/// -# Set the good number of classes
+	/// -# Trasnform data to the Tangent Space with the reference
+	/// -# Compute the FgDA Weight (<see cref="FgDACompute" />).
+	/// -# Apply the FgDA Weight and return to Original Manifold.
+	/// -# Apply the train function of MDM Classifier (see <see cref="CMatrixClassifierMDM::train"/>)
+	///	</summary>
+	/// <param name="datasets">	The dataset one class by row and trials on colums. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	/// <remarks>	the datasets is saved. </remarks>
 	bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) override;
 
-	/// \copydoc CMatrixClassifierFgMDMRT::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
+	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class.\n
+	/// -# Transform the sample to the Tangent Space.\n
+	/// -# Apply the FgDA weight.\n
+	/// -# Return to the original Manifold.\n
+	/// -# Apply the classify function of MDM Classifier (see <see cref="CMatrixClassifierMDM::classify"/>)
+	///	</summary>
 	/// <remarks>	The classifier is train with the new sample. </remarks>
+	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
 
@@ -65,7 +81,7 @@ public:
 	//***** Override Operator *****
 	//*****************************
 
-	/// \copybrief CMatrixClassifierMDM::getType()
+	/// <summary>	Get the type of the classifier. </summary>
 	/// <returns>	Minimum Distance to Mean with geodesic filtering (FgMDM). </returns>
 	std::string getType() const override { return toString(EMatrixClassifiers::FgMDM); }
 

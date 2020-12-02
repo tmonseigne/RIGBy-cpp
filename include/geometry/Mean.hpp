@@ -26,7 +26,7 @@ namespace Geometry {
 /// <param name="covs">  	Vector of Covariance Matrix. </param>
 /// <param name="mean">  	The computed mean. </param>
 /// <param name="metric">	(Optional) The metric (see <see cref="EMetric"/>). </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool Mean(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean, EMetric metric = EMetric::Riemann);
 
 /// <summary>	Approximate Joint Diagonalization based on pham's algorithm.\n 
@@ -36,7 +36,7 @@ bool Mean(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean, EMetr
 /// <param name="ajd">	   	The computed Approximate Joint Diagonalization. </param>
 /// <param name="epsilon"> 	(Optional) The epsilon. </param>
 /// <param name="maxIter">	(Optional) The maximum iterator. </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 /// \todo Not implemented.
 bool AJDPham(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& ajd, double epsilon = 0.0001, int maxIter = 15);
 
@@ -59,19 +59,23 @@ bool AJDPham(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& ajd, dou
 /// </summary>
 /// <param name="covs">	Vector of Covariance Matrix. </param>
 /// <param name="mean">	The mean. </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MeanRiemann(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 /// <summary>	Compute the Euclidian Mean.\n
 /// \f[ C_{\mu_\text{E}} =\frac{1}{N} \sum_i{C_i}\f]
 /// </summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MeanEuclidian(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 /// <summary>	Compute the Log Euclidiean Mean.\n
 /// \f[ C_{\mu_\text{lE}} =\exp\left(\frac{1}{N} \sum_i{\log\left(C_i\right)}\right)\f]
 /// </summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MeanLogEuclidian(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 /// <summary>	Compute the Log Determinant Mean.\n
@@ -85,14 +89,18 @@ bool MeanLogEuclidian(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd&
 ///		C_{\mu_\text{lD}} &= J
 ///	\end{aligned}\f]
 /// </summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MeanLogDet(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
-/// <summary>	Compute the Mean with the Kullback Mean.\n
+/// <summary>	Compute the Kullback Mean.\n
 /// The mean is the Geodesic center between the Euclidian and the Harmonic Mean.\n
 /// \f[ C_{\mu_\text{K}} = \gamma \left( C_{\mu_{\text{E}}}, C_{\mu_{\text{H}}} \right) \f]
 /// </summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MeanKullback(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 /// <summary>	Compute the Wasserstein Mean.\n
@@ -107,7 +115,9 @@ bool MeanKullback(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mea
 ///	\end{aligned}\f]
 ///	After the Iterative process : \f$ C_{\mu_\text{W}} = J*J \f$
 /// </summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 /// \todo Doesn't work so good (after \f$10^{-3}\f$ precision with the pyriemann library).
 bool MeanWasserstein(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
@@ -128,20 +138,26 @@ bool MeanWasserstein(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& 
 ///		C_{\mu_\text{ALE}} &= \left(C_{\mu_\text{ALE}}^{-1}\right)^{\mathsf{T}} ~ \exp(J) ~ C_{\mu_\text{ALE}}^{-1}
 ///	\end{aligned}\f]
 /// </summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 /// \todo Doesn't work => Need to implement <see cref="AJDPham"/> and check if it works next.
 bool MeanALE(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 /// <summary>	Compute the Harmonic Mean.\n
 /// \f[ C_{\mu_\text{H}} = (\frac{1}{N} \sum_i{C_i}^{-1})^{-1} \f]
 /// </summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MeanHarmonic(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 /// <summary>	Give the Identity Matrix.\n
 ///	\f[ C_{\mu_\text{I}} = I_N \f]
 ///	</summary>
-/// \copydetails MeanRiemann(const std::vector<Eigen::MatrixXd>&, Eigen::MatrixXd&)
+/// <param name="covs">	Vector of Covariance Matrix. </param>
+/// <param name="mean">	The mean. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MeanIdentity(const std::vector<Eigen::MatrixXd>& covs, Eigen::MatrixXd& mean);
 
 }  // namespace Geometry

@@ -17,6 +17,7 @@
 
 namespace Geometry {
 
+/// <summary> Class For Bias Algorithm for covariance matrices. </summary>
 class CBias
 {
 public:
@@ -26,60 +27,60 @@ public:
 	~CBias() = default;
 
 	/// <summary> Computes the Bias matrix and reset the number of classification. </summary>
-	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
-	/// <param name="metric">The metric.</param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <param name="datasets">	The dataset one class by row and trials on colums. </param>
+	/// <param name="metric">The metric. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool computeBias(const std::vector<std::vector<Eigen::MatrixXd>>& datasets, const EMetric metric = EMetric::Riemann);
 
 	/// <summary> Computes the Bias matrix and reset the number of classification. </summary>
-	/// <param name="datasets">	The data set is a vector of trial. </param>
-	/// <param name="metric">The metric.</param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <param name="datasets">	The dataset is a vector of trial. </param>
+	/// <param name="metric">The metric. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool computeBias(const std::vector<Eigen::MatrixXd>& datasets, const EMetric metric = EMetric::Riemann);
 
 	/// <summary> Applies the Bias on 2D vector of Matrix. </summary>
-	/// <param name="in">The input 2D vector of matrix.</param>
-	/// <param name="out">The output 2D vector of matrix.</param>
+	/// <param name="in">The input 2D vector of matrix. </param>
+	/// <param name="out">The output 2D vector of matrix. </param>
 	void applyBias(const std::vector<std::vector<Eigen::MatrixXd>>& in, std::vector<std::vector<Eigen::MatrixXd>>& out);
 	/// <summary> Applies the Bias on vector of Matrix. </summary>
-	/// <param name="in">The input vector of matrix.</param>
-	/// <param name="out">The output vector of matrix.</param>
+	/// <param name="in">The input vector of matrix. </param>
+	/// <param name="out">The output vector of matrix. </param>
 	void applyBias(const std::vector<Eigen::MatrixXd>& in, std::vector<Eigen::MatrixXd>& out);
 	/// <summary> Applies the Bias on Matrix. </summary>
-	/// <param name="in">The input matrix.</param>
-	/// <param name="out">The output matrix.</param>
+	/// <param name="in">The input matrix. </param>
+	/// <param name="out">The output matrix. </param>
 	void applyBias(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
 	/// <summary> Updates the Bias. </summary>
-	/// <param name="sample">The sample.</param>
-	/// <param name="metric">The metric.</param>
+	/// <param name="sample">The sample. </param>
+	/// <param name="metric">The metric. </param>
 	void updateBias(const Eigen::MatrixXd& sample, const EMetric metric = EMetric::Riemann);
 
-	const Eigen::MatrixXd& getBias() const { return m_bias; }
-	void setBias(const Eigen::MatrixXd& bias);					///< Set the bias and the inverse square root of biais.
+	const Eigen::MatrixXd& getBias() const { return m_bias; }	///< Get the bias matrix.
+	void setBias(const Eigen::MatrixXd& bias);					///< Set the bias matrix and the inverse square root of biais.
 
-	size_t getClassificationNumber() const { return m_n; }
-	void setClassificationNumber(const size_t& n) { m_n = n; }
+	size_t getClassificationNumber() const { return m_n; }		///< Get the Number of classification (used for update).
+	void setClassificationNumber(const size_t& n) { m_n = n; }	///< Set the Number of classification (used for update).
 
 	//***********************
 	//***** XML Manager *****
 	//***********************
 	/// <summary>	Saves the Bias information in an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool saveXML(const std::string& filename) const;
 
 	/// <summary>	Loads the Bias information from an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool loadXML(const std::string& filename);
 
 	/// <summary>	Save informations in xml element (Bias and number of classification). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const;
 
 	/// <summary>	Load informations in xml element (Bias and number of classification). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool loadAdditional(tinyxml2::XMLElement* data);
 
 	//*****************************
@@ -88,7 +89,7 @@ public:
 	/// <summary>	Check if object are equals (with a precision tolerance). </summary>
 	/// <param name="obj">			The second object. </param>
 	/// <param name="precision">	Precision for matrix comparison. </param>
-	/// <returns>	<c>True</c> if the two elements are equals (with a precision tolerance). </returns>
+	/// <returns>	<c>True</c> if the two elements are equals (with a precision tolerance), <c>False</c> otherwise. </returns>
 	bool isEqual(const CBias& obj, const double precision = 1e-6) const;
 
 	/// <summary>	Copy object value. </summary>
@@ -108,12 +109,12 @@ public:
 		return *this;
 	}
 
-	/// <summary>	Override the egal operator. </summary>
+	/// <summary>	Override the equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CBias"/> are equals. </returns>
 	bool operator==(const CBias& obj) const { return isEqual(obj); }
 
-	/// <summary>	Override the not egal operator. </summary>
+	/// <summary>	Override the not equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CBias"/> are diffrents. </returns>
 	bool operator!=(const CBias& obj) const { return !isEqual(obj); }
@@ -132,8 +133,9 @@ protected:
 	//*********************
 	//***** Variables *****
 	//*********************
-	size_t m_n = 0;						///< Number of classification launched.
-	Eigen::MatrixXd m_bias, m_biasIS;	///< Bias Matrix.
+	size_t m_n = 0;				///< Number of classification launched (used for update).
+	Eigen::MatrixXd m_bias;		///< Bias Matrix.
+	Eigen::MatrixXd m_biasIS;	///< Inverse squared root bias matrix (stored and pre-computed for application of bias).
 };
 
 }  // namespace Geometry

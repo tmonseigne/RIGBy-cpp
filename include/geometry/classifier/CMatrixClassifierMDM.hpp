@@ -32,7 +32,8 @@ public:
 	CMatrixClassifierMDM(const CMatrixClassifierMDM& obj) { *this = obj; }
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierMDM"/> class and set base members. </summary>
-	/// \copydetails IMatrixClassifier(const size_t, const EMetric)
+	/// <param name="nbClass">	The number of classes. </param>
+	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetric" />). </param>
 	explicit CMatrixClassifierMDM(size_t nbClass, EMetric metric);
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierMDM"/> class. </summary>
@@ -42,37 +43,41 @@ public:
 	//***************************
 	//***** Getter / Setter *****
 	//***************************
-	const std::vector<Eigen::MatrixXd>& getMeans() const { return m_means; }
-	void setMeans(const std::vector<Eigen::MatrixXd>& means) { m_means = means; }
+	const std::vector<Eigen::MatrixXd>& getMeans() const { return m_means; }				///< Get Means of classes.
+	void setMeans(const std::vector<Eigen::MatrixXd>& means) { m_means = means; }			///< Set Means of classes.
 
-	const std::vector<size_t>& getTrialNumbers() const { return m_nbTrials; }
-	void setTrialNumbers(const std::vector<size_t>& nbTrials) { m_nbTrials = nbTrials; }
+	const std::vector<size_t>& getTrialNumbers() const { return m_nbTrials; }				///< Get the number of trial used for train.
+	void setTrialNumbers(const std::vector<size_t>& nbTrials) { m_nbTrials = nbTrials; }	///< Set the number of trial used for train.
 
 	//**********************
 	//***** Classifier *****
 	//**********************
-	/// \copydoc IMatrixClassifier::setClassCount(const size_t)
+	/// <summary>	Set the class count. </summary>
 	/// <remarks>	resize the <see cref="m_means"/> vector of Matrix. </remarks>
 	void setClassCount(size_t nbClass) override;
 
-	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
-	/// <summary>	
+	/// <summary>	Train the classifier with the dataset.
 	/// -# Set the good number of classes
-	/// -# Compute the mean of each class (row) with the metric (<see cref="EMetric" />) in <see cref="m_Metric"/> member.
+	/// -# Compute the mean of each class (row) with the metric (<see cref="EMetric" />) in <see cref="m_metric"/> member.
 	/// -# Set the number of trials for each class.
 	///	</summary>
-	/// \copydetails IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
+	/// <param name="datasets">	The dataset one class by row and trials on colums. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) override;
 
-	/// \copybrief IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
-	/// <summary>	Compute the distance between the sample and each mean matrix.
-	/// The class with the closest mean is the predicted class.\n
-	/// The distances are returned.\n
-	/// The probability \f$ \mathcal{P}_i \f$ to be the class \f$ i \f$ is compute as :
+	/// <summary> Classify the matrix and return the class id, the distance and the probability of each class.\n
+	/// - Compute the distance between the sample and each mean matrix.\n
+	/// - The class with the closest mean is the predicted class.\n
+	/// - The distances are returned.\n
+	/// - The probability \f$ \mathcal{P}_i \f$ to be the class \f$ i \f$ is compute as :
 	/// \f[
-	/// p_i = \frac{d_{\text{min}}}{d_i}\\
-	/// \mathcal{P}_i =  \frac{p_i}{\sum{\left(p_i\right)}}
-	/// \f]\n
+	/// \begin{aligned}
+	/// p_i &= \frac{d_{\text{min}}}{d_i}\\
+	/// \mathcal{P}_i &=  \frac{p_i}{\sum{\left(p_i\right)}}
+	///	\end{aligned}
+	///	\f]
+	///	</summary>
+	/// <remarks>
 	/// <b>Remark</b> : The probability is normalized \f$ \sum{\left(\mathcal{P}_i\right)} = 1 \f$\n
 	/// If the classfier is adapted, launch adaptation method (expected class if supervised, predicted class if unsupervised).\n 
 	/// With \f$ C_k \f$ the prototype (mean) of the Class \f$ k \f$, \f$ \gamma_m \f$ the Geodesic (<see cref="Geodesic" />) with the metric \f$ m \f$ (<see cref="EMetric" />), 
@@ -80,7 +85,7 @@ public:
 	/// \f[
 	/// C_k = \gamma_m\left( C_k,S,\frac{1}{N_k}\right)
 	/// \f]
-	///	</summary>
+	/// </remarks>
 	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
@@ -89,13 +94,17 @@ public:
 	//***** Override Operator *****
 	//*****************************
 
-	/// \copydoc IMatrixClassifier::isEqual(const IMatrixClassifier&, const double) const
+	/// <summary>	Check if object are equals (with a precision tolerance). </summary>
+	/// <param name="obj">			The second object. </param>
+	/// <param name="precision">	Precision for matrix comparison. </param>
+	/// <returns>	<c>True</c> if the two elements are equals (with a precision tolerance). </returns>
 	bool isEqual(const CMatrixClassifierMDM& obj, double precision = 1e-6) const;
 
-	/// \copydoc IMatrixClassifier::copy(const IMatrixClassifier&)
+	/// <summary>	Copy object value. </summary>
+	/// <param name="obj">	The object to copy. </param>
 	void copy(const CMatrixClassifierMDM& obj);
 
-	/// \copybrief IMatrixClassifier::getType()
+	/// <summary>	Get the type of the classifier. </summary>
 	/// <returns>	Minimum Distance to Mean. </returns>
 	std::string getType() const override { return toString(EMatrixClassifiers::MDM); }
 
@@ -108,12 +117,12 @@ public:
 		return *this;
 	}
 
-	/// <summary>	Override the egal operator. </summary>
+	/// <summary>	Override the equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierMDM"/> are equals. </returns>
 	bool operator==(const CMatrixClassifierMDM& obj) const { return isEqual(obj); }
 
-	/// <summary>	Override the not egal operator. </summary>
+	/// <summary>	Override the not equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierMDM"/> are diffrents. </returns>
 	bool operator!=(const CMatrixClassifierMDM& obj) const { return !isEqual(obj); }
@@ -133,11 +142,11 @@ protected:
 	//***** XML Manager *****
 	//***********************
 	/// <summary>	Save Classes informations (Mean and number of trials of each class). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool saveClasses(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
 
 	/// <summary>	Load Classes informations (Mean and number of trials of each class). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool loadClasses(tinyxml2::XMLElement* data) override;
 
 	//*****************************

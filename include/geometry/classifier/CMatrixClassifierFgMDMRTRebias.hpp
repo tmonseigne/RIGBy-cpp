@@ -32,7 +32,8 @@ public:
 	CMatrixClassifierFgMDMRTRebias(const CMatrixClassifierFgMDMRTRebias& obj) { *this = obj; }
 
 	/// <summary>	Initializes a new instance of the <see cref="CMatrixClassifierFgMDMRTRebias"/> class and set base members. </summary>
-	/// \copydetails CMatrixClassifierFgMDMRT(size_t, EMetric)
+	/// <param name="nbClass">	The number of classes. </param>
+	/// <param name="metric">	Metric to use to calculate means (see also <see cref="EMetric" />). </param>
 	explicit CMatrixClassifierFgMDMRTRebias(const size_t nbClass, const EMetric metric) : CMatrixClassifierFgMDMRT(nbClass, metric) { }
 
 	/// <summary>	Finalizes an instance of the <see cref="CMatrixClassifierFgMDMRTRebias"/> class. </summary>
@@ -42,30 +43,29 @@ public:
 	//***************************
 	//***** Getter / Setter *****
 	//***************************
-	const CBias& getBias() const { return m_bias; }
-	void setBias(const CBias& bias) { m_bias = bias; }
+	const CBias& getBias() const { return m_bias; }		 ///< Get Rebias Method. 
+	void setBias(const CBias& bias) { m_bias = bias; }	 ///< Set Rebias Method. 
 	
 	//**********************
 	//***** Classifier *****
 	//**********************
-	/// \copybrief IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
-	/// <summary>	
+	/// <summary>	Train the classifier with the dataset.
 	/// -# Compute the Riemann mean of all trials as reference and store this in <see cref="m_ref"/> member.
 	/// -# Set the good number of classes
 	/// -# Trasnform data to the Tangent Space with the reference
 	/// -# Compute the FgDA Weight (<see cref="FgDACompute" />).
 	/// -# Apply the FgDA Weight and return to Original Manifold.
-	/// -# Apply the MDM train (<see cref=" CMatrixClassifierFgMDMRT::train(const std::vector<std::vector<Eigen::MatrixXd>>&)" />).
+	/// -# Apply the train function of MDM Classifier (see <see cref="CMatrixClassifierMDM::train"/>)
 	///	</summary>
-	/// \copydetails IMatrixClassifier::train(const std::vector<std::vector<Eigen::MatrixXd>>&)
+	/// <param name="datasets">	The dataset one class by row and trials on colums. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) override;
 
-	/// \copybrief CMatrixClassifierFgMDMRT::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
-	/// <summary>
+	/// <summary>	Classify the matrix and return the class id, the distance and the probability of each class.\n
 	/// -# Transform the sample to the Tangent Space.\n
 	/// -# Apply the FgDA weight.\n
 	/// -# Return to the original Manifold.\n
-	/// -# Apply the MDM classify (<see cref="CMatrixClassifierFgMDMRT::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)"/>).
+	/// -# Apply the classify function of MDM Classifier (see <see cref="CMatrixClassifierMDM::classify"/>)
 	///	</summary>
 	/// <remarks>
 	/// <b>Remark</b> : We use the MDM classification whatever the adaptation method chosen. 
@@ -79,13 +79,18 @@ public:
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
-	/// \copydoc CMatrixClassifierFgMDMRT::isEqual(const CMatrixClassifierFgMDMRT&, const double) const
+
+	/// <summary>	Check if object are equals (with a precision tolerance). </summary>
+	/// <param name="obj">			The second object. </param>
+	/// <param name="precision">	Precision for matrix comparison. </param>
+	/// <returns>	<c>True</c> if the two elements are equals (with a precision tolerance). </returns>
 	bool isEqual(const CMatrixClassifierFgMDMRTRebias& obj, double precision = 1e-6) const;
 
-	/// \copydoc CMatrixClassifierFgMDMRT::copy(const CMatrixClassifierFgMDMRT&)
+	/// <summary>	Copy object value. </summary>
+	/// <param name="obj">	The object to copy. </param>
 	void copy(const CMatrixClassifierFgMDMRTRebias& obj);
 
-	/// \copybrief CMatrixClassifierFgMDMRT::getType()
+	/// <summary>	Get the type of the classifier. </summary>
 	/// <returns>	Minimum Distance to Mean with geodesic filtering (FgMDM). </returns>
 	std::string getType() const override { return toString(EMatrixClassifiers::FgMDM_RT_Rebias); }
 
@@ -98,12 +103,12 @@ public:
 		return *this;
 	}
 
-	/// <summary>	Override the egal operator. </summary>
+	/// <summary>	Override the equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierFgMDMRTRebias"/> are equals. </returns>
 	bool operator==(const CMatrixClassifierFgMDMRTRebias& obj) const { return isEqual(obj); }
 
-	/// <summary>	Override the not egal operator. </summary>
+	/// <summary>	Override the not equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CMatrixClassifierFgMDMRTRebias"/> are diffrents. </returns>
 	bool operator!=(const CMatrixClassifierFgMDMRTRebias& obj) const { return !isEqual(obj); }
@@ -123,15 +128,15 @@ protected:
 	//***** XML Manager *****
 	//***********************
 	/// <summary>	Save Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const override;
 
 	/// <summary>	Load Additionnal informations (Reference and LDA Weight). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool loadAdditional(tinyxml2::XMLElement* data) override;
 
 	/// <summary>	Prints the Additional informations (Reference and LDA Weight). </summary>
-	/// <returns>	Additional informations in stringstream</returns>
+	/// <returns>	Additional informations in stringstream. </returns>
 	std::stringstream printAdditional() const override;
 
 	//*********************

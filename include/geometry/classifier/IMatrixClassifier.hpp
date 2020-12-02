@@ -28,9 +28,9 @@ enum class EAdaptations
 	Unsupervised	///< Unsupervised Adaptation.
 };
 
-/// <summary>	Convert Adaptations to string.</summary>
-/// <param name="type">	The type of adaptation.</param>
-/// <returns>	std::string </returns>
+/// <summary>	Convert adaptations to string. </summary>
+/// <param name="type">	The type of adaptation. </param>
+/// <returns>	<c>std::string</c> </returns>
 inline std::string toString(const EAdaptations type)
 {
 	switch (type)
@@ -38,12 +38,12 @@ inline std::string toString(const EAdaptations type)
 		case EAdaptations::None: return "No";
 		case EAdaptations::Supervised: return "Supervised";
 		case EAdaptations::Unsupervised: return "Unsupervised";
-		default: return "Invalid";
 	}
+	return "Invalid";
 }
 
-/// <summary>	Convert string to Adaptations.</summary>
-/// <param name="type">	The type of adaptation.</param>
+/// <summary>	Convert string to adaptations. </summary>
+/// <param name="type">	The type of adaptation. </param>
 /// <returns>	<see cref="EAdaptations"/> </returns>
 inline EAdaptations StringToAdaptation(const std::string& type)
 {
@@ -66,9 +66,9 @@ enum class EMatrixClassifiers
 };
 
 
-/// <summary>	Convert Matrix Classifiers to string.</summary>
-/// <param name="type">	The type of classifier.</param>
-/// <returns>	std::string </returns>
+/// <summary>	Convert Matrix Classifiers to string. </summary>
+/// <param name="type">	The type of classifier. </param>
+/// <returns>	<c>std::string</c> </returns>
 inline std::string toString(const EMatrixClassifiers type)
 {
 	switch (type)
@@ -79,12 +79,12 @@ inline std::string toString(const EMatrixClassifiers type)
 		case EMatrixClassifiers::FgMDM: return "Minimum Distance to Mean with geodesic filtering (FgMDM)";
 		case EMatrixClassifiers::FgMDM_RT_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias) (Real Time adaptation assumed)";
 		case EMatrixClassifiers::FgMDM_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias)";
-		default: return "Invalid";
 	}
+	return "Invalid";
 }
 
-/// <summary>	Convert string to Matrix Classifiers.</summary>
-/// <param name="type">	The type of classifier.</param>
+/// <summary>	Convert string to Matrix Classifiers. </summary>
+/// <param name="type">	The type of classifier. </param>
 /// <returns>	<see cref="EMatrixClassifiers"/> </returns>
 inline EMatrixClassifiers StringToMatrixClassifier(const std::string& type)
 {
@@ -108,10 +108,13 @@ inline EMatrixClassifiers StringToMatrixClassifier(const std::string& type)
 class IMatrixClassifier
 {
 public:
+	//****************************	
+	//***** Static Functions *****	
+	//****************************
 	/// <summary>	Format the Matrix for XML Saving. </summary>
 	/// <param name="in">	Matrix. </param>
 	/// <param name="out">	Stringstream. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	static bool convertMatrixToXMLFormat(const Eigen::MatrixXd& in, std::stringstream& out);
 
 	/// <summary>	Fill the Matrix From XML Format. </summary>
@@ -119,19 +122,19 @@ public:
 	/// <param name="out">	Matrix. </param>
 	/// <param name="rows">	Number of rows. </param>
 	/// <param name="cols">	Number of cols. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	static bool convertXMLFormatToMatrix(std::stringstream& in, Eigen::MatrixXd& out, size_t rows, size_t cols);
 
 	/// <summary>	Saves matrix. </summary>
 	/// <param name="element">	Matrix Node. </param>
 	/// <param name="matrix">	Matrix to save. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	static bool saveMatrix(tinyxml2::XMLElement* element, const Eigen::MatrixXd& matrix);
 
 	/// <summary>	Load matrix. </summary>
 	/// <param name="element">	Matrix Node. </param>
 	/// <param name="matrix">	Matrix to load. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	static bool loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixXd& matrix);
 
 	//***********************	
@@ -155,16 +158,12 @@ public:
 	//**********************
 	//***** Classifier *****
 	//**********************
-	/// <summary>	Sets the class count. </summary>
-	/// <param name="nbClass">	The number of Classes. </param>
-	virtual void setClassCount(size_t nbClass);
-
-	/// <summary>	get the class count. </summary>
-	virtual size_t getClassCount() const { return m_nbClass; }
+	virtual size_t getClassCount() const { return m_nbClass; }	///< Get the class count.
+	virtual void setClassCount(size_t nbClass);					///< Set the class count.
 
 	/// <summary>	Train the classifier with the dataset. </summary>
-	/// <param name="datasets">	The data set one class by row and trials on colums. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <param name="datasets">	The dataset one class by row and trials on colums. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	virtual bool train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) = 0;
 
 	/// <summary>	Classify the matrix and return the class id (override of same function with all argument). </summary>
@@ -172,7 +171,7 @@ public:
 	/// <param name="classId">		The predicted class. </param>
 	/// <param name="adaptation">	Adaptation method for the classfier <see cref="EAdaptations" />. </param>
 	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	/// <seealso cref="classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, EAdaptations, const size_t&)"/>
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId,
 						  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max());
@@ -184,7 +183,7 @@ public:
 	/// <param name="probability">	The probability of the sample with each class. </param>
 	/// <param name="adaptation">	Adaptation method for the classfier <see cref="EAdaptations" />. </param>
 	/// <param name="realClassId">	The expected class id if supervised adaptation. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>	
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>	
 	virtual bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 						  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) = 0;
 
@@ -193,18 +192,19 @@ public:
 	//***********************
 	/// <summary>	Saves the classifier information in an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	virtual bool saveXML(const std::string& filename) const;
 
 	/// <summary>	Loads the classifier information from an XML file. </summary>
 	/// <param name="filename">	Filename. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	virtual bool loadXML(const std::string& filename);
 
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
+
 	/// <summary>	Check if object are equals (with a precision tolerance). </summary>
 	/// <param name="obj">			The second object. </param>
 	/// <param name="precision">	Precision for matrix comparison. </param>
@@ -232,12 +232,12 @@ public:
 		return *this;
 	}
 
-	/// <summary>	Override the egal operator. </summary>
+	/// <summary>	Override the equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="IMatrixClassifier"/> are equals. </returns>
 	bool operator==(const IMatrixClassifier& obj) const { return isEqual(obj); }
 
-	/// <summary>	Override the not egal operator. </summary>
+	/// <summary>	Override the not equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two objects are diffrents. </returns>
 	bool operator!=(const IMatrixClassifier& obj) const { return !isEqual(obj); }
@@ -252,23 +252,17 @@ public:
 		return os;
 	}
 
-	//*********************	
-	//***** Variables *****
-	//*********************	
-	/// <summary>	Metric to use to calculate means and distances (see also <see cref="EMetric" />). </summary>
-	EMetric m_Metric = EMetric::Riemann;
-
 protected:
-	/// <summary>	Prints the header informations.</summary>
-	/// <returns>	Header informations in stringstream</returns>
+	/// <summary>	Prints the header informations. </summary>
+	/// <returns>	Header informations in stringstream. </returns>
 	virtual std::stringstream printHeader() const;
 
-	/// <summary>	Prints the Additional informations.</summary>
-	/// <returns>	Additional informations in stringstream</returns>
+	/// <summary>	Prints the Additional informations. </summary>
+	/// <returns>	Additional informations in stringstream. </returns>
 	virtual std::stringstream printAdditional() const { return std::stringstream(); }
 
-	/// <summary>	Prints the Classes informations.</summary>
-	/// <returns>	Classes informations in stringstream</returns>
+	/// <summary>	Prints the Classes informations. </summary>
+	/// <returns>	Classes informations in stringstream. </returns>
 	virtual std::stringstream printClasses() const { return std::stringstream(); }
 
 	//***********************
@@ -278,20 +272,20 @@ protected:
 	///
 	/// -# The type of the classifier : <see cref="getType"/>
 	/// -# The number of classes : <see cref="m_nbClass"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
+	/// -# The metric to use : <see cref="m_metric"/>
 	/// </summary>
 	/// <param name="data">	Node to modify. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	virtual bool saveHeader(tinyxml2::XMLElement* data) const;
 
 	/// <summary>	Loads the attribute on the first node (general informations as classifier type, number of class...).
 	///
 	/// -# Check the type : <see cref="getType"/>
 	/// -# The number of classes : <see cref="m_nbClass"/>
-	/// -# The metric to use : <see cref="m_Metric"/>
+	/// -# The metric to use : <see cref="m_metric"/>
 	/// </summary>
 	/// <param name="data">	Node to read. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	virtual bool loadHeader(tinyxml2::XMLElement* data);
 
 	/// <summary>	Save Additionnal informations (none at this level). </summary>
@@ -314,8 +308,9 @@ protected:
 	//*********************	
 	//***** Variables *****
 	//*********************	
-	/// <summary>	Number of classes to classify. </summary>
-	size_t m_nbClass = 2;
+	size_t m_nbClass = 2;					///< Number of classes to classify. 
+	EMetric m_metric = EMetric::Riemann;	///< Metric to use to calculate means and distances (see also <see cref="EMetric" />).
+
 };
 
 }  // namespace Geometry

@@ -12,7 +12,7 @@ namespace Geometry {
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierFgMDMRTRebias::train(const std::vector<std::vector<Eigen::MatrixXd>>& datasets)
 {
-	if (!m_bias.computeBias(datasets, m_Metric)) { return false; }
+	if (!m_bias.computeBias(datasets, m_metric)) { return false; }
 	std::vector<std::vector<Eigen::MatrixXd>> newDatasets;
 	m_bias.applyBias(datasets, newDatasets);
 	if (!CMatrixClassifierFgMDMRT::train(newDatasets)) { return false; }	// Train FgMDM
@@ -29,7 +29,7 @@ bool CMatrixClassifierFgMDMRTRebias::classify(const Eigen::MatrixXd& sample, siz
 	if (!IsSquare(sample)) { return false; }				// Verification if it's a square matrix
 	Eigen::MatrixXd newSample;
 	m_bias.applyBias(sample, newSample);
-	m_bias.updateBias(sample, m_Metric);
+	m_bias.updateBias(sample, m_metric);
 	return CMatrixClassifierFgMDMRT::classify(newSample, classId, distance, probability, adaptation, realClassId);
 }
 ///-------------------------------------------------------------------------------------------------

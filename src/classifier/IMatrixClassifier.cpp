@@ -10,7 +10,7 @@ namespace Geometry {
 IMatrixClassifier::IMatrixClassifier(const size_t nbClass, const EMetric metric)
 {
 	IMatrixClassifier::setClassCount(nbClass);
-	m_Metric = metric;
+	m_metric = metric;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -116,14 +116,14 @@ bool IMatrixClassifier::loadMatrix(tinyxml2::XMLElement* element, Eigen::MatrixX
 ///-------------------------------------------------------------------------------------------------
 bool IMatrixClassifier::isEqual(const IMatrixClassifier& obj, const double /*precision*/) const
 {
-	return m_Metric == obj.m_Metric && m_nbClass == obj.getClassCount();
+	return m_metric == obj.m_metric && m_nbClass == obj.getClassCount();
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
 void IMatrixClassifier::copy(const IMatrixClassifier& obj)
 {
-	m_Metric = obj.m_Metric;
+	m_metric = obj.m_metric;
 	setClassCount(obj.getClassCount());
 }
 /// -------------------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ std::stringstream IMatrixClassifier::printHeader() const
 {
 	std::stringstream ss;
 	ss << getType() << " Classifier" << std::endl;
-	ss << "Metric : " << toString(m_Metric) << std::endl;
+	ss << "Metric : " << toString(m_metric) << std::endl;
 	ss << "Number of Classes : " << m_nbClass << std::endl;
 	return ss;
 }
@@ -151,7 +151,7 @@ bool IMatrixClassifier::saveHeader(tinyxml2::XMLElement* data) const
 {
 	data->SetAttribute("type", getType().c_str());				// Set attribute classifier type
 	data->SetAttribute("class-count", int(m_nbClass));			// Set attribute class count
-	data->SetAttribute("metric", toString(m_Metric).c_str());	// Set attribute metric
+	data->SetAttribute("metric", toString(m_metric).c_str());	// Set attribute metric
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ bool IMatrixClassifier::loadHeader(tinyxml2::XMLElement* data)
 	const std::string classifierType = data->Attribute("type");	// Get type
 	if (classifierType != getType()) { return false; }			// Check Type
 	setClassCount(data->IntAttribute("class-count"));			// Update Number of classes
-	m_Metric = StringToMetric(data->Attribute("metric"));		// Update Metric
+	m_metric = StringToMetric(data->Attribute("metric"));		// Update Metric
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------

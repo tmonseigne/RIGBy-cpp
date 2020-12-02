@@ -17,9 +17,9 @@
 #include "geometry/Metrics.hpp"
 #include "geometry/Misc.hpp"
 
-
 namespace Geometry {
 
+/// <summary> Class For Artifact Subspace Reconstruction (ASR) Algorithm. </summary>
 class CASR
 {
 public:
@@ -27,75 +27,43 @@ public:
 	CASR() = default;	///< Initializes a new instance of the <see cref="CASR"/> class.
 
 	/// <summary> Initializes a new instance of the <see cref="CASR"/> class with specified metric </summary>
-	/// <remarks> Only Euclidian and Riemmann metrics are implemnted If other is selected, Euclidian is used. </remarks>
-	//explicit CASR(const EMetric metric) : m_metric(metric) {}
+	/// <remarks> Only Euclidian and Riemmann metrics are implemented If other is selected, Euclidian is used. </remarks>
+	explicit CASR(const EMetric& metric) { setMetric(metric); }
 
 	~CASR() = default;	///< Finalizes an instance of the <see cref="CASR"/> class.
 
 	/// <summary>	Trains the specified dataset. </summary>
 	/// <param name="dataset">	The dataset. </param>
 	/// <param name="rejectionLimit">	The rejection limit. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> if it fails. </returns>
 	bool train(const std::vector<Eigen::MatrixXd>& dataset, const double rejectionLimit = 5);
 
 	/// <summary>	Apply the ASR algorithm to the input signal. </summary>
 	/// <param name="in">	The input signal. </param>
 	/// <param name="out">	The corrected signal. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> if it fails. </returns>
 	bool process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
-
-	/*
-
-	static const std::map<size_t, std::pair<int, int>> Filters;
-
-	void computeStat(const Eigen::MatrixXd& data);
-	
-	//***********************
-	//***** XML Manager *****
-	//***********************
-	/// <summary>	Saves the Bias information in an XML file. </summary>
-	/// <param name="filename">	Filename. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
-	bool saveXML(const std::string& filename) const;
-
-	/// <summary>	Loads the Bias information from an XML file. </summary>
-	/// <param name="filename">	Filename. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
-	bool loadXML(const std::string& filename);
-
-	/// <summary>	Save informations in xml element (Bias and number of classification). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
-	bool saveAdditional(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* data) const;
-
-	/// <summary>	Load informations in xml element (Bias and number of classification). </summary>
-	/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
-	bool loadAdditional(tinyxml2::XMLElement* data);
-*/
 	//***************************
 	//***** Getter / Setter *****
 	//***************************
 
 	/// <summary> Set the metric to use (only Riemann and euclidian is used. </summary>
-	/// <param name="metric">The metric.</param>
+	/// <param name="metric">The metric. </param>
 	/// <remarks> If invalid metric is used Euclidian is selected. </remarks>
-	void setMetric(EMetric& metric) { m_metric = (metric == EMetric::Riemann) ? EMetric::Riemann : EMetric::Euclidian; }
+	void setMetric(const EMetric& metric) { m_metric = (metric == EMetric::Riemann) ? EMetric::Riemann : EMetric::Euclidian; }
 
-	/// <summary>	Gets the metric. </summary>
-	/// <returns>	<c>EMetric</c>. </returns>
-	EMetric getMetric() const { return m_metric; }
-
-	/// <summary>	Gets the median matrix. </summary>
-	/// <returns>	<c>Eigen::MatrixXd</c>. </returns>
-	Eigen::MatrixXd getMedian() const { return m_median; }
-
-	/// <summary>	Gets the transformation matrix. </summary>
-	/// <returns>	<c>Eigen::MatrixXd</c>. </returns>
-	Eigen::MatrixXd getTransformMatrix() const { return m_treshold; }
+	EMetric getMetric() const { return m_metric; }						///< Get the metric.
+	Eigen::MatrixXd getMedian() const { return m_median; }				///< Get the median matrix.
+	Eigen::MatrixXd getTransformMatrix() const { return m_treshold; }	///< Get the transformation matrix.
 
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
+	/// <summary>	Check if object are equals (with a precision tolerance). </summary>
+	/// <param name="obj">			The second object. </param>
+	/// <param name="precision">	Precision for matrix comparison. </param>
+	/// <returns>	<c>True</c> if the two elements are equals (with a precision tolerance), <c>False</c> otherwise. </returns>
 	bool isEqual(const CASR& obj, const double precision = 1e-6) const;
 
 	/// <summary>	Copy object value. </summary>
@@ -104,7 +72,7 @@ public:
 
 	/// <summary>	Get the ASR information for output. </summary>
 	/// <returns>	The ASR print in stringstream. </returns>
-	std::string toString() const;
+	std::stringstream print() const;
 
 	/// <summary>	Override the affectation operator. </summary>
 	/// <param name="obj">	The second object. </param>
@@ -115,12 +83,12 @@ public:
 		return *this;
 	}
 
-	/// <summary>	Override the egal operator. </summary>
+	/// <summary>	Override the equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CASR"/> are equals. </returns>
 	bool operator==(const CASR& obj) const { return isEqual(obj); }
 
-	/// <summary>	Override the not egal operator. </summary>
+	/// <summary>	Override the not equal operator. </summary>
 	/// <param name="obj">	The second object. </param>
 	/// <returns>	<c>True</c> if the two <see cref="CASR"/> are diffrents. </returns>
 	bool operator!=(const CASR& obj) const { return !isEqual(obj); }
@@ -131,7 +99,7 @@ public:
 	/// <returns>	Return the modified ostream. </returns>
 	friend std::ostream& operator <<(std::ostream& os, const CASR& obj)
 	{
-		os << obj.toString();
+		os << obj.print().str();
 		return os;
 	}
 

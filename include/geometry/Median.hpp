@@ -26,7 +26,7 @@ namespace Geometry {
 /// <summary> Find the median of stl vector. </summary>
 /// <typeparam name="T"> The type of the values (only arithmetic type). </typeparam>
 /// <param name="v"> the vector of values. </param>
-/// <returns> The median of matrix. </returns>
+/// <returns> The median of vector. </returns>
 template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
 T Median(const std::vector<T>& v)
 {
@@ -45,12 +45,10 @@ double Median(const Eigen::MatrixXd& m);
 //-------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------
-/// <summary>	Compute the median of vector of matrix with the Weiszfeld's algorithm.\n
-///
+/// <summary>	Compute the median of vector of matrix with the Weiszfeld's algorithm. <br/> 
 /// To compute this median, we start by computing the initial median of the dataset by taking each element of the matrices independently.
 /// That is to say that for the element at position i, j(a_i, j) of the matrices, we computes the median of the elements a_i, j of all the matrices of the dataset.
-/// We thus have an initial median for our dataset.\n
-///
+/// We thus have an initial median for our dataset. <br/> 
 /// Then, we refine our median by the iterative algorithm of Weiszfeld:  
 /// - We remove the median in our dataset.
 /// - For each new matrices, we compute the norm.
@@ -61,16 +59,36 @@ double Median(const Eigen::MatrixXd& m);
 /// <param name="median">	The computed median. </param>
 /// <param name="epsilon">	(Optional) The epsilon value to stop algorithm. </param>
 /// <param name="maxIter">	(Optional) The maximum iteration allowed to find best Median. </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 /// <remarks>  it's an iteratively algorithm, so we have a limit of iteration and an epsilon value to consider the calculation as satisfactory. </remarks>
 bool MedianEuclidian(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const size_t maxIter = 50);
 //-------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------
+/// <summary>	Compute the median of vector of matrix with the Riemman Barycentre. <br/>
+/// - Initialize the median with the euclidian mean of matrices.
+/// - Iterate until the stop criterion (<c>iteration</c> over <c>maxIter</c> or \f$\text{gain}\f$ under <c>epsilon</c>).
+///   - Compute the tangent space projection of each matrices with median as reference.
+///   - Compute the sum (\f$\mathcal{S}\f$) of euclidian distance of each tangent space projection. <br/>
+///   \f[ \delta_E=\sqrt{\sum_{i \in N}{x_i^2}} \quad \text{with } x_i \text{ the feature } i \text{ of the tangent space projection}\f]
+///   - Compare with previous sum and stop if \f$\text{gain} < \varepsilon\f$. <br/>
+///   \f[ \text{gain} = \left|\frac{\mathcal{S} - \mathcal{S}_\text{prev}}{\mathcal{S}_\text{prev}}\right| \f]
+///   - Compute Median of each feature \f$i\f$ of tangent space projection.
+///   - Transform this tangent space projection median to riemann space with previous median as reference and update the median by this new matrix.
+/// </summary>
+/// <param name="matrices">	Vector of Matrix. </param>
+/// <param name="median">	The computed median. </param>
+/// <param name="epsilon">	(Optional) The epsilon value to stop algorithm. </param>
+/// <param name="maxIter">	(Optional) The maximum iteration allowed to find best Median. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MedianRiemann(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const size_t maxIter = 50);
 //-------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------
+/// <summary> Give the identity matrix has median. </summary>
+/// <param name="matrices">	Vector of Matrix. </param>
+/// <param name="median">	The computed median. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 bool MedianIdentity(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median);
 //-------------------------------------------------------------------------------------------------
 
@@ -81,7 +99,7 @@ bool MedianIdentity(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixX
 /// <param name="epsilon">	(Optional) The epsilon value to stop algorithm. </param>
 /// <param name="maxIter">	(Optional) The maximum iteration allowed to find best Median. </param>
 /// <param name="metric">	(Optional) THe metric to use. </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 /// <remarks>  it's an iteratively algorithm, so we have a limit of iteration and an epsilon value to consider the calculation as satisfactory. </remarks>
 bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const size_t maxIter = 50, const EMetric& metric = EMetric::Euclidian);
 //-------------------------------------------------------------------------------------------------

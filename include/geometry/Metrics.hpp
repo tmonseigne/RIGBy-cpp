@@ -30,9 +30,9 @@ enum class EMetric
 	Identity		///< The Identity Metric.
 };
 
-/// <summary>	Convert Metrics to string. </summary>
+/// <summary>	Convert metric to string. </summary>
 /// <param name="metric">	The metric. </param>
-/// <returns>	std::string </returns>
+/// <returns>	<c>std::string</c> </returns>
 inline std::string toString(const EMetric metric)
 {
 	switch (metric)
@@ -46,11 +46,11 @@ inline std::string toString(const EMetric metric)
 		case EMetric::Harmonic: return "Harmonic";
 		case EMetric::Wasserstein: return "Wasserstein";
 		case EMetric::Identity: return "Identity";
-		default: return "Invalid Metric";
 	}
+	return "Invalid Metric";
 }
 
-/// <summary>	Convert string to Metric. </summary>
+/// <summary>	Convert string to metric. </summary>
 /// <param name="metric">	The metric. </param>
 /// <returns>	<see cref="EMetric"/> </returns>
 inline EMetric StringToMetric(const std::string& metric)

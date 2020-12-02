@@ -21,9 +21,9 @@ namespace Geometry {
 
 /// <summary>	 Compute the weight of Linear Discriminant Analysis with Least squares (LSQR) Solver. </summary>
 /// <param name="datasets">	The datasets one class by row and trials on colums. </param>
-/// <param name="weight">	The Weight to apply. </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
-/// <remarks>	Inspired by <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html">LinearDiscriminantAnalysis</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>).</remarks>
+/// <param name="weight">	The wight to apply. </param>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
+/// <remarks>	Inspired by <a href="http://scikit-learn.org">sklearn</a> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html">LinearDiscriminantAnalysis</a> (<a href="https://github.com/scikit-learn/scikit-learn/blob/master/COPYING">License</a>). </remarks>
 bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
 
 /// <summary>	 Compute Least squares (LSQR) Weight and transform to FgDA Weight. \n
@@ -31,16 +31,16 @@ bool LSQR(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::M
 /// </summary>
 /// <param name="datasets">	The data set one class by row and trials on colums. </param>
 /// <param name="weight">	The Weight to apply. </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
-/// <remarks>	Method inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>).</remarks>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
+/// <remarks>	Method inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>). </remarks>
 bool FgDACompute(const std::vector<std::vector<Eigen::RowVectorXd>>& datasets, Eigen::MatrixXd& weight);
 
 /// <summary>	 Apply the weight on the vector. (just a matrix product) </summary>
 /// <param name="in">		Sample to transform. </param>
 /// <param name="out">		Transformed Sample. </param>
 /// <param name="weight">	The Weight to apply. </param>
-/// <returns>	<c>True</c> if it succeeds, <c>false</c> otherwise. </returns>
-/// <remarks>	Method inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>).</remarks>
+/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
+/// <remarks>	Method inspired by the work of Alexandre Barachant : <a href="https://github.com/alexandrebarachant/pyRiemann">pyRiemann</a> (<a href="https://github.com/alexandrebarachant/pyRiemann/blob/master/LICENSE">License</a>). </remarks>
 bool FgDAApply(const Eigen::RowVectorXd& in, Eigen::RowVectorXd& out, const Eigen::MatrixXd& weight);
 
 }  // namespace Geometry

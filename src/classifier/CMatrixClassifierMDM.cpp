@@ -14,7 +14,7 @@ namespace Geometry {
 CMatrixClassifierMDM::CMatrixClassifierMDM(const size_t nbClass, const EMetric metric)
 {
 	CMatrixClassifierMDM::setClassCount(nbClass);
-	m_Metric = metric;
+	m_metric = metric;
 }
 ///-------------------------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ bool CMatrixClassifierMDM::train(const std::vector<std::vector<Eigen::MatrixXd>>
 	setClassCount(datasets.size());							// Change the number of classes if needed
 	for (size_t k = 0; k < m_nbClass; ++k)					// for each class
 	{
-		if (!Mean(datasets[k], m_means[k], m_Metric)) { return false; }	// Compute the mean of each class
+		if (!Mean(datasets[k], m_means[k], m_metric)) { return false; }	// Compute the mean of each class
 		m_nbTrials[k] = datasets[k].size();
 	}
 	return true;
@@ -66,7 +66,7 @@ bool CMatrixClassifierMDM::classify(const Eigen::MatrixXd& sample, size_t& class
 	distance.resize(m_nbClass);
 	for (size_t k = 0; k < m_nbClass; ++k)
 	{
-		distance[k] = Distance(sample, m_means[k], m_Metric);
+		distance[k] = Distance(sample, m_means[k], m_metric);
 		if (distMin > distance[k])
 		{
 			classId = k;
@@ -91,7 +91,7 @@ bool CMatrixClassifierMDM::classify(const Eigen::MatrixXd& sample, size_t& class
 	const size_t id = adaptation == EAdaptations::Supervised ? realClassId : classId;
 	if (id >= m_nbClass) { return false; }					// Check id (if supervised and bad input)
 	m_nbTrials[id]++;										// Update number of trials for the class id
-	return Geodesic(m_means[id], sample, m_means[id], m_Metric, 1.0 / m_nbTrials[id]);
+	return Geodesic(m_means[id], sample, m_means[id], m_metric, 1.0 / m_nbTrials[id]);
 }
 ///-------------------------------------------------------------------------------------------------
 
