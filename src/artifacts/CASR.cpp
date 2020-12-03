@@ -64,7 +64,7 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 {
 	// Check if input data is compatible with train data and if we don't limit so mutch the reconstruction
 	out = in;
-	if (out.rows() != m_nChannel) { return false; }
+	if (size_t(out.rows()) != m_nChannel) { return false; }
 	const size_t begin = size_t((1.0 - m_maxChannel) * m_nChannel);	// We define the number of channels to non reconstruct
 	if (begin == m_nChannel) { return true; }
 	if (m_r.size() == 0) { m_r = Eigen::MatrixXd::Identity(m_nChannel, m_nChannel); }
@@ -129,7 +129,7 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 ///-------------------------------------------------------------------------------------------------
 bool CASR::isEqual(const CASR& obj, const double precision) const
 {
-	return m_metric == obj.m_metric && m_median == obj.m_median && m_treshold == obj.m_treshold;
+	return m_metric == obj.m_metric && AreEquals(m_median, obj.m_median, precision) && AreEquals(m_treshold, obj.m_treshold, precision);
 }
 ///-------------------------------------------------------------------------------------------------
 

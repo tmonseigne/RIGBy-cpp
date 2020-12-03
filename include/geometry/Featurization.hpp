@@ -83,10 +83,7 @@ bool UnSqueezeUpperTriangle(const Eigen::RowVectorXd& in, Eigen::MatrixXd& out, 
 ///	\end{aligned}
 ///	\f]
 ///	- Compute the element wise product of the two vectors to have the tangent space Projection \f$\zeta_M\f$
-/// \f[ 
-/// \begin{aligned}
-///	\zeta_M = V_J \odot V_\text{Coeffs}
-///	\f]
+/// \f[ \zeta_M = V_J \odot V_\text{Coeffs} \f]
 /// </summary>
 /// <param name="in">	The \f$N \times N\f$ covariance matrix. </param>
 /// <param name="out">	The  \f$\frac{N\left(N+1\right)}{2}\f$ row. </param>
