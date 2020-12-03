@@ -23,6 +23,8 @@
 #include <geometry/classifier/CMatrixClassifierFgMDM.hpp>
 #include <geometry/classifier/CMatrixClassifierFgMDMRTRebias.hpp>
 
+#include "geometry/artifacts/CASR.hpp"
+
 #define NB_CLASS	02
 #define NB_CHAN		03
 #define NB_SAMPLE	10
@@ -1497,7 +1499,7 @@ inline Geometry::CMatrixClassifierMDMRebias Reference()
 			0.016735943232582, 1.603446473585329, 0.054241640196169,
 			0.020785623695383, 0.054241640196169, 0.830327834469631;
 	bias.setBias(m);
-	
+
 	result.setMeans(means);
 	result.setTrialNumbers({ NB_TRIALS1, NB_TRIALS2 });
 	result.setBias(bias);
@@ -1838,3 +1840,48 @@ inline std::vector<std::vector<double>> PredictionDistanceSupervised() { return 
 inline std::vector<std::vector<double>> PredictionDistanceUnSupervised() { return std::vector<std::vector<double>>(NB_TRIALS, { 0, 0 }); }
 }  // namespace FgMDMRTRebias
 }  // namespace InitMatrixClassif
+
+//**************************************************************
+//********** Initialisation ASR Reference of Datasets **********
+//**************************************************************
+namespace InitASR {
+namespace Euclidian {
+
+inline Geometry::CASR Reference()
+{
+	Geometry::CASR res(Geometry::EMetric::Euclidian);
+	Eigen::MatrixXd median(3, 3), treshold(3, 3), r(3, 3);
+	median << 1.32267188, 0.00105802, 0.00871490,
+			0.00105802, 1.32447262, 0.01829110,
+			0.00871490, 0.01829110, 1.02823244;
+	treshold << -0.05738723, -0.12041171, 1.96255648,
+			3.44737720, -1.60950341, 0.00205466,
+			1.31840128, 2.82413924, 0.21182516;
+	r.setIdentity();
+
+	res.setMatrices(median, treshold, r);
+	return res;
+}
+
+}  // namespace Euclidian
+
+namespace Riemann {
+
+inline Geometry::CASR Reference()
+{
+	Geometry::CASR res(Geometry::EMetric::Riemann);
+	Eigen::MatrixXd median(3, 3), treshold(3, 3), r(3, 3);
+	median << 1.32267188, 0.00105802, 0.00871490,
+			0.00105802, 1.32447262, 0.01829110,
+			0.00871490, 0.01829110, 1.02823244;
+	treshold << -0.05738723, -0.12041171, 1.96255648,
+			3.44737720, -1.60950341, 0.00205466,
+			1.31840128, 2.82413924, 0.21182516;
+	r.setIdentity();
+
+	res.setMatrices(median, treshold, r);
+	return res;
+}
+
+}  // namespace Riemann
+}  // namespace InitASR

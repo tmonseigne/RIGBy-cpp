@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 #include <Eigen/Dense>
+
+#include "geometry/Basics.hpp"
 #include "geometry/3rd-party/tinyxml2.h"
 #include "geometry/Metrics.hpp"
 #include "geometry/Misc.hpp"
@@ -26,22 +28,30 @@ public:
 
 	CASR() = default;	///< Initializes a new instance of the <see cref="CASR"/> class.
 
-	/// <summary> Initializes a new instance of the <see cref="CASR"/> class with specified metric </summary>
+	/// <summary> Initializes a new instance of the <see cref="CASR"/> class with specified <c>metric</c>. </summary>
 	/// <remarks> Only Euclidian and Riemmann metrics are implemented If other is selected, Euclidian is used. </remarks>
 	explicit CASR(const EMetric& metric) { setMetric(metric); }
+
+	/// <summary> Initializes a new instance of the <see cref="CASR"/> class with specified <c>metric</c> and train with the specified <c>dataset</c>. </summary>
+	/// <remarks> Only Euclidian and Riemmann metrics are implemented If other is selected, Euclidian is used. </remarks>
+	explicit CASR(const EMetric& metric, const std::vector<Eigen::MatrixXd>& dataset)
+	{
+		setMetric(metric);
+		train(dataset);
+	}
 
 	~CASR() = default;	///< Finalizes an instance of the <see cref="CASR"/> class.
 
 	/// <summary>	Trains the specified dataset. </summary>
 	/// <param name="dataset">	The dataset. </param>
 	/// <param name="rejectionLimit">	The rejection limit. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>False</c> if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool train(const std::vector<Eigen::MatrixXd>& dataset, const double rejectionLimit = 5);
 
 	/// <summary>	Apply the ASR algorithm to the input signal. </summary>
 	/// <param name="in">	The input signal. </param>
 	/// <param name="out">	The corrected signal. </param>
-	/// <returns>	<c>True</c> if it succeeds, <c>False</c> if it fails. </returns>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out);
 
 	//***************************
@@ -53,9 +63,27 @@ public:
 	/// <remarks> If invalid metric is used Euclidian is selected. </remarks>
 	void setMetric(const EMetric& metric) { m_metric = (metric == EMetric::Riemann) ? EMetric::Riemann : EMetric::Euclidian; }
 
+	/// <summary> Sets the number of channel (dimension) to reconstruct in fraction, 0 for nothing 1 for all. </summary>
+	/// <param name="max">	The maximum ratio. </param>
+	/// <remarks>	If value isn't in [0;1], this function does nothing. </remarks>
+	void setMaxChannel(const double max) { if (InRange(max, 0.0, 1.0)) { m_maxChannel = max; } }
+
+	/// <summary> Sets the differents matrices : median matrix, trheshold matrix, reconstruction matrix and covariance matrix. </summary>
+	/// <param name="median">		The median matrix. </param>
+	/// <param name="threshold">	The threshold matrix. </param>
+	/// <param name="reconstruct">	(Optional) The reconstruct matrix. </param>
+	/// <param name="covariance">	(Optional) The covariance matrix. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
+	/// <remarks>	All matrices must be square with same size (or empty for reconstruct and covariance matrix).
+	/// Trivial trigger is set to true. </remarks>
+	bool setMatrices(const Eigen::MatrixXd& median, const Eigen::MatrixXd& threshold,
+					 const Eigen::MatrixXd& reconstruct = Eigen::MatrixXd(), const Eigen::MatrixXd& covariance = Eigen::MatrixXd());
+
 	EMetric getMetric() const { return m_metric; }						///< Get the metric.
+	size_t getChannelNumber() const { return m_nChannel; }				///< Get the matrices number of channel.
+	double getMaxChannel() const { return m_maxChannel; }				///< Get the number of channel (dimension) to reconstruct in fraction.
 	Eigen::MatrixXd getMedian() const { return m_median; }				///< Get the median matrix.
-	Eigen::MatrixXd getTransformMatrix() const { return m_treshold; }	///< Get the transformation matrix.
+	Eigen::MatrixXd getTresholdMatrix() const { return m_treshold; }	///< Get the treshold matrix.
 
 	//*****************************
 	//***** Override Operator *****
@@ -110,8 +138,8 @@ protected:
 	//*********************
 	EMetric m_metric    = EMetric::Euclidian;	///< Metric Used for computes (only euclidian and Riemann are implemented
 	size_t m_nChannel   = 0;					///< Number of channel (dimension)
-	bool m_trivial      = true;					///< Define if previous sample was trivial to reconstruct
 	double m_maxChannel = 1;					///< Number of channel (dimension) to reconstruct in fraction, 0 for nothing 1 for all
+	bool m_trivial      = true;					///< Define if previous sample was trivial to reconstruct
 	Eigen::MatrixXd m_median;					///< Median computed with train dataset
 	Eigen::MatrixXd m_treshold;					///< Treshold matrix computed with train dataset
 	Eigen::MatrixXd m_r;						///< Last Reconstruction matrix

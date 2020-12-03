@@ -26,13 +26,13 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 	for (size_t i = 0; i < n; ++i) { if (!CovarianceMatrix(dataset[i], covs[i], EEstimator::LWF, EStandardization::Center)) { return false; } }
 
 	//========== Compute Square Root of Median ==========
-	if (!Median(covs, m_median)) { return false; }
+	if (!Median(covs, m_median)) { return false; }											// Geometric median independant of metric
 	m_median = m_median.sqrt();
 
 	//========== Compute Eigen vectors ==========
 	Eigen::MatrixXd eigVector;
 	std::vector<double> eigValues;
-	sortedEigenVector(m_median, eigVector, eigValues, m_metric);
+	sortedEigenVector(m_median, eigVector, eigValues, m_metric);							//Actually only Euclidian metric is implemented
 
 	//========== Compute the ponderate dataset ==========
 	std::vector<Eigen::MatrixXd> newDataset;
@@ -49,7 +49,7 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 	std::vector<double> mu(m_nChannel, 0.0), sigma(m_nChannel, 0.0);
 	for (size_t i = 0; i < m_nChannel; ++i) { FitDistribution(rms[i], mu[i], sigma[i]); }
 
-	// Compute the Transform Matrix
+	// Compute the threshold Matrix
 	m_treshold = Eigen::MatrixXd::Zero(m_nChannel, m_nChannel);
 	for (size_t i = 0; i < m_nChannel; ++i) { m_treshold(i, i) = mu[i] + rejectionLimit * sigma[i]; }
 	m_treshold *= eigVector.transpose();
@@ -65,7 +65,7 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 	// Check if input data is compatible with train data and if we don't limit so mutch the reconstruction
 	out = in;
 	if (size_t(out.rows()) != m_nChannel) { return false; }
-	const size_t begin = size_t((1.0 - m_maxChannel) * m_nChannel);	// We define the number of channels to non reconstruct
+	const size_t begin = size_t((1.0 - m_maxChannel) * double(m_nChannel));	// We define the number of channels to non reconstruct
 	if (begin == m_nChannel) { return true; }
 	if (m_r.size() == 0) { m_r = Eigen::MatrixXd::Identity(m_nChannel, m_nChannel); }
 
@@ -120,6 +120,27 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 	m_trivial = trivial;
 	return true;
 }
+
+///-------------------------------------------------------------------------------------------------
+
+bool CASR::setMatrices(const Eigen::MatrixXd& median, const Eigen::MatrixXd& threshold, const Eigen::MatrixXd& reconstruct,
+					   const Eigen::MatrixXd& covariance)
+{
+	if (!IsSquare(median) || !HaveSameSize(median, threshold)
+		|| (reconstruct.size() != 0 && !HaveSameSize(median, reconstruct))
+		|| (covariance.size() != 0 && !HaveSameSize(median, covariance)))
+	{
+		std::cout << "All matrices must be square with same size (or empty for reconstruct and covariance matrix" << std::endl;
+		return false;
+	}
+	m_nChannel = median.rows();
+	m_median   = median;
+	m_treshold = threshold;
+	m_r        = reconstruct.size() != 0 ? reconstruct : Eigen::MatrixXd::Identity(m_nChannel, m_nChannel);
+	m_cov      = covariance;
+	m_trivial  = true;
+	return true;
+}
 ///-------------------------------------------------------------------------------------------------
 
 //*****************************
@@ -129,16 +150,24 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 ///-------------------------------------------------------------------------------------------------
 bool CASR::isEqual(const CASR& obj, const double precision) const
 {
-	return m_metric == obj.m_metric && AreEquals(m_median, obj.m_median, precision) && AreEquals(m_treshold, obj.m_treshold, precision);
+	return m_metric == obj.m_metric && m_nChannel == obj.m_nChannel
+		   && abs(m_maxChannel - obj.m_maxChannel) < precision && m_trivial == obj.m_trivial
+		   && AreEquals(m_median, obj.m_median, precision) && AreEquals(m_treshold, obj.m_treshold, precision)
+		   && AreEquals(m_r, obj.m_r, precision) && AreEquals(m_cov, obj.m_cov, precision);
 }
 ///-------------------------------------------------------------------------------------------------
 
 ///-------------------------------------------------------------------------------------------------
 void CASR::copy(const CASR& obj)
 {
-	m_metric   = obj.m_metric;
-	m_median   = obj.m_median;
-	m_treshold = obj.m_treshold;
+	m_metric     = obj.m_metric;
+	m_nChannel   = obj.m_nChannel;
+	m_maxChannel = obj.m_maxChannel;
+	m_trivial    = obj.m_trivial;
+	m_median     = obj.m_median;
+	m_treshold   = obj.m_treshold;
+	m_r          = obj.m_r;
+	m_cov        = obj.m_cov;
 }
 ///-------------------------------------------------------------------------------------------------
 

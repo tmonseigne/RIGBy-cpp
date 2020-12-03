@@ -51,7 +51,7 @@ static void TestClassify(Geometry::IMatrixClassifier& calc, const std::vector<st
 			result(k, classid)++;
 		}
 	}
-	//std::cout << "***** Classifier : *****" << std::endl << calc << std::endl << "***** Result : *****" << std::endl << result << std::endl;
+	std::cout << "***** Classifier : *****" << std::endl << calc << std::endl << "***** Result : *****" << std::endl << result << std::endl;
 }
 //---------------------------------------------------------------------------------------------------
 

@@ -178,7 +178,7 @@ std::vector<std::vector<T>> Vector1DTo2D(const std::vector<T>& in, const std::ve
 /// <param name="min">		The minimum. </param>
 /// <param name="max">		The maximum. </param>
 /// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
-bool InRange(double value, double min, double max);
+bool InRange(const double value, const double min, const double max);
 
 /// <summary>	Validate if the vector is not empty and the matrices are validate. </summary>
 /// <param name="matrices">	Vector of Matrix. </param>

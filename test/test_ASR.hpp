@@ -31,44 +31,51 @@ protected:
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_ASR, trainASR)
+TEST_F(Tests_ASR, ASR_Train_Euclidian)
 {
-	Geometry::CASR asr;
-	asr.train(m_dataset);
-
-	Eigen::MatrixXd refMedian(3, 3), refTransformation(3, 3);
-	refMedian << 1.32267188, 0.00105802, 0.00871490,
-			0.00105802, 1.32447262, 0.01829110,
-			0.00871490, 0.01829110, 1.02823244;
-	refTransformation << -0.05738723, - 0.12041171, 1.96255648,
-			3.44737720, - 1.60950341, 0.00205466,
-			1.31840128, 2.82413924, 0.21182516;
-
-	EXPECT_TRUE(asr.getMetric() == Geometry::EMetric::Euclidian) << "Asr Train Metric : Reference : " << toString(Geometry::EMetric::Euclidian)
-		<< ", \tCompute : " << toString(asr.getMetric());
-	EXPECT_TRUE(isAlmostEqual(asr.getMedian(), refMedian)) << ErrorMsg("Asr Train Median", refMedian, asr.getMedian());
-	EXPECT_TRUE(isAlmostEqual(asr.getTransformMatrix(), refTransformation))
-		<< ErrorMsg("Asr Train Transformation Matrix", refTransformation, asr.getTransformMatrix());
+	const Geometry::CASR ref = InitASR::Euclidian::Reference();
+	const Geometry::CASR calc(Geometry::EMetric::Euclidian, m_dataset);
+	EXPECT_TRUE(calc == ref) << ErrorMsg("Train ASR in Euclidian metric", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_ASR, ProcessASR)
+TEST_F(Tests_ASR, ASR_Train_Riemann)
 {
-	Geometry::CASR asr;
+	std::cout << "Riemannian Eigen Value isn't implemented, so result is same as Euclidian metric." << std::endl;
+	const Geometry::CASR ref = InitASR::Riemann::Reference();
+	const Geometry::CASR calc(Geometry::EMetric::Riemann, m_dataset);
+	EXPECT_TRUE(calc == ref) << ErrorMsg("Train ASR in Riemann metric", ref, calc);
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_ASR, ASR_Process)
+{
 	m_dataset = InitDataset::FirstClassDataset();
-	asr.train(m_dataset);
+	Geometry::CASR calc(Geometry::EMetric::Euclidian, m_dataset);
 
 	std::vector<Eigen::MatrixXd> testset = InitDataset::SecondClassDataset();
 	std::vector<Eigen::MatrixXd> result(testset.size());
 	for (size_t i = 0; i < testset.size(); ++i)
 	{
 		testset[i] *= 2;
-		EXPECT_TRUE(asr.process(testset[i], result[i])) << "ASR PRocess Fail\n";
+		EXPECT_TRUE(calc.process(testset[i], result[i])) << "ASR PRocess fail for sample " + std::to_string(i) + ".\n";
 	}
 	for (size_t i = 1; i < testset.size(); ++i)
 	{
-		EXPECT_FALSE(isAlmostEqual(result[i], testset[i])) << "the sample " + std::to_string(i) + " wasn't reconstructed\n";
+		EXPECT_FALSE(isAlmostEqual(result[i], testset[i])) << "the sample " + std::to_string(i) + " wasn't reconstructed.\n";
 	}
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_ASR, ASR_Save)
+{
+	//Geometry::CASR calc;
+	//const Geometry::CASR ref = InitASR::Euclidian::Reference();
+	//EXPECT_TRUE(ref.saveXML("test_ASR_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
+	//EXPECT_TRUE(calc.loadXML("test_ASR_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
+	//EXPECT_TRUE(ref == calc) << ErrorMsg("ASR Save", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------

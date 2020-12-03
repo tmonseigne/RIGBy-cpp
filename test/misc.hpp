@@ -18,6 +18,7 @@
 #include <type_traits>
 
 #include <geometry/classifier/IMatrixClassifier.hpp>
+#include <geometry/artifacts/CASR.hpp>
 
 const std::string SEP = "\n====================\n";
 
@@ -103,6 +104,15 @@ inline std::string ErrorMsg(const std::string& name, const Eigen::MatrixXd& ref,
 /// <summary>	Error message for matrix Classifier. </summary>
 /// \copydetails ErrorMsg(const std::string&, const size_t, const size_t)
 inline std::string ErrorMsg(const std::string& name, const Geometry::IMatrixClassifier& ref, const Geometry::IMatrixClassifier& calc)
+{
+	std::stringstream ss;
+	ss << SEP << name << " : " << std::endl << "********** Reference **********\n" << ref << std::endl << "********** Compute **********\n" << calc << SEP;
+	return ss.str();
+}
+
+/// <summary>	Error message for ASR. </summary>
+/// \copydetails ErrorMsg(const std::string&, const size_t, const size_t)
+inline std::string ErrorMsg(const std::string& name, const Geometry::CASR& ref, const Geometry::CASR& calc)
 {
 	std::stringstream ss;
 	ss << SEP << name << " : " << std::endl << "********** Reference **********\n" << ref << std::endl << "********** Compute **********\n" << calc << SEP;
