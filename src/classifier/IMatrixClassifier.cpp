@@ -60,6 +60,7 @@ bool IMatrixClassifier::loadXML(const std::string& filename)
 
 	// Load Data
 	tinyxml2::XMLElement* data = root->FirstChildElement("Classifier-data");	// Get Data Node
+	if (data == nullptr) { return false; }							// Check Root Node Exist
 	if (!loadHeader(data)) { return false; }						// Load Header attribute
 	if (!loadAdditional(data)) { return false; }					// Load Optionnal Informations
 	if (!loadClasses(data)) { return false; }						// Load Classes
@@ -79,7 +80,7 @@ bool IMatrixClassifier::convertMatrixToXMLFormat(const Eigen::MatrixXd& in, std:
 ///-------------------------------------------------------------------------------------------------
 bool IMatrixClassifier::convertXMLFormatToMatrix(std::stringstream& in, Eigen::MatrixXd& out, const size_t rows, const size_t cols)
 {
-	out = Eigen::MatrixXd::Identity(rows, cols);				// Init With Identity Matrix (in case of)
+	out = Eigen::MatrixXd::Identity(rows, cols);		// Init With Identity Matrix (in case of)
 	for (size_t i = 0; i < rows; ++i)					// Fill Matrix
 	{
 		for (size_t j = 0; j < cols; ++j) { in >> out(i, j); }

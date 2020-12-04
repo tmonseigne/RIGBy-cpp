@@ -85,6 +85,19 @@ public:
 	Eigen::MatrixXd getMedian() const { return m_median; }				///< Get the median matrix.
 	Eigen::MatrixXd getTresholdMatrix() const { return m_treshold; }	///< Get the treshold matrix.
 
+	//***********************
+	//***** XML Manager *****
+	//***********************
+	/// <summary>	Saves the ASR information in an XML file. </summary>
+	/// <param name="filename">	Filename. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
+	bool saveXML(const std::string& filename) const;
+
+	/// <summary>	Loads the ASR information from an XML file. </summary>
+	/// <param name="filename">	Filename. </param>
+	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
+	bool loadXML(const std::string& filename);
+	
 	//*****************************
 	//***** Override Operator *****
 	//*****************************

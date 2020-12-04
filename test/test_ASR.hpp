@@ -72,10 +72,10 @@ TEST_F(Tests_ASR, ASR_Process)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_ASR, ASR_Save)
 {
-	//Geometry::CASR calc;
-	//const Geometry::CASR ref = InitASR::Euclidian::Reference();
-	//EXPECT_TRUE(ref.saveXML("test_ASR_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
-	//EXPECT_TRUE(calc.loadXML("test_ASR_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
-	//EXPECT_TRUE(ref == calc) << ErrorMsg("ASR Save", ref, calc);
+	Geometry::CASR calc;
+	const Geometry::CASR ref = InitASR::Euclidian::Reference();
+	EXPECT_TRUE(ref.saveXML("test_ASR_Save.xml")) << "Error during Saving : " << std::endl << ref << std::endl;
+	EXPECT_TRUE(calc.loadXML("test_ASR_Save.xml")) << "Error during Loading : " << std::endl << calc << std::endl;
+	EXPECT_TRUE(ref == calc) << ErrorMsg("ASR Save", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------

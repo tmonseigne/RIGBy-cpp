@@ -4,6 +4,7 @@
 #include "geometry/Median.hpp"
 #include "geometry/Covariance.hpp"
 #include "geometry/Mean.hpp"
+#include "geometry/classifier/IMatrixClassifier.hpp"
 
 #include <boost/math/special_functions/detail/igamma_inverse.hpp>
 #include <unsupported/Eigen/MatrixFunctions>
@@ -139,6 +140,84 @@ bool CASR::setMatrices(const Eigen::MatrixXd& median, const Eigen::MatrixXd& thr
 	m_r        = reconstruct.size() != 0 ? reconstruct : Eigen::MatrixXd::Identity(m_nChannel, m_nChannel);
 	m_cov      = covariance;
 	m_trivial  = true;
+	return true;
+}
+///-------------------------------------------------------------------------------------------------
+
+//***********************
+//***** XML Manager *****
+//***********************
+
+///-------------------------------------------------------------------------------------------------
+bool CASR::saveXML(const std::string& filename) const
+{
+	tinyxml2::XMLDocument doc;
+	// Create Root
+	tinyxml2::XMLNode* root = doc.NewElement("ASR");			// Create root node
+	doc.InsertFirstChild(root);									// Add root to XML
+
+	tinyxml2::XMLElement* data = doc.NewElement("ASR-data");	// Create data node
+	data->SetAttribute("metric", toString(m_metric).c_str());	// Set attribute metric
+	data->SetAttribute("nChannel", int(m_nChannel));			// Set attribute nCHannel
+	data->SetAttribute("maxChannel", int(m_maxChannel));		// Set attribute nCHannel
+	data->SetAttribute("trivial", m_trivial);					// Set attribute nCHannel
+
+	tinyxml2::XMLElement* median = doc.NewElement("Median");	// Create Median node
+	if (!IMatrixClassifier::saveMatrix(median, m_median)) { return false; }	// Save Median Matrix
+	data->InsertEndChild(median);								// Add Median node to data node
+
+	tinyxml2::XMLElement* treshold = doc.NewElement("Treshold");	// Create Median node
+	if (!IMatrixClassifier::saveMatrix(treshold, m_treshold)) { return false; }	// Save Median Matrix
+	data->InsertEndChild(treshold);								// Add Median node to data node
+
+	tinyxml2::XMLElement* r = doc.NewElement("R");				// Create Median node
+	if (!IMatrixClassifier::saveMatrix(r, m_r)) { return false; }	// Save Median Matrix
+	data->InsertEndChild(r);									// Add Median node to data node
+
+	tinyxml2::XMLElement* cov = doc.NewElement("Cov");			// Create Median node
+	if (!IMatrixClassifier::saveMatrix(cov, m_cov)) { return false; }	// Save Median Matrix
+	data->InsertEndChild(cov);									// Add Median node to data node
+
+	root->InsertEndChild(data);									// Add data to root
+	return doc.SaveFile(filename.c_str()) == 0;					// save XML (if != 0 it means error)
+}
+///-------------------------------------------------------------------------------------------------
+
+///-------------------------------------------------------------------------------------------------
+bool CASR::loadXML(const std::string& filename)
+{
+	// Load File
+	tinyxml2::XMLDocument xmlDoc;
+	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }		// Check File Exist and Loading
+
+	// Load Root
+	tinyxml2::XMLNode* root = xmlDoc.FirstChild();						// Get Root Node
+	if (root == nullptr) { return false; }								// Check Root Node Exist
+
+	// Load Data
+	tinyxml2::XMLElement* data = root->FirstChildElement("ASR-data");	// Get Data Node
+	if (data == nullptr) { return false; }								// Check Root Node Exist
+	m_metric     = StringToMetric(std::string(data->Attribute("metric")));
+	m_nChannel   = data->IntAttribute("nChannel");
+	m_maxChannel = data->IntAttribute("maxChannel");
+	m_trivial    = data->BoolAttribute("trivial");
+
+	tinyxml2::XMLElement* element = data->FirstChildElement("Median");	// Get Median Node
+	if (element == nullptr) { return false; }							// Check if Node Exist
+	if (!IMatrixClassifier::loadMatrix(element, m_median)) { return false; }	// Load Median Matrix
+	
+	element = data->FirstChildElement("Treshold");						// Get Treshold Node
+	if (element == nullptr) { return false; }							// Check if Node Exist
+	if (!IMatrixClassifier::loadMatrix(element, m_treshold)) { return false; }	// Load Treshold Matrix
+	
+	element = data->FirstChildElement("R");								// Get R Node
+	if (element == nullptr) { return false; }							// Check if Node Exist
+	if (!IMatrixClassifier::loadMatrix(element, m_r)) { return false; }		// Load R Matrix
+	
+	element = data->FirstChildElement("Cov");							// Get Cov Node
+	if (element == nullptr) { return false; }							// Check if Node Exist
+	if (!IMatrixClassifier::loadMatrix(element, m_cov)) { return false; }	// Load Cov Matrix
+
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------

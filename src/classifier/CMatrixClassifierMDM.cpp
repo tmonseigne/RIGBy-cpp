@@ -116,7 +116,7 @@ bool CMatrixClassifierMDM::saveClasses(tinyxml2::XMLDocument& doc, tinyxml2::XML
 ///-------------------------------------------------------------------------------------------------
 bool CMatrixClassifierMDM::loadClasses(tinyxml2::XMLElement* data)
 {
-	tinyxml2::XMLElement* element = data->FirstChildElement("Class");	// Get Fist Class Node
+	tinyxml2::XMLElement* element = data->FirstChildElement("Class");	// Get First Class Node
 	for (size_t k = 0; k < m_nbClass; ++k)								// for each class
 	{
 		if (element == nullptr) { return false; }						// Check if Node Exist
