@@ -30,7 +30,7 @@ class Tests_Misc : public testing::Test
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Misc, DoubleRange)
+TEST_F(Tests_Misc, Double_Range)
 {
 	const std::vector<double> calc1 = Geometry::doubleRange(0, 10, 2), calc2        = Geometry::doubleRange(0, 10, 2, false),
 							  calc3 = Geometry::doubleRange(0.15, 3.05, 0.5), calc4 = Geometry::doubleRange(0.15, 3.05, 0.5, false),
@@ -45,7 +45,7 @@ TEST_F(Tests_Misc, DoubleRange)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Misc, RoundIndexRange)
+TEST_F(Tests_Misc, Round_Index_Range)
 {
 	const std::vector<size_t> calc1 = Geometry::RoundIndexRange(0, 10, 2), calc2        = Geometry::RoundIndexRange(0, 10, 2, false),
 							  calc3 = Geometry::RoundIndexRange(0.15, 3.15, 0.2), calc4 = Geometry::RoundIndexRange(0.15, 3.05, 0.2, false, false),
@@ -60,7 +60,7 @@ TEST_F(Tests_Misc, RoundIndexRange)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Misc, binHistogramm)
+TEST_F(Tests_Misc, Bin_Histogramm)
 {
 	//========== Create Dataset ==========
 	const std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitDataset::Dataset());
@@ -95,7 +95,7 @@ TEST_F(Tests_Misc, binHistogramm)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Misc, fitDistribution)
+TEST_F(Tests_Misc, Fit_Distribution)
 {
 	const std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitDataset::Dataset());
 	std::vector<std::vector<double>> dataset(NB_CHAN);
@@ -113,6 +113,43 @@ TEST_F(Tests_Misc, fitDistribution)
 		Geometry::FitDistribution(dataset[i], mu[i], sigma[i]);
 		EXPECT_TRUE(isAlmostEqual(mu[i], refMu[i])) << ErrorMsg("Fit Distribution Mu", mu[i], refMu[i]);
 		EXPECT_TRUE(isAlmostEqual(sigma[i], refSigma[i])) << ErrorMsg("Fit Distribution Sigma", sigma[i], refSigma[i]);
+	}
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Misc, Sorted_Eigen_Vector_Euclidian)
+{
+	std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference());
+	const size_t n = matrices.size();
+	std::vector<Eigen::MatrixXd> vectors = InitEigenVector::Euclidian::Vectors();
+	std::vector<std::vector<double>> values = InitEigenVector::Euclidian::Values();
+	for (size_t i = 0; i < n; ++i)
+	{
+		Eigen::MatrixXd vec;
+		std::vector<double> val;
+		Geometry::sortedEigenVector(matrices[i], vec, val, Geometry::EMetric::Euclidian);
+		EXPECT_TRUE(isAlmostEqual(vectors[i], vec)) << ErrorMsg("Eigen Vector sample " + std::to_string(i) + " : ", vectors[i], vec);
+		EXPECT_TRUE(isAlmostEqual(values[i], val)) << ErrorMsg("Eigen Value sample " + std::to_string(i) + " : ", values[i], val);
+	}
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Misc, Sorted_Eigen_Vector_Riemann)
+{
+	std::cout << "Not implemented" << std::endl;
+	std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference());
+	const size_t n = matrices.size();
+	//std::vector<Eigen::MatrixXd> vectors = InitEigenVector::Riemann::Vectors();
+	//std::vector<std::vector<double>> values = InitEigenVector::Riemann::Values();
+	for (size_t i = 0; i < n; ++i)
+	{
+		Eigen::MatrixXd vec;
+		std::vector<double> val;
+		Geometry::sortedEigenVector(matrices[i], vec, val, Geometry::EMetric::Riemann);
+		//EXPECT_TRUE(isAlmostEqual(vectors[i], vec)) << ErrorMsg("Eigen Vector sample " + std::to_string(i) + " : ", vectors[i], vec);
+		//EXPECT_TRUE(isAlmostEqual(values[i], val)) << ErrorMsg("Eigen Value sample " + std::to_string(i) + " : ", values[i], val);
 	}
 }
 //---------------------------------------------------------------------------------------------------

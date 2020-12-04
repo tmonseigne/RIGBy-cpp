@@ -31,7 +31,7 @@ protected:
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_ASR, ASR_Train_Euclidian)
+TEST_F(Tests_ASR, Train_Euclidian)
 {
 	const Geometry::CASR ref = InitASR::Euclidian::Reference();
 	const Geometry::CASR calc(Geometry::EMetric::Euclidian, m_dataset);
@@ -40,7 +40,7 @@ TEST_F(Tests_ASR, ASR_Train_Euclidian)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_ASR, ASR_Train_Riemann)
+TEST_F(Tests_ASR, Train_Riemann)
 {
 	std::cout << "Riemannian Eigen Value isn't implemented, so result is same as Euclidian metric." << std::endl;
 	const Geometry::CASR ref = InitASR::Riemann::Reference();
@@ -50,7 +50,7 @@ TEST_F(Tests_ASR, ASR_Train_Riemann)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_ASR, ASR_Process)
+TEST_F(Tests_ASR, Process)
 {
 	m_dataset = InitDataset::FirstClassDataset();
 	Geometry::CASR calc(Geometry::EMetric::Euclidian, m_dataset);
@@ -70,7 +70,7 @@ TEST_F(Tests_ASR, ASR_Process)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_ASR, ASR_Save)
+TEST_F(Tests_ASR, Save)
 {
 	Geometry::CASR calc;
 	const Geometry::CASR ref = InitASR::Euclidian::Reference();

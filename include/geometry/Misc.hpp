@@ -83,7 +83,7 @@ bool FitDistribution(const std::vector<double>& values, double& mu, double& sigm
 //-------------------------------------------------------------------------------------------------
 /// <summary>	Compute sorted eigen vector of the matrix. </summary>
 /// <param name="matrix">	the input matrix. </param>
-/// <param name="vectors"> Sorted eigen vectors. </param>
+/// <param name="vectors">	Sorted eigen vectors. </param>
 /// <param name="values">	Sorted eigen values. </param>
 /// <param name="metric">	metric used for vectors. </param>
 /// <remarks>	Actually only euclidian method is implemented. <br/> 
@@ -93,11 +93,12 @@ void sortedEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& vectors, 
 
 //-------------------------------------------------------------------------------------------------
 /// <summary>	Compute the eigen vector of the input matrix. </summary>
-/// <param name="matrix">  			input Matrix. </param>
-/// <param name="eigenVector">  	Eigen Vector of input input matrix. </param>
+/// <param name="matrix">  	input Matrix. </param>
+/// <param name="vectors">	Sorted eigen vectors. </param>
+/// <param name="values">	Sorted eigen values. </param>
 /// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 /// <remarks> This algorithm is in <a href="https://sccn.ucsd.edu/eeglab/index.php">EEGLAB</a> plugin and inspired by the paper "A Riemannian Newton Algorithm for Nonlinear Eigenvalue Problems", Zhi Zhao, Zheng - Jian Bai, and Xiao - Qing Jin, SIAM Journal on Matrix Analysisand Applications, 36(2), 752 - 774, 2015. </remarks>
-//bool RiemannianNonLinearEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& eigenVector);
+//bool RiemannianNonLinearEigenVector(const Eigen::MatrixXd& matrix, Eigen::MatrixXd& vectors, std::vector<double>& values);
 //-------------------------------------------------------------------------------------------------
 
 }  // namespace Geometry

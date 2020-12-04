@@ -57,7 +57,7 @@ TEST_F(Tests_Basics, GetElements)
 	Eigen::RowVectorXd ref(3);
 	const std::vector<size_t> idx{ 0, 4, 7 };
 	ref << -3, -6, -1;
-	const Eigen::RowVectorXd calc = Geometry::GetElements(m_dataSet[0][0].row(0), idx);
+	const Eigen::RowVectorXd calc = Geometry::GetElements(m_dataSet[0][0].row(0), idx); // row = -3, -4, -5, -4, -6, -1, -4, -1, -3, -1
 	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("GetElements", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
@@ -115,30 +115,33 @@ TEST_F(Tests_Basics, Validation)
 						  m3;
 	std::vector<Eigen::MatrixXd> v;
 
-	EXPECT_TRUE(Geometry::InRange(1, 0, 2));
-	EXPECT_FALSE(Geometry::InRange(2, 0, 1));
+	EXPECT_TRUE(Geometry::InRange(1, 0, 2));		// 0 <= 1 <= 2 ?
+	EXPECT_FALSE(Geometry::InRange(2, 0, 1));		// 0 <= 2 <= 1 ?
 
-	EXPECT_FALSE(Geometry::AreNotEmpty(v));
+	EXPECT_FALSE(Geometry::AreNotEmpty(v));	// Empty Vector
 	v.push_back(m3);
-	EXPECT_FALSE(Geometry::AreNotEmpty(v));
+	EXPECT_FALSE(Geometry::AreNotEmpty(v));	// Vector with one empty matix
 	v.push_back(m1);
-	EXPECT_FALSE(Geometry::AreNotEmpty(v));
+	EXPECT_FALSE(Geometry::AreNotEmpty(v));	// Vector With one empty matrix and one non empty matrix
 	v.clear();
 	v.push_back(m1);
 	v.push_back(m2);
-	EXPECT_TRUE(Geometry::AreNotEmpty(v));
+	EXPECT_TRUE(Geometry::AreNotEmpty(v));	// Vector With two non empty matrix
 
-	EXPECT_TRUE(Geometry::HaveSameSize(m1, m1));
-	EXPECT_FALSE(Geometry::HaveSameSize(m3, m3) && Geometry::HaveSameSize(m1, m2) && Geometry::HaveSameSize(m1, m3));
+	EXPECT_TRUE(Geometry::HaveSameSize(m1, m1));	// Same matrix
+	EXPECT_FALSE(Geometry::HaveSameSize(m3, m3));	// Same but empty
+	EXPECT_FALSE(Geometry::HaveSameSize(m1, m2));	// DIfferents
+	EXPECT_FALSE(Geometry::HaveSameSize(m1, m3));	// One empty
 
-	EXPECT_FALSE(Geometry::HaveSameSize(v) && Geometry::AreSquare(v));
+	EXPECT_FALSE(Geometry::HaveSameSize(v));		// Two different
+	EXPECT_FALSE(Geometry::AreSquare(v));			// One square
 	v.clear();
 	v.push_back(m1);
 	v.push_back(m1);
-	EXPECT_TRUE(Geometry::HaveSameSize(v) && Geometry::AreSquare(v));
+	EXPECT_TRUE(Geometry::HaveSameSize(v) && Geometry::AreSquare(v));	// Same matrix
 
-	Geometry::MatrixPrint(m1);
-	Geometry::MatrixPrint(m3);
+	Geometry::MatrixPrint(m1);	// Only to check
+	Geometry::MatrixPrint(m3);	// Only to check
 
 	std::vector<std::string> vs = Geometry::Split("0,1,2,3.a\n", ",");
 	EXPECT_TRUE(vs.size() == 4 && vs[0] == "0" && vs[1] == "1" && vs[2] == "2" && vs[3] == "3.a") << vs.size() << " " << vs[0] << " " << vs[1] << " " << vs[2] << " " << vs[3] << std::endl;

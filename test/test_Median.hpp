@@ -32,7 +32,7 @@ protected:
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Median, SimpleMedian)
+TEST_F(Tests_Median, Simple_Median)
 {
 	std::vector<double> v{ 5, 6, 4, 3, 2, 6, 7, 9, 3 };
 	double calc = Geometry::Median(v);
@@ -50,7 +50,7 @@ TEST_F(Tests_Median, SimpleMedian)
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Median, DatasetEuclidianMedian)
+TEST_F(Tests_Median, Euclidian)
 {
 	Eigen::MatrixXd calc;
 	Eigen::MatrixXd ref(3, 3);
@@ -58,12 +58,12 @@ TEST_F(Tests_Median, DatasetEuclidianMedian)
 			0.002960131606861, 1.754563395557952, 0.043042786354499,
 			0.020507254841909, 0.043042786354499, 1.057672472691352;
 	EXPECT_TRUE(Geometry::Median(m_dataSet, calc, 0.0001, 50, Geometry::EMetric::Euclidian)) << "Error During Median Computes";
-	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Median of Dataset", ref, calc);
+	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Euclidian Median of Dataset", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
-TEST_F(Tests_Median, DatasetRiemannMedian)
+TEST_F(Tests_Median, Riemann)
 {
 	Eigen::MatrixXd calc;
 	Eigen::MatrixXd ref(3, 3);
@@ -71,6 +71,16 @@ TEST_F(Tests_Median, DatasetRiemannMedian)
 			0.002002346316770, 1.644242996651016, 0.033655563302757,
 			0.022122030618131, 0.033655563302757, 0.851184143800763;
 	EXPECT_TRUE(Geometry::Median(m_dataSet, calc, 0.0001, 50, Geometry::EMetric::Riemann)) << "Error During Median Computes";
-	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Median of Dataset", ref, calc);
+	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Riemann Median of Dataset", ref, calc);
+}
+//---------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------
+TEST_F(Tests_Median, Identity)
+{
+	const Eigen::MatrixXd ref = InitMeans::Identity::Reference();
+	Eigen::MatrixXd calc;
+	EXPECT_TRUE(Geometry::Median(m_dataSet, calc, 0.0001, 50, Geometry::EMetric::Identity)) << "Error During Median Computes";
+	EXPECT_TRUE(isAlmostEqual(ref, calc)) << ErrorMsg("Identity Median of Dataset", ref, calc);
 }
 //---------------------------------------------------------------------------------------------------
