@@ -77,8 +77,7 @@ inline std::string toString(const EMatrixClassifiers type)
 		case EMatrixClassifiers::MDM_Rebias: return "Minimum Distance to Mean Rebias (MDM Rebias)";
 		case EMatrixClassifiers::FgMDM_RT: return "Minimum Distance to Mean with geodesic filtering (FgMDM) (Real Time adaptation assumed)";
 		case EMatrixClassifiers::FgMDM: return "Minimum Distance to Mean with geodesic filtering (FgMDM)";
-		case EMatrixClassifiers::FgMDM_RT_Rebias: return
-					"Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias) (Real Time adaptation assumed)";
+		case EMatrixClassifiers::FgMDM_RT_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias) (Real Time adaptation assumed)";
 		case EMatrixClassifiers::FgMDM_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias)";
 	}
 	return "Invalid";

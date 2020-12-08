@@ -12,7 +12,6 @@
 
 #pragma once
 
-#include <iostream>
 #include <Eigen/Dense>
 #include <vector>
 #include "geometry/Metrics.hpp"

@@ -120,7 +120,7 @@ bool MedianRiemann(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd
 			if (!TangentSpace(mats[i], ts[i], median)) { return false; }
 			sum += sqrt(ts[i].cwiseAbs2().sum());
 		}
-		if (fabs((sum - gain) / gain) < epsilon) { break; }
+		if (std::abs((sum - gain) / gain) < epsilon) { break; }	// std::abs call fabs to keep type
 
 		// Arithmetic median in tangent space
 		std::vector<std::vector<double>> transposeTs(nf, std::vector<double>(n));
