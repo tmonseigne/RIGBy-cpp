@@ -6,4 +6,4 @@
 [![codecov](https://codecov.io/gh/tmonseigne/RIGBy-cpp/branch/master/graph/badge.svg)](https://codecov.io/gh/tmonseigne/RIGBy-cpp)
 [![codedocs](https://codedocs.xyz/tmonseigne/RIGBy-cpp.svg)](https://codedocs.xyz/tmonseigne/RIGBy-cpp)
 
-[**Doxygen Documentation**](https://tmonseigne.github.io/RIGBy-cpp/)
+[**Doxygen Documentation**](https://codedocs.xyz/tmonseigne/RIGBy-cpp)
