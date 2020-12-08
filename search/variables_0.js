@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['m_5fbias',['m_bias',['../class_geometry_1_1_c_bias.html#a17480af6aa938bf214c45828c3e11028',1,'Geometry::CBias::m_bias()'],['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t_rebias.html#a37b3cc0b783ae1e8d7f8c340ca0be317',1,'Geometry::CMatrixClassifierFgMDMRTRebias::m_bias()'],['../class_geometry_1_1_c_matrix_classifier_m_d_m_rebias.html#a20b4fb95434f24a635adf096cb39e354',1,'Geometry::CMatrixClassifierMDMRebias::m_bias()']]],
+  ['m_5fbiasis',['m_biasIS',['../class_geometry_1_1_c_bias.html#a0178ad41c98fc725c43324f9e94c5366',1,'Geometry::CBias']]],
+  ['m_5fcov',['m_cov',['../class_geometry_1_1_c_a_s_r.html#ab772244080ffe4a4681e092ef33d03b7',1,'Geometry::CASR']]],
+  ['m_5fdatasets',['m_datasets',['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m.html#a116c5c310ed2709223d41887e2bf7ee7',1,'Geometry::CMatrixClassifierFgMDM']]],
+  ['m_5fmaxchannel',['m_maxChannel',['../class_geometry_1_1_c_a_s_r.html#a67616b4ba17f733df75283cda6fd23f9',1,'Geometry::CASR']]],
+  ['m_5fmeans',['m_means',['../class_geometry_1_1_c_matrix_classifier_m_d_m.html#a92f38718df282eac020c651c1b45ea64',1,'Geometry::CMatrixClassifierMDM']]],
+  ['m_5fmedian',['m_median',['../class_geometry_1_1_c_a_s_r.html#aa93b1b288117a439bb0ccfba685523a3',1,'Geometry::CASR']]],
+  ['m_5fmetric',['m_metric',['../class_geometry_1_1_c_a_s_r.html#a55b27389ee5f1313f54e43720215aa0b',1,'Geometry::CASR::m_metric()'],['../class_geometry_1_1_i_matrix_classifier.html#ab33eea25ddff942d406c6c8d1c3627a8',1,'Geometry::IMatrixClassifier::m_metric()']]],
+  ['m_5fn',['m_n',['../class_geometry_1_1_c_bias.html#ae241264527ba5f034c42425c3a605d44',1,'Geometry::CBias']]],
+  ['m_5fnbclass',['m_nbClass',['../class_geometry_1_1_i_matrix_classifier.html#af55300afd731a9eb9ed20d41075a5b7d',1,'Geometry::IMatrixClassifier']]],
+  ['m_5fnbtrials',['m_nbTrials',['../class_geometry_1_1_c_matrix_classifier_m_d_m.html#aefbeef74abe512ea6e047ec25e261904',1,'Geometry::CMatrixClassifierMDM']]],
+  ['m_5fnchannel',['m_nChannel',['../class_geometry_1_1_c_a_s_r.html#a2f220148590c13f12e5f8ce8c2ef2ccf',1,'Geometry::CASR']]],
+  ['m_5fr',['m_r',['../class_geometry_1_1_c_a_s_r.html#a92912a63e84aa362c2a69335d1e37af0',1,'Geometry::CASR']]],
+  ['m_5fref',['m_ref',['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t.html#ae6035fda6eeb38d026942bc64183d206',1,'Geometry::CMatrixClassifierFgMDMRT']]],
+  ['m_5ftreshold',['m_treshold',['../class_geometry_1_1_c_a_s_r.html#a5cec21b0812118993685135a35572b2f',1,'Geometry::CASR']]],
+  ['m_5ftrivial',['m_trivial',['../class_geometry_1_1_c_a_s_r.html#a4ba6f1827a99d02bbb6f7e31accdff80',1,'Geometry::CASR']]],
+  ['m_5fweight',['m_weight',['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t.html#a0ba5259fd5fd29921f98136aa2efcf77',1,'Geometry::CMatrixClassifierFgMDMRT']]]
+];

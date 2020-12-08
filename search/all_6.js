@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['geodesic',['Geodesic',['../namespace_geometry.html#a3a7bdc496eb1d5ad2132f01fea8e34b7',1,'Geometry']]],
+  ['geodesic_2ehpp',['Geodesic.hpp',['../_geodesic_8hpp.html',1,'']]],
+  ['geodesiceuclidian',['GeodesicEuclidian',['../namespace_geometry.html#a2adb606bd7e956a6d4377ae0210ff08e',1,'Geometry']]],
+  ['geodesicidentity',['GeodesicIdentity',['../namespace_geometry.html#a2ed64c08ac404aa639686e06d9ae30f1',1,'Geometry']]],
+  ['geodesiclogeuclidian',['GeodesicLogEuclidian',['../namespace_geometry.html#a3da82ed68dccc3a8fa0c0d279ffc60f8',1,'Geometry']]],
+  ['geodesicriemann',['GeodesicRiemann',['../namespace_geometry.html#a94dbac25b3eb3e105086fbf365b3fc4e',1,'Geometry']]],
+  ['geometry',['Geometry',['../namespace_geometry.html',1,'']]],
+  ['getbias',['getBias',['../class_geometry_1_1_c_bias.html#a95e307fd61a26a34d019e6f3d32e315e',1,'Geometry::CBias::getBias()'],['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t_rebias.html#a4bc9221ea3ec4e665746126e73227d87',1,'Geometry::CMatrixClassifierFgMDMRTRebias::getBias()'],['../class_geometry_1_1_c_matrix_classifier_m_d_m_rebias.html#a1f6f64d92d6213252cfa11df6875c73a',1,'Geometry::CMatrixClassifierMDMRebias::getBias()']]],
+  ['getchannelnumber',['getChannelNumber',['../class_geometry_1_1_c_a_s_r.html#a3537e92cf0d482c16f7f0699959fb645',1,'Geometry::CASR']]],
+  ['getclasscount',['getClassCount',['../class_geometry_1_1_i_matrix_classifier.html#af67c0e80a7d5d4d7b8d13ddd07f288bc',1,'Geometry::IMatrixClassifier']]],
+  ['getclassificationnumber',['getClassificationNumber',['../class_geometry_1_1_c_bias.html#ade579d79885688f18ed9152f651fcc16',1,'Geometry::CBias']]],
+  ['getdatasets',['getDatasets',['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m.html#a9c60f1c62e67c3c4416020011a6377cd',1,'Geometry::CMatrixClassifierFgMDM']]],
+  ['getelements',['GetElements',['../namespace_geometry.html#a1790223ebc2517a6dd2a6125648e7911',1,'Geometry']]],
+  ['getmaxchannel',['getMaxChannel',['../class_geometry_1_1_c_a_s_r.html#a73d8c394ca5a8e1f14cacd3855a3e9d5',1,'Geometry::CASR']]],
+  ['getmeans',['getMeans',['../class_geometry_1_1_c_matrix_classifier_m_d_m.html#a566e94a3a6ad5bffad7ad4fa05f4353d',1,'Geometry::CMatrixClassifierMDM']]],
+  ['getmedian',['getMedian',['../class_geometry_1_1_c_a_s_r.html#ae2570c345f00049dad03eda5de934a72',1,'Geometry::CASR']]],
+  ['getmetric',['getMetric',['../class_geometry_1_1_c_a_s_r.html#af4d72f6c9bb3d0d9b1f4a986087df8c0',1,'Geometry::CASR']]],
+  ['getref',['getRef',['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t.html#aeeaf94f4e5a6432ab0d75488fc95ec0e',1,'Geometry::CMatrixClassifierFgMDMRT']]],
+  ['gettresholdmatrix',['getTresholdMatrix',['../class_geometry_1_1_c_a_s_r.html#a1e82792e7832159663e5c063ec3859d2',1,'Geometry::CASR']]],
+  ['gettrialnumbers',['getTrialNumbers',['../class_geometry_1_1_c_matrix_classifier_m_d_m.html#a9a3224b1c74dcbad57924e793533a6d4',1,'Geometry::CMatrixClassifierMDM']]],
+  ['gettype',['getType',['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m.html#a545c151c3aca7a2c8214ae479512a5dd',1,'Geometry::CMatrixClassifierFgMDM::getType()'],['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t.html#a9b4f80c03121586f13492ca453bca7d2',1,'Geometry::CMatrixClassifierFgMDMRT::getType()'],['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t_rebias.html#aced5a06e277a8e2795e69a9d55ae951d',1,'Geometry::CMatrixClassifierFgMDMRTRebias::getType()'],['../class_geometry_1_1_c_matrix_classifier_m_d_m.html#a75805957444d87dd11fc9fb0ef16ee88',1,'Geometry::CMatrixClassifierMDM::getType()'],['../class_geometry_1_1_c_matrix_classifier_m_d_m_rebias.html#a502683d27c631e9701418825a2b5d975',1,'Geometry::CMatrixClassifierMDMRebias::getType()'],['../class_geometry_1_1_i_matrix_classifier.html#a302dc99606957967b099fb709cc757c1',1,'Geometry::IMatrixClassifier::getType()']]],
+  ['getweight',['getWeight',['../class_geometry_1_1_c_matrix_classifier_fg_m_d_m_r_t.html#a5220d6966c7632d543653b2cb50e236c',1,'Geometry::CMatrixClassifierFgMDMRT']]],
+  ['googletestreport_2emd',['GoogleTestReport.md',['../_google_test_report_8md.html',1,'']]],
+  ['google_20test_20report',['Google Test Report',['../md_GoogleTestReport.html',1,'']]]
+];
