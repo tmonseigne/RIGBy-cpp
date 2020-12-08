@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <Eigen/Dense>
 #include <vector>
 #include "geometry/Metrics.hpp"
@@ -31,8 +32,8 @@ template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::
 T Median(const std::vector<T>& v)
 {
 	std::vector<T> tmp = v;
-	const size_t n = tmp.size() / 2;									// Where is the middle (if odd number of value the decimal part is floor by cast)
-	std::nth_element(tmp.begin(), tmp.begin() + n, tmp.end());			// We sort only until the limit usefull
+	const size_t n     = tmp.size() / 2;								// Where is the middle (if odd number of value the decimal part is floor by cast)
+	std::stable_sort(tmp.begin(), tmp.end());							// We sort all because nth_element doesn't have salme behaviour in Windows and Unix
 	return (tmp.size() % 2 == 0) ? (tmp[n] + tmp[n - 1]) / 2 : tmp[n];	// For Even number of value we take the mean of the two middle value
 }
 //-------------------------------------------------------------------------------------------------
@@ -101,7 +102,8 @@ bool MedianIdentity(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixX
 /// <param name="metric">	(Optional) THe metric to use. </param>
 /// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 /// <remarks>  it's an iteratively algorithm, so we have a limit of iteration and an epsilon value to consider the calculation as satisfactory. </remarks>
-bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median, const double epsilon = 0.0001, const size_t maxIter = 50, const EMetric& metric = EMetric::Euclidian);
+bool Median(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd& median,
+			const double epsilon = 0.0001, const size_t maxIter = 50, const EMetric& metric = EMetric::Euclidian);
 //-------------------------------------------------------------------------------------------------
 
 }  // namespace Geometry

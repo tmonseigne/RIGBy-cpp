@@ -45,7 +45,7 @@ public:
 	//***************************
 	const CBias& getBias() const { return m_bias; }		///< Get Rebias Method. 
 	void setBias(const CBias& bias) { m_bias = bias; }	///< Set Rebias Method. 
-	
+
 	//**********************
 	//***** Classifier *****
 	//**********************

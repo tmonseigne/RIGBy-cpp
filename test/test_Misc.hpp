@@ -27,6 +27,7 @@ class Tests_Misc : public testing::Test
 	//
 	//	void SetUp() override { m_dataSet = Vector2DTo1D(InitCovariance::LWF::Reference()); }
 };
+
 //---------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------
@@ -120,9 +121,9 @@ TEST_F(Tests_Misc, Fit_Distribution)
 //---------------------------------------------------------------------------------------------------
 TEST_F(Tests_Misc, Sorted_Eigen_Vector_Euclidian)
 {
-	std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference());
-	const size_t n = matrices.size();
-	std::vector<Eigen::MatrixXd> vectors = InitEigenVector::Euclidian::Vectors();
+	std::vector<Eigen::MatrixXd> matrices   = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference());
+	const size_t n                          = matrices.size();
+	std::vector<Eigen::MatrixXd> vectors    = InitEigenVector::Euclidian::Vectors();
 	std::vector<std::vector<double>> values = InitEigenVector::Euclidian::Values();
 	for (size_t i = 0; i < n; ++i)
 	{
@@ -140,7 +141,7 @@ TEST_F(Tests_Misc, Sorted_Eigen_Vector_Riemann)
 {
 	std::cout << "Not implemented" << std::endl;
 	std::vector<Eigen::MatrixXd> matrices = Geometry::Vector2DTo1D(InitCovariance::LWF::Reference());
-	const size_t n = matrices.size();
+	const size_t n                        = matrices.size();
 	//std::vector<Eigen::MatrixXd> vectors = InitEigenVector::Riemann::Vectors();
 	//std::vector<std::vector<double>> values = InitEigenVector::Riemann::Values();
 	for (size_t i = 0; i < n; ++i)

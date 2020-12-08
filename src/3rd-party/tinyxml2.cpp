@@ -429,7 +429,7 @@ void XMLUtil::ConvertUTF32ToUTF8(unsigned long input, char* output, int* length)
 			*output = char(input | FIRST_BYTE_MARK[*length]);
 			break;
 		default:
-			TIXMLASSERT(false);
+		TIXMLASSERT(false);
 	}
 }
 

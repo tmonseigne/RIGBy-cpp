@@ -81,14 +81,14 @@ bool MedianEuclidian(const std::vector<Eigen::MatrixXd>& matrices, Eigen::Matrix
 		{
 			//Eigen::MatrixXd difference = cov - prev;
 			//double coef = sqrt(difference.cwiseProduct(difference).sum());
+			if (cov.isApprox(prev)) { continue; }		// In this case, Median is exactly this current matrix so we don't consider this matrix
 			double coef = (cov - prev).norm();
 			// Personnal hack and security
-			if (coef == 0) { continue; }				// In this case, Median is exactly this current matrix so we don't consider this matrix
 			coef = 1.0 / coef;
 			sumCoefs += coef;							// Sum for normalization
 			median += coef * cov;						// Add to the new median
 		}
-		median /= sumCoefs;								// Normalize
+		if (sumCoefs > 0.0) { median /= sumCoefs; }		// Normalize
 
 		gain = (median - prev).norm() / median.norm();	// It's the Frobenius norm
 		iter++;
@@ -120,7 +120,7 @@ bool MedianRiemann(const std::vector<Eigen::MatrixXd>& matrices, Eigen::MatrixXd
 			if (!TangentSpace(mats[i], ts[i], median)) { return false; }
 			sum += sqrt(ts[i].cwiseAbs2().sum());
 		}
-		if (abs((sum - gain) / gain) < epsilon) { break; }
+		if (fabs((sum - gain) / gain) < epsilon) { break; }
 
 		// Arithmetic median in tangent space
 		std::vector<std::vector<double>> transposeTs(nf, std::vector<double>(n));

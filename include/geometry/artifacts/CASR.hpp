@@ -97,7 +97,7 @@ public:
 	/// <param name="filename">	Filename. </param>
 	/// <returns>	<c>True</c> if it succeeds, <c>False</c> otherwise. </returns>
 	bool loadXML(const std::string& filename);
-	
+
 	//*****************************
 	//***** Override Operator *****
 	//*****************************

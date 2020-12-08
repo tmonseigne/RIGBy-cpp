@@ -205,15 +205,15 @@ bool CASR::loadXML(const std::string& filename)
 	tinyxml2::XMLElement* element = data->FirstChildElement("Median");	// Get Median Node
 	if (element == nullptr) { return false; }							// Check if Node Exist
 	if (!IMatrixClassifier::loadMatrix(element, m_median)) { return false; }	// Load Median Matrix
-	
+
 	element = data->FirstChildElement("Treshold");						// Get Treshold Node
 	if (element == nullptr) { return false; }							// Check if Node Exist
 	if (!IMatrixClassifier::loadMatrix(element, m_treshold)) { return false; }	// Load Treshold Matrix
-	
+
 	element = data->FirstChildElement("R");								// Get R Node
 	if (element == nullptr) { return false; }							// Check if Node Exist
 	if (!IMatrixClassifier::loadMatrix(element, m_r)) { return false; }		// Load R Matrix
-	
+
 	element = data->FirstChildElement("Cov");							// Get Cov Node
 	if (element == nullptr) { return false; }							// Check if Node Exist
 	if (!IMatrixClassifier::loadMatrix(element, m_cov)) { return false; }	// Load Cov Matrix
@@ -254,7 +254,7 @@ void CASR::copy(const CASR& obj)
 std::stringstream CASR::print() const
 {
 	std::stringstream ss;
-	ss << "Metric : " << toString(EMetric::Riemann) << std::endl;
+	ss << "Metric : " << toString(m_metric) << std::endl;
 	if (m_nChannel == 0) { ss << "Train not done" << std::endl; }
 	else
 	{

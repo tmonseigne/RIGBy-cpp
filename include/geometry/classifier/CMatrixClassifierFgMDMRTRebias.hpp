@@ -45,7 +45,7 @@ public:
 	//***************************
 	const CBias& getBias() const { return m_bias; }		 ///< Get Rebias Method. 
 	void setBias(const CBias& bias) { m_bias = bias; }	 ///< Set Rebias Method. 
-	
+
 	//**********************
 	//***** Classifier *****
 	//**********************
@@ -75,7 +75,7 @@ public:
 	/// \copydetails IMatrixClassifier::classify(const Eigen::MatrixXd&, size_t&, std::vector<double>&, std::vector<double>&, const EAdaptations, const size_t&)
 	bool classify(const Eigen::MatrixXd& sample, size_t& classId, std::vector<double>& distance, std::vector<double>& probability,
 				  EAdaptations adaptation = EAdaptations::None, const size_t& realClassId = std::numeric_limits<size_t>::max()) override;
-	
+
 	//*****************************
 	//***** Override Operator *****
 	//*****************************
@@ -143,7 +143,6 @@ protected:
 	//***** Variables *****
 	//*********************
 	CBias m_bias;	///< Rebias Method. 
-
 };
 
 }  // namespace Geometry

@@ -48,7 +48,7 @@ public:
 	//***************************
 	void setDatasets(const std::vector<std::vector<Eigen::MatrixXd>>& datasets) { m_datasets = datasets; }	///< Set Datasets.
 	const std::vector<std::vector<Eigen::MatrixXd>>& getDatasets() const { return m_datasets; }				///< Get Datasets.
-	
+
 	//**********************
 	//***** Classifier *****
 	//**********************

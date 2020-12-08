@@ -77,7 +77,8 @@ inline std::string toString(const EMatrixClassifiers type)
 		case EMatrixClassifiers::MDM_Rebias: return "Minimum Distance to Mean Rebias (MDM Rebias)";
 		case EMatrixClassifiers::FgMDM_RT: return "Minimum Distance to Mean with geodesic filtering (FgMDM) (Real Time adaptation assumed)";
 		case EMatrixClassifiers::FgMDM: return "Minimum Distance to Mean with geodesic filtering (FgMDM)";
-		case EMatrixClassifiers::FgMDM_RT_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias) (Real Time adaptation assumed)";
+		case EMatrixClassifiers::FgMDM_RT_Rebias: return
+					"Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias) (Real Time adaptation assumed)";
 		case EMatrixClassifiers::FgMDM_Rebias: return "Minimum Distance to Mean with geodesic filtering Rebias (FgMDM Rebias)";
 	}
 	return "Invalid";
@@ -310,7 +311,6 @@ protected:
 	//*********************	
 	size_t m_nbClass = 2;					///< Number of classes to classify. 
 	EMetric m_metric = EMetric::Riemann;	///< Metric to use to calculate means and distances (see also <see cref="EMetric" />).
-
 };
 
 }  // namespace Geometry
