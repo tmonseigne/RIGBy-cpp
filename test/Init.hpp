@@ -2013,16 +2013,16 @@ namespace Euclidian {
 inline Geometry::CASR Reference()
 {
 	Geometry::CASR res(Geometry::EMetric::Euclidian);
-	Eigen::MatrixXd median(3, 3), treshold(3, 3), r(3, 3);
+	Eigen::MatrixXd median(3, 3), threshold(3, 3), r(3, 3);
 	median << 1.32267188, 0.00105802, 0.00871490,
 			0.00105802, 1.32447262, 0.01829110,
 			0.00871490, 0.01829110, 1.02823244;
-	treshold << -0.05738723, -0.12041171, 1.96255648,
+	threshold << -0.05738723, -0.12041171, 1.96255648,
 			3.44737720, -1.60950341, 0.00205466,
 			1.31840128, 2.82413924, 0.21182516;
 	r.setIdentity();
 
-	res.setMatrices(median, treshold, r);
+	res.setMatrices(median, threshold, r);
 	return res;
 }
 
@@ -2033,16 +2033,16 @@ namespace Riemann {
 inline Geometry::CASR Reference()
 {
 	Geometry::CASR res(Geometry::EMetric::Riemann);
-	Eigen::MatrixXd median(3, 3), treshold(3, 3), r(3, 3);
+	Eigen::MatrixXd median(3, 3), threshold(3, 3), r(3, 3);
 	median << 1.32267188, 0.00105802, 0.00871490,
 			0.00105802, 1.32447262, 0.01829110,
 			0.00871490, 0.01829110, 1.02823244;
-	treshold << -0.05738723, -0.12041171, 1.96255648,
+	threshold << -0.05738723, -0.12041171, 1.96255648,
 			3.44737720, -1.60950341, 0.00205466,
 			1.31840128, 2.82413924, 0.21182516;
 	r.setIdentity();
 
-	res.setMatrices(median, treshold, r);
+	res.setMatrices(median, threshold, r);
 	return res;
 }
 

@@ -83,7 +83,7 @@ public:
 	size_t getChannelNumber() const { return m_nChannel; }				///< Get the matrices number of channel.
 	double getMaxChannel() const { return m_maxChannel; }				///< Get the number of channel (dimension) to reconstruct in fraction.
 	Eigen::MatrixXd getMedian() const { return m_median; }				///< Get the median matrix.
-	Eigen::MatrixXd getTresholdMatrix() const { return m_treshold; }	///< Get the treshold matrix.
+	Eigen::MatrixXd getThresholdMatrix() const { return m_threshold; }	///< Get the threshold matrix.
 
 	//***********************
 	//***** XML Manager *****
@@ -154,7 +154,7 @@ protected:
 	double m_maxChannel = 1;					///< Number of channel (dimension) to reconstruct in fraction, 0 for nothing 1 for all
 	bool m_trivial      = true;					///< Define if previous sample was trivial to reconstruct
 	Eigen::MatrixXd m_median;					///< Median computed with train dataset
-	Eigen::MatrixXd m_treshold;					///< Treshold matrix computed with train dataset
+	Eigen::MatrixXd m_threshold;				///< Threshold matrix computed with train dataset
 	Eigen::MatrixXd m_r;						///< Last Reconstruction matrix
 	Eigen::MatrixXd m_cov;						///< Last Covariance matrix
 };

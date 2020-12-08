@@ -51,9 +51,9 @@ bool CASR::train(const std::vector<Eigen::MatrixXd>& dataset, const double rejec
 	for (size_t i = 0; i < m_nChannel; ++i) { FitDistribution(rms[i], mu[i], sigma[i]); }
 
 	// Compute the threshold Matrix
-	m_treshold = Eigen::MatrixXd::Zero(m_nChannel, m_nChannel);
-	for (size_t i = 0; i < m_nChannel; ++i) { m_treshold(i, i) = mu[i] + rejectionLimit * sigma[i]; }
-	m_treshold *= eigVector.transpose();
+	m_threshold = Eigen::MatrixXd::Zero(m_nChannel, m_nChannel);
+	for (size_t i = 0; i < m_nChannel; ++i) { m_threshold(i, i) = mu[i] + rejectionLimit * sigma[i]; }
+	m_threshold *= eigVector.transpose();
 
 	// Initialize Reconstruction matrix and trivial
 	m_r       = Eigen::MatrixXd::Identity(m_nChannel, m_nChannel);
@@ -82,7 +82,7 @@ bool CASR::process(const Eigen::MatrixXd& in, Eigen::MatrixXd& out)
 	sortedEigenVector(m_cov, eigVector, eigValues, m_metric);
 
 	// Check if eigen values is over threshold computes during train (ponderate by eigen vector)
-	Eigen::MatrixXd threshold = (m_treshold * eigVector).cwiseAbs2();
+	Eigen::MatrixXd threshold = (m_threshold * eigVector).cwiseAbs2();
 	bool trivial              = true;
 	std::vector<bool> keep(m_nChannel, true);
 	for (size_t i = begin; i < m_nChannel; ++i)
@@ -134,12 +134,12 @@ bool CASR::setMatrices(const Eigen::MatrixXd& median, const Eigen::MatrixXd& thr
 		std::cout << "All matrices must be square with same size (or empty for reconstruct and covariance matrix" << std::endl;
 		return false;
 	}
-	m_nChannel = median.rows();
-	m_median   = median;
-	m_treshold = threshold;
-	m_r        = reconstruct.size() != 0 ? reconstruct : Eigen::MatrixXd::Identity(m_nChannel, m_nChannel);
-	m_cov      = covariance;
-	m_trivial  = true;
+	m_nChannel  = median.rows();
+	m_median    = median;
+	m_threshold = threshold;
+	m_r         = reconstruct.size() != 0 ? reconstruct : Eigen::MatrixXd::Identity(m_nChannel, m_nChannel);
+	m_cov       = covariance;
+	m_trivial   = true;
 	return true;
 }
 ///-------------------------------------------------------------------------------------------------
@@ -166,9 +166,9 @@ bool CASR::saveXML(const std::string& filename) const
 	if (!IMatrixClassifier::saveMatrix(median, m_median)) { return false; }	// Save Median Matrix
 	data->InsertEndChild(median);								// Add Median node to data node
 
-	tinyxml2::XMLElement* treshold = doc.NewElement("Treshold");	// Create Median node
-	if (!IMatrixClassifier::saveMatrix(treshold, m_treshold)) { return false; }	// Save Median Matrix
-	data->InsertEndChild(treshold);								// Add Median node to data node
+	tinyxml2::XMLElement* threshold = doc.NewElement("Threshold");	// Create Median node
+	if (!IMatrixClassifier::saveMatrix(threshold, m_threshold)) { return false; }	// Save Median Matrix
+	data->InsertEndChild(threshold);							// Add Median node to data node
 
 	tinyxml2::XMLElement* r = doc.NewElement("R");				// Create Median node
 	if (!IMatrixClassifier::saveMatrix(r, m_r)) { return false; }	// Save Median Matrix
@@ -188,34 +188,34 @@ bool CASR::loadXML(const std::string& filename)
 {
 	// Load File
 	tinyxml2::XMLDocument xmlDoc;
-	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }		// Check File Exist and Loading
+	if (xmlDoc.LoadFile(filename.c_str()) != 0) { return false; }	// Check File Exist and Loading
 
 	// Load Root
-	tinyxml2::XMLNode* root = xmlDoc.FirstChild();						// Get Root Node
-	if (root == nullptr) { return false; }								// Check Root Node Exist
+	tinyxml2::XMLNode* root = xmlDoc.FirstChild();				// Get Root Node
+	if (root == nullptr) { return false; }						// Check Root Node Exist
 
 	// Load Data
 	tinyxml2::XMLElement* data = root->FirstChildElement("ASR-data");	// Get Data Node
-	if (data == nullptr) { return false; }								// Check Root Node Exist
+	if (data == nullptr) { return false; }						// Check Root Node Exist
 	m_metric     = StringToMetric(std::string(data->Attribute("metric")));
 	m_nChannel   = data->IntAttribute("nChannel");
 	m_maxChannel = data->IntAttribute("maxChannel");
 	m_trivial    = data->BoolAttribute("trivial");
 
 	tinyxml2::XMLElement* element = data->FirstChildElement("Median");	// Get Median Node
-	if (element == nullptr) { return false; }							// Check if Node Exist
+	if (element == nullptr) { return false; }					// Check if Node Exist
 	if (!IMatrixClassifier::loadMatrix(element, m_median)) { return false; }	// Load Median Matrix
 
-	element = data->FirstChildElement("Treshold");						// Get Treshold Node
-	if (element == nullptr) { return false; }							// Check if Node Exist
-	if (!IMatrixClassifier::loadMatrix(element, m_treshold)) { return false; }	// Load Treshold Matrix
+	element = data->FirstChildElement("Threshold");				// Get Threshold Node
+	if (element == nullptr) { return false; }					// Check if Node Exist
+	if (!IMatrixClassifier::loadMatrix(element, m_threshold)) { return false; }	// Load Threshold Matrix
 
-	element = data->FirstChildElement("R");								// Get R Node
-	if (element == nullptr) { return false; }							// Check if Node Exist
+	element = data->FirstChildElement("R");						// Get R Node
+	if (element == nullptr) { return false; }					// Check if Node Exist
 	if (!IMatrixClassifier::loadMatrix(element, m_r)) { return false; }		// Load R Matrix
 
-	element = data->FirstChildElement("Cov");							// Get Cov Node
-	if (element == nullptr) { return false; }							// Check if Node Exist
+	element = data->FirstChildElement("Cov");					// Get Cov Node
+	if (element == nullptr) { return false; }					// Check if Node Exist
 	if (!IMatrixClassifier::loadMatrix(element, m_cov)) { return false; }	// Load Cov Matrix
 
 	return true;
@@ -231,7 +231,7 @@ bool CASR::isEqual(const CASR& obj, const double precision) const
 {
 	return m_metric == obj.m_metric && m_nChannel == obj.m_nChannel
 		   && abs(m_maxChannel - obj.m_maxChannel) < precision && m_trivial == obj.m_trivial
-		   && AreEquals(m_median, obj.m_median, precision) && AreEquals(m_treshold, obj.m_treshold, precision)
+		   && AreEquals(m_median, obj.m_median, precision) && AreEquals(m_threshold, obj.m_threshold, precision)
 		   && AreEquals(m_r, obj.m_r, precision) && AreEquals(m_cov, obj.m_cov, precision);
 }
 ///-------------------------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ void CASR::copy(const CASR& obj)
 	m_maxChannel = obj.m_maxChannel;
 	m_trivial    = obj.m_trivial;
 	m_median     = obj.m_median;
-	m_treshold   = obj.m_treshold;
+	m_threshold  = obj.m_threshold;
 	m_r          = obj.m_r;
 	m_cov        = obj.m_cov;
 }
@@ -261,7 +261,7 @@ std::stringstream CASR::print() const
 		ss << "Train done." << std::endl;
 		ss << size_t(m_maxChannel * double(m_nChannel)) << "/" << m_nChannel << " channels can be reconstruted." << std::endl;
 		ss << "Median matrix is : " << std::endl << m_median << std::endl;
-		ss << "Treshold matrix is : " << std::endl << m_treshold << std::endl;
+		ss << "Threshold matrix is : " << std::endl << m_threshold << std::endl;
 		if (m_cov.size() == 0) { ss << "No process launched yet." << std::endl; }
 		else
 		{

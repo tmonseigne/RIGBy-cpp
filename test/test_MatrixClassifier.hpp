@@ -28,8 +28,8 @@
 static const std::vector<std::vector<double>> EMPTY_DIST;
 
 //---------------------------------------------------------------------------------------------------
-static void TestClassify(Geometry::IMatrixClassifier& calc, const std::vector<std::vector<Eigen::MatrixXd>>& dataset, const std::vector<size_t>& refPrediction,
-						 const std::vector<std::vector<double>>& refPredictionDistance, const Geometry::EAdaptations& adapt)
+static void TestClassify(Geometry::IMatrixClassifier& calc, const std::vector<std::vector<Eigen::MatrixXd>>& dataset, const std::vector<size_t>& prediction,
+						 const std::vector<std::vector<double>>& predictionDistance, const Geometry::EAdaptations& adapt)
 {
 	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(NB_CLASS, NB_CLASS);
 	size_t idx             = 0;
@@ -41,11 +41,10 @@ static void TestClassify(Geometry::IMatrixClassifier& calc, const std::vector<st
 			size_t classid         = 0;
 			std::vector<double> distance, probability;
 			EXPECT_TRUE(calc.classify(dataset[k][i], classid, distance, probability, adapt, k)) << "Error during Classify " << text;
-			if (idx < refPrediction.size()) { EXPECT_TRUE(refPrediction[idx] == classid) << ErrorMsg("Prediction " + text, refPrediction[idx], classid); }
-			if (idx < refPredictionDistance.size())
+			if (idx < prediction.size()) { EXPECT_TRUE(prediction[idx] == classid) << ErrorMsg("Prediction " + text, prediction[idx], classid); }
+			if (idx < predictionDistance.size())
 			{
-				EXPECT_TRUE(isAlmostEqual(refPredictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, refPredictionDistance[idx],
-																							 distance);
+				EXPECT_TRUE(isAlmostEqual(predictionDistance[idx], distance)) << ErrorMsg("Prediction Distance " + text, predictionDistance[idx], distance);
 			}
 			idx++;
 			result(k, classid)++;
